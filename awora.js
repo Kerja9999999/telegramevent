@@ -52,10 +52,15 @@ async function checkOrders(sendTelegram) {
 
     if (!list.length) return;
 
-    // Первый запуск — только запоминаем последний заказ
+    // Первый запуск
     if (!lastOrder) {
       lastOrder = list[0].order_sn;
-      fs.writeFileSync(FILE, JSON.stringify({ order: lastOrder }));
+
+      fs.writeFileSync(
+        FILE,
+        JSON.stringify({ order: lastOrder })
+      );
+
       console.log("Awora initialized:", lastOrder);
       return;
     }
@@ -72,6 +77,38 @@ async function checkOrders(sendTelegram) {
     newOrders.reverse();
 
     for (const order of newOrders) {
+
+      let amount = "";
+
+      // Монеты
+      if (order.pay_type === "coin") {
+
+        const minutes = Number(order.prepay_money);
+
+        switch (minutes) {
+          case 1:
+            amount = "0.50 EUR";
+            break;
+
+          case 3:
+            amount = "1.00 EUR";
+            break;
+
+          case 6:
+            amount = "2.00 EUR";
+            break;
+
+          default:
+            amount = `${minutes} мин`;
+        }
+
+      } else {
+
+        amount =
+          `${Number(order.prepay_money).toFixed(2)} ${order.merchant?.currency_code || ""}`;
+
+      }
+
       const msg =
 `🚿 НОВЫЙ ЗАКАЗ
 
@@ -83,7 +120,7 @@ async function checkOrders(sendTelegram) {
 👤 ${order.user?.nickname || "-"}
 📞 ${order.user?.phone || "-"}
 
-💶 Предоплата: ${order.prepay_money || "0"} ${order.merchant?.currency_code || ""}
+💶 ${amount}
 
 🆔 ${order.order_sn}
 
@@ -100,11 +137,14 @@ async function checkOrders(sendTelegram) {
         })
       );
     }
+
   } catch (err) {
+
     console.error(
       "Awora:",
       err.response?.data || err.message
     );
+
   }
 }
 
