@@ -139,7 +139,7 @@ if (order.pay_type === "coin") {
 
 }
 
-      const msg =
+
 const date = new Date(order.create_time.replace(" ", "T"));
 date.setHours(date.getHours() - 5);
 
