@@ -95,36 +95,49 @@ async function checkOrders(sendTelegram) {
 
     for (const order of newOrders) {
 
-      let amount = "";
+     let amount = "";
 
-      // Монеты
-      if (order.pay_type === "coin") {
+if (order.pay_type === "coin") {
 
-        const minutes = Number(order.prepay_money);
+    const minutes = Number(order.prepay_money);
 
-        switch (minutes) {
-          case 1:
+    switch (minutes) {
+        case 1:
             amount = "0.50 EUR";
             break;
 
-          case 3:
+        case 3:
             amount = "1.00 EUR";
             break;
 
-          case 6:
+        case 6:
             amount = "2.00 EUR";
             break;
 
-          default:
+        default:
             amount = `${minutes} мин`;
-        }
+    }
 
-      } else {
+} else {
+
+    try {
+
+        const detail = await getDetail(order.order_sn);
+
+        const spent =
+            detail.body.data.order_info.amount_received;
 
         amount =
-          `${Number(order.prepay_money).toFixed(2)} ${order.merchant?.currency_code || ""}`;
+            (Number(spent) / 100).toFixed(2) + " EUR";
 
-      }
+    } catch {
+
+        amount =
+            `${Number(order.prepay_money).toFixed(2)} ${order.merchant?.currency_code || ""}`;
+
+    }
+
+}
 
       const msg =
 `🚿 НОВЫЙ ЗАКАЗ
