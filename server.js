@@ -66,6 +66,9 @@ setInterval(async () => {
 
 // ---------- Test ----------
 app.get("/", (_, res) => res.send("Bot is running"));
+app.get("/ping", (_, res) => {
+    res.send("OK");
+});
 
 app.listen(process.env.PORT || 3000, () => {
     console.log("Server started");
