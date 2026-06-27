@@ -5,7 +5,24 @@ const API =
   "https://en.awoara.com.cn/mer/store/order/smart_order/lst";
 
 const FILE = "./lastOrder.json";
+async function getDetail(orderSn) {
 
+    const res = await axios.get(
+        "https://en.awoara.com.cn/mer/store/order/smart_order/detail",
+        {
+            headers:{
+                "X-Token":process.env.AWORA_TOKEN,
+                Accept:"application/json"
+            },
+            params:{
+                id:orderSn
+            }
+        }
+    );
+
+    return res.data.data;
+
+}
 let lastOrder = "";
 
 if (fs.existsSync(FILE)) {
