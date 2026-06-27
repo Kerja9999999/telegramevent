@@ -56,10 +56,7 @@ async function checkOrders(sendTelegram) {
     if (sentOrders.length === 0) {
       sentOrders = list.map((o) => o.order_sn);
 
-      fs.writeFileSync(
-        FILE,
-        JSON.stringify(sentOrders, null, 2)
-      );
+      fs.writeFileSync(FILE, JSON.stringify(sentOrders, null, 2));
 
       console.log("Awora initialized");
       return;
@@ -76,19 +73,7 @@ async function checkOrders(sendTelegram) {
 
     for (const order of newOrders) {
 
-      let amount = "";
-
-      if (order.pay_type === "coin") {
-
-        amount =
-          (Number(order.prepay_money) / 3).toFixed(2) + " EUR";
-
-      } else {
-
-        amount =
-          `${Number(order.prepay_money).toFixed(2)} ${order.merchant?.currency_code || ""}`;
-
-      }
+      const amount = `${Number(order.amount_received || 0).toFixed(2)} ${order.merchant?.currency_code || "EUR"}`;
 
       const msg =
 `🚿 НОВЫЙ ЗАКАЗ
@@ -102,7 +87,7 @@ async function checkOrders(sendTelegram) {
 
 📞 ${order.user?.phone || "-"}
 
-💶 ${amount}
+💶 Получено: ${amount}
 
 🆔 ${order.order_sn}
 
@@ -113,15 +98,12 @@ async function checkOrders(sendTelegram) {
       sentOrders.push(order.order_sn);
     }
 
-    // Храним последние 100 заказов
+    // Храним только последние 100 заказов
     if (sentOrders.length > 100) {
       sentOrders = sentOrders.slice(-100);
     }
 
-    fs.writeFileSync(
-      FILE,
-      JSON.stringify(sentOrders, null, 2)
-    );
+    fs.writeFileSync(FILE, JSON.stringify(sentOrders, null, 2));
 
   } catch (err) {
     console.error(
