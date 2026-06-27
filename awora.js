@@ -140,6 +140,19 @@ if (order.pay_type === "coin") {
 }
 
       const msg =
+const date = new Date(order.create_time.replace(" ", "T"));
+date.setHours(date.getHours() - 5);
+
+const time = date.toLocaleString("lv-LV", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
+});
+
+const msg =
 `🚿 НОВЫЙ ЗАКАЗ
 
 💳 Тип: ${order.pay_type}
@@ -154,7 +167,7 @@ if (order.pay_type === "coin") {
 
 🆔 ${order.order_sn}
 
-🕒 ${order.create_time}`;
+🕒 ${time}`;
 
       await sendTelegram(msg);
 
