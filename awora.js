@@ -4,15 +4,15 @@ const fs = require("fs");
 const API =
   "https://en.awoara.com.cn/mer/store/order/smart_order/lst";
 
-const FILE = "./lastOrder.json";
+const FILE = "./orders.json";
 
-let lastOrder = "";
+let sentOrders = [];
 
 if (fs.existsSync(FILE)) {
   try {
-    lastOrder = JSON.parse(fs.readFileSync(FILE)).order || "";
+    sentOrders = JSON.parse(fs.readFileSync(FILE, "utf8"));
   } catch {
-    lastOrder = "";
+    sentOrders = [];
   }
 }
 
@@ -52,35 +52,32 @@ async function checkOrders(sendTelegram) {
 
     if (!list.length) return;
 
-    // Первый запуск
-    if (!lastOrder) {
-      lastOrder = list[0].order_sn;
+    // Первый запуск — только запоминаем существующие заказы
+    if (sentOrders.length === 0) {
+      sentOrders = list.map(o => o.order_sn);
 
       fs.writeFileSync(
         FILE,
-        JSON.stringify({ order: lastOrder })
+        JSON.stringify(sentOrders, null, 2)
       );
 
-      console.log("Awora initialized:", lastOrder);
+      console.log("Awora initialized");
       return;
     }
 
-    const newOrders = [];
-
-    for (const order of list) {
-      if (order.order_sn === lastOrder) break;
-      newOrders.push(order);
-    }
+    const newOrders = list.filter(
+      o => !sentOrders.includes(o.order_sn)
+    );
 
     if (!newOrders.length) return;
 
+    // Старые -> новые
     newOrders.reverse();
 
     for (const order of newOrders) {
 
       let amount = "";
 
-      // Монеты
       if (order.pay_type === "coin") {
 
         const minutes = Number(order.prepay_money);
@@ -118,6 +115,7 @@ async function checkOrders(sendTelegram) {
 🔧 ${order.device?.device_name || "-"}
 
 👤 ${order.user?.nickname || "-"}
+
 📞 ${order.user?.phone || "-"}
 
 💶 ${amount}
@@ -128,23 +126,24 @@ async function checkOrders(sendTelegram) {
 
       await sendTelegram(msg);
 
-      lastOrder = order.order_sn;
-
-      fs.writeFileSync(
-        FILE,
-        JSON.stringify({
-          order: lastOrder,
-        })
-      );
+      sentOrders.push(order.order_sn);
     }
 
-  } catch (err) {
+    // Храним только последние 100 заказов
+    if (sentOrders.length > 100) {
+      sentOrders = sentOrders.slice(-100);
+    }
 
+    fs.writeFileSync(
+      FILE,
+      JSON.stringify(sentOrders, null, 2)
+    );
+
+  } catch (err) {
     console.error(
       "Awora:",
       err.response?.data || err.message
     );
-
   }
 }
 
