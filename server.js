@@ -73,6 +73,30 @@ app.get("/ping", (_, res) => {
     res.send("OK");
 });
 
+// ---------- Automation API ----------
+
+// Получить последнее событие
+app.get("/automation/status", (req, res) => {
+    res.json(lastAutomationEvent || {});
+});
+
+// Сохранить новое событие
+app.post("/automation/event", express.json(), (req, res) => {
+
+    lastAutomationEvent = {
+        ...req.body,
+        receivedAt: new Date().toISOString()
+    };
+
+    console.log("=== AUTOMATION ===");
+    console.log(lastAutomationEvent);
+
+    res.json({
+        ok: true
+    });
+
+});
+
 app.listen(process.env.PORT || 3000, () => {
     console.log("Server started");
 });
