@@ -122,13 +122,25 @@ if (order.pay_type === "coin") {
 
     try {
 
-        const detail = await getDetail(order.order_sn);
+const detail = await getDetail(order.order_sn);
 
-        const spent =
-            detail.body.data.order_info.amount_received;
+const spent =
+    detail.body.data.order_info.amount_received;
 
-        amount =
-            (Number(spent) / 100).toFixed(2) + " EUR";
+amount =
+    (Number(spent) / 100).toFixed(2) + " EUR";
+
+// Получаем статистику программ
+const programs = detail.body.data.order_info.detail || [];
+
+const getSeconds = (name) => {
+    const item = programs.find(p => p.name === name);
+    return item ? item.seconds : 0;
+};
+
+const water = getSeconds("water");
+const foam = getSeconds("foam");
+const coat = getSeconds("coat");
 
     } catch {
 
