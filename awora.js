@@ -176,6 +176,9 @@ const msg =
 📞 ${order.user?.phone || "-"}
 
 💶 ${amount}
+💦 Water: ${water} сек
+🫧 Foam: ${foam} сек
+✨ Wax: ${coat} сек
 
 🆔 ${order.order_sn}
 
