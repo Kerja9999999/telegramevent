@@ -169,6 +169,26 @@ if (
 🕒 ${time}`;
 
       await sendTelegram(msg);
+      try {
+    await axios.post(
+        "https://ТВОЙ-RENDER.onrender.com/automation/event",
+        {
+            user: order.user?.nickname || "",
+            phone: order.user?.phone || "",
+            amount,
+            water,
+            foam,
+            coat,
+            payType: order.pay_type,
+            device: order.device?.device_name || "",
+            location: order.location?.location_name || "",
+            order: order.order_sn,
+            time
+        }
+    );
+} catch (err) {
+    console.log("Automation API error");
+}
 try {
     await axios.post("http://localhost:4000/event", {
         user: order.user?.nickname || "",
