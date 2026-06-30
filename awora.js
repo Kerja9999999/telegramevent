@@ -169,7 +169,23 @@ if (
 🕒 ${time}`;
 
       await sendTelegram(msg);
-
+try {
+    await axios.post("http://localhost:4000/event", {
+        user: order.user?.nickname || "",
+        phone: order.user?.phone || "",
+        device: order.device?.device_name || "",
+        location: order.location?.location_name || "",
+        amount,
+        water,
+        foam,
+        coat,
+        payType: order.pay_type,
+        order: order.order_sn,
+        time
+    });
+} catch (err) {
+    console.log("Automation server offline");
+}
       lastOrder = order.order_sn;
 
       fs.writeFileSync(
