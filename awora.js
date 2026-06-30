@@ -5,24 +5,24 @@ const API =
   "https://en.awoara.com.cn/mer/store/order/smart_order/lst";
 
 const FILE = "./lastOrder.json";
+
 async function getDetail(orderSn) {
+  const res = await axios.get(
+    "https://en.awoara.com.cn/mer/store/order/smart_order/detail",
+    {
+      headers: {
+        "X-Token": process.env.AWORA_TOKEN,
+        Accept: "application/json",
+      },
+      params: {
+        id: orderSn,
+      },
+    }
+  );
 
-    const res = await axios.get(
-        "https://en.awoara.com.cn/mer/store/order/smart_order/detail",
-        {
-            headers:{
-                "X-Token":process.env.AWORA_TOKEN,
-                Accept:"application/json"
-            },
-            params:{
-                id:orderSn
-            }
-        }
-    );
-
-    return res.data.data;
-
+  return res.data.data;
 }
+
 let lastOrder = "";
 
 if (fs.existsSync(FILE)) {
@@ -69,14 +69,10 @@ async function checkOrders(sendTelegram) {
 
     if (!list.length) return;
 
-    // Первый запуск
     if (!lastOrder) {
       lastOrder = list[0].order_sn;
 
-      fs.writeFileSync(
-        FILE,
-        JSON.stringify({ order: lastOrder })
-      );
+      fs.writeFileSync(FILE, JSON.stringify({ order: lastOrder }));
 
       console.log("Awora initialized:", lastOrder);
       return;
@@ -94,78 +90,77 @@ async function checkOrders(sendTelegram) {
     newOrders.reverse();
 
     for (const order of newOrders) {
+      let amount = "";
+      let water = 0;
+      let foam = 0;
+      let coat = 0;
 
-     let amount = "";
+      if (order.pay_type === "coin") {
+        const minutes = Number(order.prepay_money);
 
-if (order.pay_type === "coin") {
-
-    const minutes = Number(order.prepay_money);
-
-    switch (minutes) {
-        case 1:
+        switch (minutes) {
+          case 1:
             amount = "0.50 EUR";
             break;
 
-        case 3:
+          case 3:
             amount = "1.00 EUR";
             break;
 
-        case 6:
+          case 6:
             amount = "2.00 EUR";
             break;
 
-        default:
+          default:
             amount = `${minutes} мин`;
-    }
+        }
+      } else {
+        try {
+          const detail = await getDetail(order.order_sn);
+          const info = detail.body.data.order_info;
 
-} else {
+          const programs = info.detail || [];
 
-    try {
+          const getSeconds = (name) => {
+            const item = programs.find((p) => p.name === name);
+            return item ? item.seconds : 0;
+          };
 
-const detail = await getDetail(order.order_sn);
+          water = getSeconds("water");
+          foam = getSeconds("foam");
+          coat = getSeconds("coat");
 
-const spent =
-    detail.body.data.order_info.amount_received;
+          // VIP-карта
+          if (
+            info.open_type === "card" &&
+            info.close_type === "card" &&
+            Number(info.amount_received) === 0
+          ) {
+            amount = "👑 VIP CARD";
+          } else {
+            amount =
+              (Number(info.amount_received) / 100).toFixed(2) + " EUR";
+          }
+        } catch {
+          amount = `${Number(order.prepay_money).toFixed(2)} ${
+            order.merchant?.currency_code || ""
+          }`;
+        }
+      }
 
-amount =
-    (Number(spent) / 100).toFixed(2) + " EUR";
+      const date = new Date(order.create_time.replace(" ", "T"));
+      date.setHours(date.getHours() - 5);
 
-// Получаем статистику программ
-const programs = detail.body.data.order_info.detail || [];
+      const time = date.toLocaleString("lv-LV", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
 
-const getSeconds = (name) => {
-    const item = programs.find(p => p.name === name);
-    return item ? item.seconds : 0;
-};
-
-const water = getSeconds("water");
-const foam = getSeconds("foam");
-const coat = getSeconds("coat");
-
-    } catch {
-
-        amount =
-            `${Number(order.prepay_money).toFixed(2)} ${order.merchant?.currency_code || ""}`;
-
-    }
-
-}
-
-
-const date = new Date(order.create_time.replace(" ", "T"));
-date.setHours(date.getHours() - 5);
-
-const time = date.toLocaleString("lv-LV", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit"
-});
-
-const msg =
-`🚿 НОВЫЙ ЗАКАЗ
+      const msg = `🚿 НОВЫЙ ЗАКАЗ
 
 💳 Тип: ${order.pay_type}
 
@@ -176,6 +171,7 @@ const msg =
 📞 ${order.user?.phone || "-"}
 
 💶 ${amount}
+
 💦 Water: ${water} сек
 🫧 Foam: ${foam} сек
 ✨ Wax: ${coat} сек
@@ -195,14 +191,8 @@ const msg =
         })
       );
     }
-
   } catch (err) {
-
-    console.error(
-      "Awora:",
-      err.response?.data || err.message
-    );
-
+    console.error("Awora:", err.response?.data || err.message);
   }
 }
 
