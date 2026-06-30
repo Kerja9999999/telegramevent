@@ -95,58 +95,38 @@ async function checkOrders(sendTelegram) {
       let foam = 0;
       let coat = 0;
 
-      if (order.pay_type === "coin") {
-        const minutes = Number(order.prepay_money);
+     try {
+  const detail = await getDetail(order.order_sn);
+  const info = detail.body.data.order_info;
 
-        switch (minutes) {
-          case 1:
-            amount = "0.50 EUR";
-            break;
+  // Статистика программ
+  const programs = info.detail || [];
 
-          case 3:
-            amount = "1.00 EUR";
-            break;
+  const getSeconds = (name) => {
+    const item = programs.find((p) => p.name === name);
+    return item ? item.seconds : 0;
+  };
 
-          case 6:
-            amount = "2.00 EUR";
-            break;
+  water = getSeconds("water");
+  foam = getSeconds("foam");
+  coat = getSeconds("coat");
 
-          default:
-            amount = `${minutes} мин`;
-        }
-      } else {
-        try {
-          const detail = await getDetail(order.order_sn);
-          const info = detail.body.data.order_info;
+  // VIP-карта
+  if (
+    info.open_type === "card" &&
+    info.close_type === "card" &&
+    Number(info.amount_received) === 0
+  ) {
+    amount = "👑 VIP CARD";
+  } else {
+    amount = (Number(info.amount_received) / 100).toFixed(2) + " EUR";
+  }
 
-          const programs = info.detail || [];
+} catch {
 
-          const getSeconds = (name) => {
-            const item = programs.find((p) => p.name === name);
-            return item ? item.seconds : 0;
-          };
+  amount = `${(Number(order.prepay_money || 0) / 100).toFixed(2)} EUR`;
 
-          water = getSeconds("water");
-          foam = getSeconds("foam");
-          coat = getSeconds("coat");
-
-          // VIP-карта
-          if (
-            info.open_type === "card" &&
-            info.close_type === "card" &&
-            Number(info.amount_received) === 0
-          ) {
-            amount = "👑 VIP CARD";
-          } else {
-            amount =
-              (Number(info.amount_received) / 100).toFixed(2) + " EUR";
-          }
-        } catch {
-          amount = `${Number(order.prepay_money).toFixed(2)} ${
-            order.merchant?.currency_code || ""
-          }`;
-        }
-      }
+}
 
       const date = new Date(order.create_time.replace(" ", "T"));
       date.setHours(date.getHours() - 5);
