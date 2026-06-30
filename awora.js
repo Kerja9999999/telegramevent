@@ -96,6 +96,7 @@ async function checkOrders(sendTelegram) {
       let coat = 0;
 
      try {
+       await new Promise(resolve => setTimeout(resolve, 10000));
   const detail = await getDetail(order.order_sn);
   const info = detail.body.data.order_info;
 
