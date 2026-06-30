@@ -4,6 +4,9 @@ const axios = require("axios");
 const checkOrders = require("./awora");
 
 const app = express();
+
+// ---------- Automation ----------
+let lastAutomationEvent = null;
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // ---------- Telegram ----------
