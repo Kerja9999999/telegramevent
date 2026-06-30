@@ -171,7 +171,7 @@ if (
       await sendTelegram(msg);
       try {
     await axios.post(
-        "https://ТВОЙ-RENDER.onrender.com/automation/event",
+        "https://telegramevent.onrender.com/automation/status",
         {
             user: order.user?.nickname || "",
             phone: order.user?.phone || "",
