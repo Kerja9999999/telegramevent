@@ -96,10 +96,17 @@ async function checkOrders(sendTelegram) {
       let coat = 0;
 
      try {
-       await new Promise(resolve => setTimeout(resolve, 10000));
+       await new Promise(resolve => setTimeout(resolve, 90000));
   const detail = await getDetail(order.order_sn);
   const info = detail.body.data.order_info;
-
+if (
+    Number(info.amount_received) === 0 &&
+    info.close_type === "no_balance" &&
+    info.open_type !== "card"
+) {
+    console.log("Order is not finished yet:", order.order_sn);
+    continue;
+}
   // Статистика программ
   const programs = info.detail || [];
 
