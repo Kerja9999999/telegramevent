@@ -62,7 +62,7 @@ app.post(
 // ---------- Awora ----------
 setInterval(async () => {
     await checkOrders(sendTelegram);
-}, 805000);
+}, 605000);
 
 // ---------- Test ----------
 app.get("/", (_, res) => res.send("Bot is running"));
