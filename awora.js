@@ -5,6 +5,7 @@ const API =
   "https://en.awoara.com.cn/mer/store/order/smart_order/lst";
 
 const FILE = "./lastOrder.json";
+const PENDING_FILE = "./pendingOrders.json";
 
 async function getDetail(orderSn) {
   const res = await axios.get(
@@ -14,9 +15,7 @@ async function getDetail(orderSn) {
         "X-Token": process.env.AWORA_TOKEN,
         Accept: "application/json",
       },
-      params: {
-        id: orderSn,
-      },
+      params: { id: orderSn },
     }
   );
 
@@ -24,13 +23,18 @@ async function getDetail(orderSn) {
 }
 
 let lastOrder = "";
+let pending = {};
 
 if (fs.existsSync(FILE)) {
   try {
     lastOrder = JSON.parse(fs.readFileSync(FILE)).order || "";
-  } catch {
-    lastOrder = "";
-  }
+  } catch {}
+}
+
+if (fs.existsSync(PENDING_FILE)) {
+  try {
+    pending = JSON.parse(fs.readFileSync(PENDING_FILE));
+  } catch {}
 }
 
 async function checkOrders(sendTelegram) {
@@ -41,112 +45,82 @@ async function checkOrders(sendTelegram) {
         Accept: "application/json",
       },
       params: {
-        order_sn: "",
-        order_type: -1,
-        keywords: "",
-        membercard: "",
-        status: "",
-        date: "",
         page: 1,
         limit: 20,
         type: 1,
-        username: "",
-        order_id: "",
-        activity_type: "",
-        location_id: "",
-        device_id: "",
-        pay_type: "",
-        open_type: "",
-        min: 0,
-        max: 0,
-        machine_type: "",
-        order_ch: "",
+        order_type: -1,
         is_api: 0,
       },
     });
 
     const list = res.data?.data?.list || [];
-
     if (!list.length) return;
 
     if (!lastOrder) {
       lastOrder = list[0].order_sn;
-
       fs.writeFileSync(FILE, JSON.stringify({ order: lastOrder }));
-
       console.log("Awora initialized:", lastOrder);
       return;
     }
 
-    const newOrders = [];
-
     for (const order of list) {
       if (order.order_sn === lastOrder) break;
-      newOrders.push(order);
+      pending[order.order_sn] = order;
     }
 
-    if (!newOrders.length) return;
+    fs.writeFileSync(PENDING_FILE, JSON.stringify(pending, null, 2));
 
-    newOrders.reverse();
+    for (const orderSn of Object.keys(pending)) {
+      const order = pending[orderSn];
 
-    for (const order of newOrders) {
-      let amount = "";
+      let amount = `${(Number(order.prepay_money || 0) / 100).toFixed(2)} EUR`;
       let water = 0;
       let foam = 0;
       let coat = 0;
 
-     try {
-       await new Promise(resolve => setTimeout(resolve, 90000));
-  const detail = await getDetail(order.order_sn);
-  const info = detail.body.data.order_info;
-if (
-    Number(info.amount_received) === 0 &&
-    info.close_type === "no_balance" &&
-    info.open_type !== "card"
-) {
-    console.log("Order is not finished yet:", order.order_sn);
-    continue;
-}
-  // Статистика программ
-  const programs = info.detail || [];
+      try {
+        const detail = await getDetail(order.order_sn);
+        const info = detail.body.data.order_info;
 
-  const getSeconds = (name) => {
-    const item = programs.find((p) => p.name === name);
-    return item ? item.seconds : 0;
-  };
+        if (
+          Number(info.amount_received) === 0 &&
+          info.close_type === "no_balance" &&
+          info.open_type !== "card"
+        ) {
+          console.log("Waiting:", order.order_sn);
+          continue;
+        }
 
-  water = getSeconds("water");
-  foam = getSeconds("foam");
-  coat = getSeconds("coat");
+        const programs = info.detail || [];
 
-  // VIP-карта
-  if (
-    info.open_type === "card" &&
-    info.close_type === "card" &&
-    Number(info.amount_received) === 0
-  ) {
-    amount = "👑 VIP CARD";
-  } else {
-    amount = (Number(info.amount_received) / 100).toFixed(2) + " EUR";
-  }
+        const getSeconds = (name) => {
+          const item = programs.find((p) => p.name === name);
+          return item ? item.seconds : 0;
+        };
 
-} catch {
+        water = getSeconds("water");
+        foam = getSeconds("foam");
+        coat = getSeconds("coat");
 
-  amount = `${(Number(order.prepay_money || 0) / 100).toFixed(2)} EUR`;
+        if (
+          info.open_type === "card" &&
+          info.close_type === "card" &&
+          Number(info.amount_received) === 0
+        ) {
+          amount = "👑 VIP CARD";
+        } else {
+          amount = (Number(info.amount_received) / 100).toFixed(2) + " EUR";
+        }
 
-}
+      } catch (e) {
+        console.log("Detail error:", e.response?.data || e.message);
+        continue;
+      }
 
       const date = new Date(order.create_time.replace(" ", "T"));
       date.setHours(date.getHours() - 5);
 
-      const time = date.toLocaleString("lv-LV", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      });
+      const time = date.toLocaleString("lv-LV");
 
       const msg = `🚿 НОВЫЙ ЗАКАЗ
 
@@ -169,10 +143,11 @@ if (
 🕒 ${time}`;
 
       await sendTelegram(msg);
+
       try {
-    await axios.post(
-        "https://telegramevent.onrender.com/automation/status",
-        {
+        await axios.post(
+          "https://telegramevent.onrender.com/automation/event",
+          {
             user: order.user?.nickname || "",
             phone: order.user?.phone || "",
             amount,
@@ -183,37 +158,16 @@ if (
             device: order.device?.device_name || "",
             location: order.location?.location_name || "",
             order: order.order_sn,
-            time
-        }
-    );
-} catch (err) {
-    console.log("Automation API error");
-}
-try {
-    await axios.post("http://localhost:4000/event", {
-        user: order.user?.nickname || "",
-        phone: order.user?.phone || "",
-        device: order.device?.device_name || "",
-        location: order.location?.location_name || "",
-        amount,
-        water,
-        foam,
-        coat,
-        payType: order.pay_type,
-        order: order.order_sn,
-        time
-    });
-} catch (err) {
-    console.log("Automation server offline");
-}
-      lastOrder = order.order_sn;
+            time,
+          }
+        );
+      } catch {}
 
-      fs.writeFileSync(
-        FILE,
-        JSON.stringify({
-          order: lastOrder,
-        })
-      );
+      lastOrder = order.order_sn;
+      fs.writeFileSync(FILE, JSON.stringify({ order: lastOrder }));
+
+      delete pending[orderSn];
+      fs.writeFileSync(PENDING_FILE, JSON.stringify(pending, null, 2));
     }
   } catch (err) {
     console.error("Awora:", err.response?.data || err.message);
