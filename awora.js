@@ -146,7 +146,7 @@ async function checkOrders(sendTelegram) {
 
       try {
         await axios.post(
-          "https://telegramevent.onrender.com/automation/event",
+          "https://telegramevent.onrender.com/automation/status",
           {
             user: order.user?.nickname || "",
             phone: order.user?.phone || "",
