@@ -8,6 +8,13 @@ const app = express();
 
 // ---------- Automation ----------
 let lastAutomationEvent = null;
+let automationCommand = {
+    light: false,
+    music: false,
+    relay1: false,
+    relay2: false,
+    color: "off"
+};
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // ---------- Telegram ----------
@@ -102,6 +109,13 @@ app.get("/test/boris", async (req, res) => {
     };
 
     lastAutomationEvent = test;
+    automationCommand = {
+    light: true,
+    music: true,
+    relay1: true,
+    relay2: false,
+    color: "blue"
+};
 
     await sendTelegram(`🧪 ТЕСТ
 
