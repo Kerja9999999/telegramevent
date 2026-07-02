@@ -72,7 +72,43 @@ app.get("/", (_, res) => res.send("Bot is running"));
 app.get("/ping", (_, res) => {
     res.send("OK");
 });
+// ---------- TEST ----------
+app.get("/test/boris", async (req, res) => {
 
+    const test = {
+        user: "BORIS",
+        phone: "+37100000000",
+        amount: "3.00 EUR",
+        water: 120,
+        foam: 80,
+        coat: 50,
+        payType: "card",
+        device: "BOX 1",
+        location: "ALB Wash",
+        order: "TEST",
+        time: new Date().toLocaleString()
+    };
+
+    lastAutomationEvent = test;
+
+    await sendTelegram(
+`🧪 ТЕСТ
+
+👤 ${test.user}
+
+💶 ${test.amount}
+
+💦 Water: ${test.water} сек
+🫧 Foam: ${test.foam} сек
+✨ Wax: ${test.coat} сек`
+    );
+
+    res.json({
+        ok: true,
+        test
+    });
+
+});
 // ---------- Automation API ----------
 
 // Получить последнее событие
