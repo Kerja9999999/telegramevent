@@ -12,6 +12,20 @@ let lastTestTime = 0;
 app.get("/control", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "control.html"));
 });
+//----------color change---------
+app.post("/api/color/:color", express.json(), (req, res) => {
+
+    automationCommand.light = true;
+    automationCommand.color = req.params.color;
+
+    console.log("Color:", req.params.color);
+
+    res.json({
+        ok: true,
+        command: automationCommand
+    });
+
+});
 
 // ---------- Automation ----------
 let lastAutomationEvent = null;
