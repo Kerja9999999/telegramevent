@@ -60,6 +60,22 @@ button{
 <br>
 
 <button class="red">⛔ STOP</button>
+<script>
 
+async function setColor(color){
+
+    const r = await fetch("/api/color/" + color,{
+        method:"POST"
+    });
+
+    const j = await r.json();
+
+    console.log(j);
+
+}
+
+document.querySelector(".blue").onclick = () => setColor("blue");
+
+</script>
 </body>
 </html>
