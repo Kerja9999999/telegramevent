@@ -4,7 +4,9 @@ const axios = require("axios");
 const checkOrders = require("./awora");
 
 const app = express();
+const path = require("path");
 
+app.use(express.static(path.join(__dirname, "public")));
 let lastTestTime = 0;
 
 // ---------- Automation ----------
