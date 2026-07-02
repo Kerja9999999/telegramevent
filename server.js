@@ -8,6 +8,7 @@ const path = require("path");
 
 app.use(express.static(path.join(__dirname, "public")));
 let lastTestTime = 0;
+let checkingOrders = false;
 
 app.get("/control", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "control.html"));
@@ -42,6 +43,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // ---------- Telegram ----------
 async function sendTelegram(text) {
+  console.log("SEND TELEGRAM");
   try {
     await axios.post(
       `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
@@ -50,8 +52,9 @@ async function sendTelegram(text) {
         text,
       }
     );
+    console.log("Telegram OK");
   } catch (err) {
-    console.error(err.response?.data || err.message);
+    console.error("Telegram ERROR:", err.response?.data || err.message);
   }
 }
 
@@ -92,8 +95,17 @@ app.post(
 checkOrders(sendTelegram);
 
 setInterval(async () => {
-  await checkOrders(sendTelegram);
-}, 605000);
+  if (checkingOrders) {
+    console.log("Previous check still running");
+    return;
+  }
+  checkingOrders = true;
+  try {
+    await checkOrders(sendTelegram);
+  } finally {
+    checkingOrders = false;
+  }
+}, 10000);
 
 // ---------- Basic ----------
 app.get("/", (_, res) => res.send("Bot is running"));
