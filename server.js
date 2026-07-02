@@ -1,3 +1,4 @@
+let lastTestTime = 0;
 const express = require("express");
 const Stripe = require("stripe");
 const axios = require("axios");
@@ -75,8 +76,19 @@ app.get("/ping", (_, res) => {
 // ---------- TEST ----------
 app.get("/test/boris", async (req, res) => {
 
+    const now = Date.now();
+
+    if (now - lastTestTime < 5000) {
+        return res.json({
+            ok: false,
+            message: "Test already executed"
+        });
+    }
+
+    lastTestTime = now;
+
     const test = {
-        user: "BORIS",
+        user: "ВАСЯ",
         phone: "+37100000000",
         amount: "3.00 EUR",
         water: 120,
@@ -91,8 +103,7 @@ app.get("/test/boris", async (req, res) => {
 
     lastAutomationEvent = test;
 
-    await sendTelegram(
-`🧪 ТЕСТ
+    await sendTelegram(`🧪 ТЕСТ
 
 👤 ${test.user}
 
@@ -100,8 +111,7 @@ app.get("/test/boris", async (req, res) => {
 
 💦 Water: ${test.water} сек
 🫧 Foam: ${test.foam} сек
-✨ Wax: ${test.coat} сек`
-    );
+✨ Wax: ${test.coat} сек`);
 
     res.json({
         ok: true,
