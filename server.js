@@ -9,6 +9,10 @@ const path = require("path");
 app.use(express.static(path.join(__dirname, "public")));
 let lastTestTime = 0;
 
+app.get("/control", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "control.html"));
+});
+
 // ---------- Automation ----------
 let lastAutomationEvent = null;
 let automationCommand = {
