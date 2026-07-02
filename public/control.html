@@ -62,19 +62,48 @@ button{
 <button class="red">⛔ STOP</button>
 <script>
 
-async function setColor(color){
+async function send(data){
 
-    const r = await fetch("/api/color/" + color,{
-        method:"POST"
+    const r = await fetch("/api/control",{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify(data)
     });
 
-    const j = await r.json();
-
-    console.log(j);
+    console.log(await r.json());
 
 }
 
-document.querySelector(".blue").onclick = () => setColor("blue");
+document.querySelector(".blue").onclick=()=>{
+
+    send({
+        light:true,
+        color:"blue"
+    });
+
+};
+
+document.querySelector(".green").onclick=()=>{
+
+    send({
+        music:true
+    });
+
+};
+
+document.querySelector(".red").onclick=()=>{
+
+    send({
+        light:false,
+        music:false,
+        relay1:false,
+        relay2:false,
+        color:"off"
+    });
+
+};
 
 </script>
 </body>
