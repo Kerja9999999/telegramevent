@@ -124,7 +124,61 @@ app.get("/test/boris", async (req, res) => {
 
   res.json({ ok: true, test });
 });
+app.get("/test/wash", async (req, res) => {
 
+    const wash = {
+        user: "ВАСЯ",
+        phone: "+37122112211",
+        amount: "5.00 EUR",
+        water: 184,
+        foam: 72,
+        coat: 51,
+        payType: "card",
+        device: "BOX 2",
+        location: "ALB Wash",
+        order: "TEST-" + Date.now(),
+        time: new Date().toLocaleString()
+    };
+
+    lastAutomationEvent = wash;
+
+    automationCommand = {
+        light: true,
+        music: true,
+        relay1: true,
+        relay2: false,
+        color: "blue"
+    };
+
+    await sendTelegram(
+`🚿 НОВЫЙ ЗАКАЗ
+
+💳 Тип: ${wash.payType}
+
+📍 ${wash.location}
+🔧 ${wash.device}
+
+👤 ${wash.user}
+📞 ${wash.phone}
+
+💶 ${wash.amount}
+
+💦 Water: ${wash.water} сек
+🫧 Foam: ${wash.foam} сек
+✨ Wax: ${wash.coat} сек
+
+🆔 ${wash.order}
+
+🕒 ${wash.time}`
+    );
+
+    res.json({
+        ok: true,
+        wash,
+        automationCommand
+    });
+
+});
 // ---------- Automation API ----------
 app.get("/automation/status", (req, res) => {
   res.json(lastAutomationEvent || {});
