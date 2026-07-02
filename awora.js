@@ -61,6 +61,8 @@ async function checkOrders(sendTelegram) {
     });
 
     const list = res.data?.data?.list || [];
+    console.log('Orders received:', list.length);
+    console.log('Last order:', lastOrder);
     if (!list.length) return;
 
     if (!lastOrder) {
@@ -76,6 +78,7 @@ async function checkOrders(sendTelegram) {
       newOrders.push(order);
     }
 
+    console.log('New orders:', newOrders.length);
     if (!newOrders.length) return;
 
     newOrders.reverse();
@@ -151,7 +154,13 @@ async function checkOrders(sendTelegram) {
 
 🕒 ${time}`;
 
-      await sendTelegram(msg);
+      console.log('Sending Telegram:', order.order_sn);
+      try {
+        await sendTelegram(msg);
+        console.log('Telegram sent:', order.order_sn);
+      } catch(e){
+        console.error('Telegram ERROR:', e.response?.data || e.message);
+      }
 
       try {
         await axios.post(
