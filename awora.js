@@ -90,10 +90,12 @@ async function checkOrders(sendTelegram) {
       let foam = 0;
       let coat = 0;
 
-      try {
-        await new Promise(r => setTimeout(r, 5000));
+try {
+    console.log("Waiting 10 minutes before reading order details...");
 
-        const detail = await getDetail(order.order_sn);
+    await new Promise(r => setTimeout(r, 600000)); // 10 минут
+
+    const detail = await getDetail(order.order_sn);
         const info = detail.body.data.order_info;
 
         const programs = info.detail || [];
