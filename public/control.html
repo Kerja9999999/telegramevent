@@ -64,6 +64,23 @@ button{width:180px;height:55px;border:none;border-radius:10px;margin:8px;font-si
 </div>
 
 <script>
+ async function runTest(url){
+
+    try{
+
+        const r = await fetch(url);
+
+        const j = await r.json();
+
+        console.log(j);
+
+    }catch(e){
+
+        alert("Test error");
+
+    }
+
+}
 async function send(data){
  await fetch("/api/control",{
    method:"POST",
