@@ -129,6 +129,48 @@ function saveUsers(users) {
         JSON.stringify(users, null, 2)
     );
 
+    uploadUsersToGitHub(users)
+        .catch(err => console.error("GitHub upload:", err.message));
+
+}
+async function uploadUsersToGitHub(users) {
+
+    const owner = process.env.GITHUB_OWNER;
+    const repo = process.env.GITHUB_REPO;
+    const token = process.env.GITHUB_TOKEN;
+
+    const path = "data/users.json";
+
+    const headers = {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/vnd.github+json"
+    };
+
+    // Получаем SHA текущего файла
+    const current = await axios.get(
+        `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+        { headers }
+    );
+
+    const sha = current.data.sha;
+
+    const content = Buffer
+        .from(JSON.stringify(users, null, 2))
+        .toString("base64");
+
+    // Обновляем файл
+    await axios.put(
+        `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+        {
+            message: "Update users.json",
+            content,
+            sha
+        },
+        { headers }
+    );
+
+    console.log("users.json updated in GitHub");
+
 }
 // ---------- Telegram ----------
 async function sendTelegram(text) {
