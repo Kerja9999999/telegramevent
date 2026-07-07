@@ -14,7 +14,11 @@ let checkingOrders = false;
 app.get("/control", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "control.html"));
 });
-
+app.get("/users", (req, res) => {
+    res.sendFile(
+        path.join(__dirname, "public", "users.html")
+    );
+});
 //----------color change---------
 app.post("/api/color/:color", express.json(), (req, res) => {
 
