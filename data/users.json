@@ -6,5 +6,13 @@
     "music": "Track 2",
     "relay1": true,
     "relay2": false
+  },
+  "123456789": {
+    "phone": "123456789",
+    "music": "Track 1",
+    "color": "blue",
+    "relay1": false,
+    "relay2": false,
+    "vip": false
   }
 }
