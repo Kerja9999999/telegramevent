@@ -144,7 +144,10 @@ app.get("/test/boris", async (req, res) => {
     relay2: false,
     color: "blue",
   };
-
+const music = automationCommand.music ? "🟢 ON" : "🔴 OFF";
+const light = automationCommand.light
+    ? automationCommand.color.toUpperCase()
+    : "OFF";
   await sendTelegram(`🧪 ТЕСТ
 
 👤 ${test.user}
@@ -154,7 +157,8 @@ app.get("/test/boris", async (req, res) => {
 💦 Water: ${test.water} сек
 🫧 Foam: ${test.foam} сек
 ✨ Wax: ${test.coat} сек`);
-
+🎵 Music: ${music}
+💡 Light: ${light}`);
   res.json({ ok: true, test });
 });
 app.get("/test/wash", async (req, res) => {
