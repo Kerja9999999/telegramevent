@@ -1,1 +1,10 @@
-{}
+{
+  "26245562": {
+    "phone": "26245562",
+    "name": "Jānis",
+    "color": "blue",
+    "music": "Track 2",
+    "relay1": true,
+    "relay2": false
+  }
+}
