@@ -4,10 +4,8 @@ const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 const checkOrders = require("./awora");
-
 const app = express();
 const USERS_FILE = path.join(__dirname, "data", "users.json");
-const path = require("path");
 
 app.use(express.static(path.join(__dirname, "public")));
 let lastTestTime = 0;
