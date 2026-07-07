@@ -167,7 +167,8 @@ try {
 💦 Water: ${water} сек
 🫧 Foam: ${foam} сек
 ✨ Wax: ${coat} сек
-
+🎵 Music: ${music}
+💡 Light: ${light}
 🆔 ${order.order_sn}
 
 🕒 ${time}`;
