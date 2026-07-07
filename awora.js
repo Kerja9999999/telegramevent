@@ -27,6 +27,47 @@ function saveUsers(users) {
         USERS_FILE,
         JSON.stringify(users, null, 2)
     );
+    async function applyUserProfile(phone) {
+
+    if (!phone) return;
+
+    const users = loadUsers();
+
+    const profile = users[phone];
+
+    if (!profile) {
+        console.log("Profile not found:", phone);
+        return;
+    }
+
+    console.log("Applying profile:", phone);
+
+    try {
+
+        await axios.post(
+            "https://telegramevent.onrender.com/api/control",
+            {
+                light: profile.color !== "off",
+                color: profile.color,
+                music: profile.music !== "",
+                relay1: profile.relay1,
+                relay2: profile.relay2,
+                song: profile.music || ""
+            }
+        );
+
+        console.log("Profile applied");
+
+    } catch (e) {
+
+        console.log(
+            "Cannot apply profile:",
+            e.response?.data || e.message
+        );
+
+    }
+
+}
 
 }
 async function getDetail(orderSn) {
@@ -229,8 +270,9 @@ if (phone) {
         console.log("New user:", phone);
 
     }
-
+await applyUserProfile(phone);
 }
+          
         await sendTelegram(msg);
         console.log('Telegram sent:', order.order_sn);
       } catch(e){
