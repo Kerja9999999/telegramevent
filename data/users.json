@@ -1,10 +1,10 @@
 {
   "26245562": {
     "phone": "26245562",
-    "music": "Track 1",
-    "color": "red",
+    "music": "Track 2",
+    "color": "green",
     "relay1": true,
-    "relay2": false,
+    "relay2": true,
     "vip": false
   },
   "123456789": {
