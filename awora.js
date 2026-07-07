@@ -268,38 +268,7 @@ try {
 
       console.log('Sending Telegram:', order.order_sn);
       try {
-        const phone = order.user?.phone;
-
-if (phone) {
-
-    const users = loadUsers();
-
-    if (!users[phone]) {
-
-        users[phone] = {
-
-            phone,
-
-            name: "",
-
-            color: "off",
-
-            music: "",
-
-            relay1: false,
-
-            relay2: false
-
-        };
-
-        saveUsers(users);
-
-        console.log("New user:", phone);
-
-    }
-await applyUserProfile(phone);
-}
-          
+       
         await sendTelegram(msg);
         console.log('Telegram sent:', order.order_sn);
       } catch(e){
