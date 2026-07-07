@@ -135,7 +135,23 @@ try {
         minute: "2-digit",
         second: "2-digit",
       });
+let music = "OFF";
+let light = "OFF";
 
+try {
+
+    const control = await axios.get(
+        "https://telegramevent.onrender.com/automation/command"
+    );
+
+    music = control.data.music ? "ON" : "OFF";
+    light = control.data.color || "OFF";
+
+} catch (e) {
+
+    console.log("Cannot read automation status");
+
+}
       const msg = `🚿 НОВЫЙ ЗАКАЗ
 
 💳 Тип: ${order.pay_type}
