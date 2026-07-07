@@ -159,14 +159,33 @@ if (phone) {
 
     if (!users[phone]) {
 
-        users[phone] = {
-            phone,
-            name: "",
-            color: "off",
-            music: "",
-            relay1: false,
-            relay2: false
-        };
+users[phone] = {
+
+    phone,
+
+    name: "",
+
+    color: "off",
+
+    music: "",
+
+    relay1: false,
+
+    relay2: false,
+
+    vip: false,
+
+    enabled: true,
+
+    created: new Date().toISOString(),
+
+    lastWash: null,
+
+    washCount: 0,
+
+    totalSpent: 0
+
+};
 
         saveUsers(users);
 
