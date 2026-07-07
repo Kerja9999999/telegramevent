@@ -157,6 +157,7 @@ const light = automationCommand.light
 💦 Water: ${test.water} сек
 🫧 Foam: ${test.foam} сек
 ✨ Wax: ${test.coat} сек
+
 🎵 Music: ${music}
 💡 Light: ${light}`);
   res.json({ ok: true, test });
