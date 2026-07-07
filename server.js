@@ -33,7 +33,68 @@ app.post("/api/color/:color", express.json(), (req, res) => {
     });
 
 });
+//----------TEST mojka---------
+app.get("/test", async (req, res) => {
 
+    const phone = req.query.phone;
+
+    if (!phone) {
+        return res.status(400).json({
+            ok: false,
+            error: "phone required"
+        });
+    }
+
+    try {
+
+        const users = loadUsers();
+
+        const profile = users[phone];
+
+        if (!profile) {
+            return res.status(404).json({
+                ok: false,
+                error: "User not found"
+            });
+        }
+
+        automationCommand = {
+            light: profile.color !== "off",
+            color: profile.color,
+            music: !!profile.music,
+            song: profile.music || "",
+            relay1: !!profile.relay1,
+            relay2: !!profile.relay2
+        };
+
+        lastAutomationEvent = {
+            user: profile.name || phone,
+            phone,
+            amount: "TEST",
+            water: 0,
+            foam: 0,
+            coat: 0,
+            music: profile.music || "-",
+            light: profile.color || "-"
+        };
+
+        res.json({
+            ok: true,
+            phone,
+            profile,
+            automationCommand
+        });
+
+    } catch (e) {
+
+        res.status(500).json({
+            ok: false,
+            error: e.message
+        });
+
+    }
+
+});
 // ---------- Automation ----------
 let lastAutomationEvent = null;
 let automationCommand = {
