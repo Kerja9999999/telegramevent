@@ -1,9 +1,12 @@
 const express = require("express");
 const Stripe = require("stripe");
 const axios = require("axios");
+const fs = require("fs");
+const path = require("path");
 const checkOrders = require("./awora");
 
 const app = express();
+const USERS_FILE = path.join(__dirname, "data", "users.json");
 const path = require("path");
 
 app.use(express.static(path.join(__dirname, "public")));
@@ -40,7 +43,30 @@ let automationCommand = {
 };
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+function loadUsers() {
 
+    try {
+
+        return JSON.parse(
+            fs.readFileSync(USERS_FILE, "utf8")
+        );
+
+    } catch {
+
+        return {};
+
+    }
+
+}
+
+function saveUsers(users) {
+
+    fs.writeFileSync(
+        USERS_FILE,
+        JSON.stringify(users, null, 2)
+    );
+
+}
 // ---------- Telegram ----------
 async function sendTelegram(text) {
   console.log("SEND TELEGRAM");
@@ -280,7 +306,32 @@ app.get("/automation/status", (req, res) => {
 app.get("/automation/command", (req, res) => {
   res.json(automationCommand);
 });
+// ---------- USERS ----------
 
+// получить всех пользователей
+
+app.get("/api/users", (req, res) => {
+
+    res.json(loadUsers());
+
+});
+
+
+// сохранить пользователя
+
+app.post("/api/users", express.json(), (req, res) => {
+
+    const users = loadUsers();
+
+    users[req.body.phone] = req.body;
+
+    saveUsers(users);
+
+    res.json({
+        ok: true
+    });
+
+});
 app.post("/api/control", express.json(), (req, res) => {
 
     automationCommand = {
