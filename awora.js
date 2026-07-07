@@ -1,9 +1,34 @@
 const axios = require("axios");
 const fs = require("fs");
-
+const path = require("path");
+const USERS_FILE = path.join(__dirname, "data", "users.json");
 const API = "https://en.awoara.com.cn/mer/store/order/smart_order/lst";
 const FILE = "./lastOrder.json";
 
+function loadUsers() {
+
+    try {
+
+        return JSON.parse(
+            fs.readFileSync(USERS_FILE, "utf8")
+        );
+
+    } catch {
+
+        return {};
+
+    }
+
+}
+
+function saveUsers(users) {
+
+    fs.writeFileSync(
+        USERS_FILE,
+        JSON.stringify(users, null, 2)
+    );
+
+}
 async function getDetail(orderSn) {
   const res = await axios.get(
     "https://en.awoara.com.cn/mer/store/order/smart_order/detail",
@@ -175,6 +200,37 @@ try {
 
       console.log('Sending Telegram:', order.order_sn);
       try {
+        const phone = order.user?.phone;
+
+if (phone) {
+
+    const users = loadUsers();
+
+    if (!users[phone]) {
+
+        users[phone] = {
+
+            phone,
+
+            name: "",
+
+            color: "off",
+
+            music: "",
+
+            relay1: false,
+
+            relay2: false
+
+        };
+
+        saveUsers(users);
+
+        console.log("New user:", phone);
+
+    }
+
+}
         await sendTelegram(msg);
         console.log('Telegram sent:', order.order_sn);
       } catch(e){
