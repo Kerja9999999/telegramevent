@@ -132,7 +132,7 @@ app.get("/test/boris", async (req, res) => {
     device: "BOX 1",
     location: "ALB Wash",
     order: "TEST",
-    time: new Date().toLocaleString(),
+    time: new Date().toISOString(),
   };
 
   lastAutomationEvent = test;
@@ -175,7 +175,7 @@ app.get("/test/wash", async (req, res) => {
         device: "BOX 2",
         location: "ALB Wash",
         order: "TEST-" + Date.now(),
-        time: new Date().toLocaleString()
+        time: new Date().toISOString()
     };
 
     lastAutomationEvent = wash;
@@ -230,7 +230,7 @@ app.get("/test/coin", async (req, res) => {
         device: "BOX 2",
         location: "ALB Wash",
         order: "COIN-" + Date.now(),
-        time: new Date().toLocaleString()
+        time: new Date().toISOString()
     };
 
     lastAutomationEvent = wash;
