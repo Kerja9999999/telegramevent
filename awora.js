@@ -1,3 +1,4 @@
+const activeOrders = new Map();
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
@@ -150,6 +151,32 @@ async function checkOrders(sendTelegram) {
     newOrders.reverse();
 
     for (const order of newOrders) {
+        const phone = order.user?.phone;
+
+if (phone) {
+
+    const users = loadUsers();
+
+    if (!users[phone]) {
+
+        users[phone] = {
+            phone,
+            name: "",
+            color: "off",
+            music: "",
+            relay1: false,
+            relay2: false
+        };
+
+        saveUsers(users);
+
+        console.log("New user:", phone);
+
+    }
+
+    await applyUserProfile(phone);
+
+}
 
       let amount = "";
       let water = 0;
