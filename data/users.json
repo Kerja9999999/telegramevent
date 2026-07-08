@@ -15,6 +15,14 @@
     "relay2": false,
     "vip": false
   },
+  "29623317": {
+    "phone": "29623317",
+    "music": "Track 2",
+    "color": "green",
+    "relay1": true,
+    "relay2": true,
+    "vip": false
+  },
   "123456789": {
     "phone": "123456789",
     "music": "Track 1",
