@@ -10,7 +10,7 @@
   "26245562": {
     "phone": "26245562",
     "music": "Track 1",
-    "color": "green",
+    "color": "red",
     "relay1": false,
     "relay2": false,
     "vip": false
@@ -22,13 +22,5 @@
     "relay1": true,
     "relay2": true,
     "vip": true
-  },
-  "282828282": {
-    "phone": "282828282",
-    "music": "",
-    "color": "off",
-    "relay1": false,
-    "relay2": false,
-    "vip": false
   }
 }
