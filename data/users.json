@@ -22,5 +22,13 @@
     "relay1": true,
     "relay2": true,
     "vip": true
+  },
+  "282828282": {
+    "phone": "282828282",
+    "music": "",
+    "color": "off",
+    "relay1": false,
+    "relay2": false,
+    "vip": false
   }
 }
