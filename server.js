@@ -9,7 +9,28 @@ const USERS_FILE = path.join(__dirname, "data", "users.json");
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
+function isAdmin(req){
 
+    const auth = req.headers.authorization || "";
+
+    return auth === "Bearer " + process.env.ADMIN_TOKEN;
+
+}
+
+function requireAdmin(req,res,next){
+
+    if(!isAdmin(req)){
+
+        return res.status(401).json({
+            ok:false,
+            message:"Unauthorized"
+        });
+
+    }
+
+    next();
+
+}
 function isAdmin(req) {
     return req.headers.authorization === "Bearer " + process.env.ADMIN_TOKEN;
 }
@@ -424,9 +445,9 @@ app.get("/automation/command", (req, res) => {
 });
 // ---------- USERS ----------
 
-// получить всех пользователей
+// получить admin polzovatel
 
-app.get("/api/users", (req, res) => {
+app.get("/api/users", requireAdmin, (req, res) => {
 
     res.json(loadUsers());
 
@@ -435,7 +456,7 @@ app.get("/api/users", (req, res) => {
 
 // сохранить пользователя
 
-app.post("/api/users", express.json(), (req, res) => {
+app.post("/api/users", requireAdmin, (req, res) => {
 
     const users = loadUsers();
 
@@ -448,7 +469,7 @@ app.post("/api/users", express.json(), (req, res) => {
     });
 
 });
-app.delete("/api/users/:phone", (req, res) => {
+app.delete("/api/users/:phone", requireAdmin, (req,res)=>{
 
     const users = loadUsers();
     const phone = decodeURIComponent(req.params.phone);
@@ -470,7 +491,7 @@ app.delete("/api/users/:phone", (req, res) => {
     });
 
 });
-app.post("/api/control", express.json(), (req, res) => {
+app.post("/api/control", requireAdmin, (req, res) => {
 
     automationCommand = {
         ...automationCommand,
