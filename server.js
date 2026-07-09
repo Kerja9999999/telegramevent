@@ -69,12 +69,6 @@ app.get("/control", (req, res) => {
 });
 app.get("/users", protect, (req, res) => {
 
-    const auth = req.headers.authorization || "";
-
-    if(auth !== "Bearer " + process.env.ADMIN_TOKEN){
-        return res.redirect("/login.html");
-    }
-
     res.sendFile(
         path.join(__dirname, "public", "users.html")
     );
