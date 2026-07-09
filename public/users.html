@@ -262,11 +262,15 @@ async function deleteUser(phone){
     if(!confirm("Удалить пользователя "+phone+" ?"))
         return;
 
-    const r=await fetch("/api/users/"+encodeURIComponent(phone),{
+const r=await fetch("/api/users/"+encodeURIComponent(phone),{
 
-        method:"DELETE"
+    method:"DELETE",
 
-    });
+    headers:{
+        "Authorization":"Bearer "+localStorage.getItem("adminToken")
+    }
+
+});
 
     const d=await r.json();
 
