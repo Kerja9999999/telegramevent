@@ -9,6 +9,33 @@ const USERS_FILE = path.join(__dirname, "data", "users.json");
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
+
+// ---------- ADMIN LOGIN ----------
+
+function protect(req, res, next) {
+
+    const auth = req.headers.authorization;
+
+    if (!auth) {
+        res.setHeader("WWW-Authenticate", 'Basic realm="ALB Admin"');
+        return res.status(401).send("Authorization required");
+    }
+
+    const encoded = auth.split(" ")[1];
+    const decoded = Buffer.from(encoded, "base64").toString("utf8");
+
+    const [login, password] = decoded.split(":");
+
+    if (
+        login === process.env.ADMIN_LOGIN &&
+        password === process.env.ADMIN_PASSWORD
+    ) {
+        return next();
+    }
+
+    res.setHeader("WWW-Authenticate", 'Basic realm="ALB Admin"');
+    return res.status(401).send("Wrong login or password");
+}
 function isAdmin(req){
 
     const auth = req.headers.authorization || "";
@@ -40,7 +67,7 @@ let checkingOrders = false;
 app.get("/control", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "control.html"));
 });
-app.get("/users", (req, res) => {
+app.get("/users", protect, (req, res) => {
 
     const auth = req.headers.authorization || "";
 
@@ -449,7 +476,7 @@ app.get("/automation/command", (req, res) => {
 
 // получить admin polzovatel
 
-app.get("/api/users", requireAdmin, (req, res) => {
+app.get("/api/users", protect, (req, res) => {
 
     res.json(loadUsers());
 
@@ -458,7 +485,7 @@ app.get("/api/users", requireAdmin, (req, res) => {
 
 // сохранить пользователя
 
-app.post("/api/users", requireAdmin, (req, res) => {
+app.post("/api/users", protect, (req, res) => {
 
     const users = loadUsers();
 
@@ -471,7 +498,7 @@ app.post("/api/users", requireAdmin, (req, res) => {
     });
 
 });
-app.delete("/api/users/:phone", requireAdmin, (req,res)=>{
+app.delete("/api/users/:phone", protect, (req, res) => {
 
     const users = loadUsers();
     const phone = decodeURIComponent(req.params.phone);
@@ -493,7 +520,7 @@ app.delete("/api/users/:phone", requireAdmin, (req,res)=>{
     });
 
 });
-app.post("/api/control", requireAdmin, (req, res) => {
+app.post("/api/control", protect, (req, res) => {
 
     automationCommand = {
         ...automationCommand,
