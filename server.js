@@ -64,8 +64,8 @@ function isAdmin(req) {
 let lastTestTime = 0;
 let checkingOrders = false;
 
-app.get("/control", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "control.html"));
+app.get("/control", protect, (req, res) => {
+    res.sendFile(path.join(__dirname,"public","control.html"));
 });
 app.get("/users", protect, (req, res) => {
 
