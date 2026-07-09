@@ -28,7 +28,10 @@ function saveUsers(users) {
         USERS_FILE,
         JSON.stringify(users, null, 2)
     );
-    async function applyUserProfile(phone) {
+
+}
+
+async function applyUserProfile(phone) {
 
     if (!phone) return;
 
@@ -67,8 +70,6 @@ function saveUsers(users) {
         );
 
     }
-
-}
 
 }
 async function getDetail(orderSn) {
