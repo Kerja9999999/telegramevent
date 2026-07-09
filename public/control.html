@@ -20,7 +20,48 @@ button{width:180px;height:55px;border:none;border-radius:10px;margin:8px;font-si
 </style>
 </head>
 <body>
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:#1c2633;
+padding:15px;
+margin-bottom:20px;
+border-radius:10px;
+">
 
+<div style="font-size:24px;font-weight:bold;">
+🎛 CONTROL PANEL
+</div>
+
+<div>
+
+<button onclick="location.href='/users'"
+style="
+background:#28a745;
+color:white;
+padding:10px 20px;
+border:none;
+border-radius:8px;
+margin-right:10px;
+">
+👥 Users
+</button>
+
+<button onclick="logout()"
+style="
+background:#d63031;
+color:white;
+padding:10px 20px;
+border:none;
+border-radius:8px;
+">
+🚪 Logout
+</button>
+
+</div>
+
+</div>
 <h1>🚿 ALB CARWASH CONTROL</h1>
 
 <div class="card">
@@ -146,6 +187,22 @@ async function loadStatus(){
 }
 loadStatus();
 setInterval(loadStatus,2000);
+ function logout(){
+
+    if(!confirm("Выйти из админки?"))
+        return;
+
+    fetch("/users",{
+        headers:{
+            Authorization:"Basic logout:logout"
+        }
+    }).finally(()=>{
+
+        location.href="/users";
+
+    });
+
+}
 </script>
 
 </body>
