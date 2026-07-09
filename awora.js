@@ -152,6 +152,10 @@ async function checkOrders(sendTelegram) {
     newOrders.reverse();
 
     for (const order of newOrders) {
+
+      if (order.event !== "order_close") {
+        continue;
+      }
         const phone = order.user?.phone;
 
 if (phone) {
@@ -204,10 +208,6 @@ users[phone] = {
       let coat = 0;
 
 try {
-    console.log("Waiting 10 minutes before reading order details...");
-
-    await new Promise(r => setTimeout(r, 600000)); // 10 минут
-
     const detail = await getDetail(order.order_sn);
         const info = detail.body.data.order_info;
 
