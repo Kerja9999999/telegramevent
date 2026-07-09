@@ -73,32 +73,27 @@ Login
 
 async function doLogin(){
 
-    const r=await fetch("/login",{
-
+    const r = await fetch("/login",{
         method:"POST",
-
         headers:{
             "Content-Type":"application/json"
         },
-
         body:JSON.stringify({
-
             login:login.value,
             password:password.value
-
         })
-
     });
 
-    if(r.ok){
-
-        location="/users";
-
-    }else{
-
+    if(!r.ok){
         error.innerText="Неверный логин или пароль";
-
+        return;
     }
+
+    const data = await r.json();
+
+    localStorage.setItem("adminToken", data.token);
+
+    location="/users";
 
 }
 
