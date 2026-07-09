@@ -69,30 +69,43 @@ button{
 
     <h1 style="margin:0;">🚿 ALB USERS MANAGER</h1>
 
-    <div>
+<div>
 
-        <span id="adminStatus"
-        style="
-            color:#00ff66;
-            font-weight:bold;
-            margin-right:20px;
-        ">
-            🟢 Administrator
-        </span>
+    <span id="adminStatus"
+    style="
+        color:#00ff66;
+        font-weight:bold;
+        margin-right:20px;
+    ">
+        🟢 Administrator
+    </span>
 
-        <button onclick="logout()"
-        style="
-            background:#d63031;
-            color:white;
-            border:none;
-            padding:10px 20px;
-            border-radius:8px;
-            font-weight:bold;
-        ">
-            🚪 Logout
-        </button>
+    <button onclick="openControl()"
+    style="
+        background:#007bff;
+        color:white;
+        border:none;
+        padding:10px 20px;
+        border-radius:8px;
+        margin-right:10px;
+        font-weight:bold;
+    ">
+        🎛 Control Panel
+    </button>
 
-    </div>
+    <button onclick="logout()"
+    style="
+        background:#d63031;
+        color:white;
+        border:none;
+        padding:10px 20px;
+        border-radius:8px;
+        font-weight:bold;
+    ">
+        🚪 Logout
+    </button>
+
+</div>
 
 </div>
 
@@ -304,6 +317,11 @@ async function saveUser(){
 }
 
 loadUsers();
+    function openControl(){
+
+    window.location="/control";
+
+}
 function logout(){
 
     if(!confirm("Выйти из админки?"))
