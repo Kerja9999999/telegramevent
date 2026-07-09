@@ -22,13 +22,5 @@
     "relay1": true,
     "relay2": true,
     "vip": false
-  },
-  "123456789": {
-    "phone": "123456789",
-    "music": "Track 1",
-    "color": "green",
-    "relay1": true,
-    "relay2": true,
-    "vip": true
   }
 }
