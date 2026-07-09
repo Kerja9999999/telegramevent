@@ -134,82 +134,86 @@ VIP
 
 <script>
 
-let selectedColor="off";
+let selectedColor = "off";
 
 function setColor(color){
-
-    selectedColor=color;
-    currentColor.textContent=color;
-
+    selectedColor = color;
+    currentColor.textContent = color;
 }
-    async function loadUsers(){
 
-    const token = localStorage.getItem("adminToken");
-
-    if(!token){
-        location="/login.html";
-        return;
-    }
+async function loadUsers(){
 
     try{
 
-const r = await fetch("/api/users",{
-    headers:{
-        Authorization:"Bearer "+token
-    }
-});
+        const r = await fetch("/api/users");
 
-if(r.status===401){
-    localStorage.removeItem("adminToken");
-    location="/login.html";
-    return;
-}
-
+        if(!r.ok){
+            alert("Ошибка загрузки пользователей");
+            return;
+        }
 
         const d = await r.json();
 
-        users.innerHTML="";
+        users.innerHTML = "";
 
         const arr = d.users ? d.users : Object.values(d);
 
-        if(arr.length===0){
-            users.innerHTML="Нет пользователей";
+        if(arr.length === 0){
+            users.innerHTML = "Нет пользователей";
             return;
         }
 
         arr.forEach(u=>{
 
-            const row=document.createElement("div");
-            row.className="userRow";
+            const row = document.createElement("div");
+            row.className = "userRow";
 
-            const phoneDiv=document.createElement("div");
-            phoneDiv.className="userPhone";
+            const phoneDiv = document.createElement("div");
+            phoneDiv.className = "userPhone";
 
-            phoneDiv.innerHTML=
-                "📞 "+u.phone+
+            phoneDiv.innerHTML =
+                "📞 " + u.phone +
                 (u.name ? "<br><small>"+u.name+"</small>" : "");
 
-            phoneDiv.onclick=()=>{
+            phoneDiv.onclick = ()=>{
 
-                name.value=u.name||"";
-                phone.value=u.phone||"";
-                music.value=u.music||"";
-                relay1.checked=!!u.relay1;
-                relay2.checked=!!u.relay2;
-                vip.checked=!!u.vip;
+                name.value = u.name || "";
+                phone.value = u.phone || "";
+                music.value = u.music || "";
 
-                selectedColor=u.color||"off";
-                currentColor.textContent=selectedColor;
+                relay1.checked = !!u.relay1;
+                relay2.checked = !!u.relay2;
+                vip.checked = !!u.vip;
+
+                selectedColor = u.color || "off";
+                currentColor.textContent = selectedColor;
 
             };
 
-            const del=document.createElement("button");
-            del.className="deleteBtn";
-            del.innerHTML="🗑";
+            const del = document.createElement("button");
 
-            del.onclick=(e)=>{
+            del.className = "deleteBtn";
+            del.innerHTML = "🗑";
+
+            del.onclick = async(e)=>{
+
                 e.stopPropagation();
-                deleteUser(u.phone);
+
+                if(!confirm("Удалить пользователя?"))
+                    return;
+
+                const r = await fetch("/api/users/" + encodeURIComponent(u.phone),{
+                    method:"DELETE"
+                });
+
+                const ans = await r.json();
+
+                if(ans.ok){
+                    loadUsers();
+                }else{
+                    alert(ans.message || "Ошибка");
+                }
+
             };
 
             row.appendChild(phoneDiv);
@@ -219,77 +223,51 @@ if(r.status===401){
 
         });
 
-    }catch(e){
+    }catch(err){
 
-        console.error(e);
-        users.innerHTML="Ошибка загрузки";
+        console.error(err);
+
+        users.innerHTML = "Ошибка";
 
     }
 
 }
-
-
-
 
 async function saveUser(){
 
-    const body={
+    const body = {
 
-        phone:phone.value,
-        name:name.value,
-        music:music.value,
-        color:selectedColor,
-        relay1:relay1.checked,
-        relay2:relay2.checked,
-        vip:vip.checked
+        phone: phone.value,
+        name: name.value,
+        music: music.value,
+        color: selectedColor,
+        relay1: relay1.checked,
+        relay2: relay2.checked,
+        vip: vip.checked
 
     };
 
-await fetch("/api/users",{
+    const r = await fetch("/api/users",{
 
-    method:"POST",
+        method:"POST",
 
-    headers:{
-        "Content-Type":"application/json",
-        "Authorization":"Bearer "+localStorage.getItem("adminToken")
-    },
+        headers:{
+            "Content-Type":"application/json"
+        },
 
-    body:JSON.stringify(body)
+        body:JSON.stringify(body)
 
-});
+    });
 
-    alert("Saved");
+    if(r.ok){
 
-    loadUsers();
-
-}
-
-async function deleteUser(phone){
-
-    if(!confirm("Удалить пользователя "+phone+" ?"))
-        return;
-
-const r=await fetch("/api/users/"+encodeURIComponent(phone),{
-
-    method:"DELETE",
-
-    headers:{
-        "Authorization":"Bearer "+localStorage.getItem("adminToken")
-    }
-
-});
-
-    const d=await r.json();
-
-    if(d.ok){
-
-        alert("Пользователь удалён");
+        alert("Saved");
 
         loadUsers();
 
     }else{
 
-        alert(d.message||"Ошибка");
+        alert("Ошибка сохранения");
 
     }
 
