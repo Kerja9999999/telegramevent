@@ -8,6 +8,11 @@ const app = express();
 const USERS_FILE = path.join(__dirname, "data", "users.json");
 
 app.use(express.static(path.join(__dirname, "public")));
+app.use(express.json());
+
+function isAdmin(req) {
+    return req.headers.authorization === "Bearer " + process.env.ADMIN_TOKEN;
+}
 let lastTestTime = 0;
 let checkingOrders = false;
 
