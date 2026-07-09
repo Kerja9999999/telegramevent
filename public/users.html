@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -303,7 +304,24 @@ async function saveUser(){
 }
 
 loadUsers();
+function logout(){
 
+    if(!confirm("Выйти из админки?"))
+        return;
+
+    fetch("/users",{
+        headers:{
+            Authorization:"Basic logout:logout"
+        }
+    }).finally(()=>{
+
+        alert("Закройте браузер или вкладку, чтобы полностью выйти из Basic Auth.");
+
+        location.reload();
+
+    });
+
+}
 </script>
 
 </body>
