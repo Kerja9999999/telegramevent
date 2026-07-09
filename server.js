@@ -437,6 +437,28 @@ app.post("/api/users", express.json(), (req, res) => {
     });
 
 });
+app.delete("/api/users/:phone", (req, res) => {
+
+    const users = loadUsers();
+    const phone = decodeURIComponent(req.params.phone);
+
+    if (!users[phone]) {
+        return res.status(404).json({
+            ok: false,
+            message: "User not found"
+        });
+    }
+
+    delete users[phone];
+
+    saveUsers(users);
+
+    res.json({
+        ok: true,
+        message: "User deleted"
+    });
+
+});
 app.post("/api/control", express.json(), (req, res) => {
 
     automationCommand = {
