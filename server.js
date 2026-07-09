@@ -42,7 +42,9 @@ app.get("/control", (req, res) => {
 });
 app.get("/users", (req, res) => {
 
-    if (!isAdmin(req)) {
+    const auth = req.headers.authorization || "";
+
+    if(auth !== "Bearer " + process.env.ADMIN_TOKEN){
         return res.redirect("/login.html");
     }
 
@@ -533,6 +535,30 @@ app.post("/login", (req, res) => {
 
     res.status(401).json({
         error: "Invalid login"
+    });
+
+});
+// ---------- LOGIN ----------
+
+app.post("/login", (req, res) => {
+
+    const { login, password } = req.body;
+
+    if (
+        login === process.env.ADMIN_LOGIN &&
+        password === process.env.ADMIN_PASSWORD
+    ) {
+
+        return res.json({
+            ok: true,
+            token: process.env.ADMIN_TOKEN
+        });
+
+    }
+
+    res.status(401).json({
+        ok: false,
+        message: "Wrong login or password"
     });
 
 });
