@@ -15,6 +15,14 @@
     "relay2": false,
     "vip": false
   },
+  "27004681": {
+    "phone": "27004681",
+    "music": "Track 1",
+    "color": "green",
+    "relay1": true,
+    "relay2": true,
+    "vip": true
+  },
   "29623317": {
     "phone": "29623317",
     "music": "Track 2",
