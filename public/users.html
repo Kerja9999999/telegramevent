@@ -144,7 +144,12 @@ function setColor(color){
 }
 
 async function loadUsers(){
+const token = localStorage.getItem("adminToken");
 
+if(!token){
+    location="/login.html";
+    return;
+}
     try{
 
         const r=await fetch("/api/users");
