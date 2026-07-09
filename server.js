@@ -495,7 +495,26 @@ app.post("/automation/event", express.json(), (req, res) => {
 
   res.json({ ok: true });
 });
+app.post("/login", (req, res) => {
 
+    const { login, password } = req.body;
+
+    if (
+        login === process.env.ADMIN_LOGIN &&
+        password === process.env.ADMIN_PASSWORD
+    ) {
+
+        return res.json({
+            token: process.env.ADMIN_TOKEN
+        });
+
+    }
+
+    res.status(401).json({
+        error: "Invalid login"
+    });
+
+});
 app.listen(process.env.PORT || 3000, () => {
   console.log("Server started");
 });
