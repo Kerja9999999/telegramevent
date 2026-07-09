@@ -153,9 +153,7 @@ async function checkOrders(sendTelegram) {
 
     for (const order of newOrders) {
 
-      if (order.event !== "order_close") {
-        continue;
-      }
+
         const phone = order.user?.phone;
 
 if (phone) {
@@ -210,6 +208,11 @@ users[phone] = {
 try {
     const detail = await getDetail(order.order_sn);
         const info = detail.body.data.order_info;
+
+        if (info.operation_remain_time !== 0 || info.idle_remain_time !== 0) {
+          console.log("Order not finished:", order.order_sn);
+          continue;
+        }
 
         const programs = info.detail || [];
 
