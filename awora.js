@@ -251,18 +251,12 @@ try {
 let music = "OFF";
 let light = "OFF";
 
-try {
+const profile = loadUsers()[order.user?.phone];
 
-    const control = await axios.get(
-        "https://telegramevent.onrender.com/automation/command"
-    );
+if (profile) {
 
-    music = control.data.music ? "ON" : "OFF";
-    light = control.data.color || "OFF";
-
-} catch (e) {
-
-    console.log("Cannot read automation status");
+    music = profile.music || "OFF";
+    light = profile.color || "OFF";
 
 }
       const msg = `🚿 НОВЫЙ ЗАКАЗ
