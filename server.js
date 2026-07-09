@@ -20,9 +20,15 @@ app.get("/control", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "control.html"));
 });
 app.get("/users", (req, res) => {
+
+    if (!isAdmin(req)) {
+        return res.redirect("/login.html");
+    }
+
     res.sendFile(
         path.join(__dirname, "public", "users.html")
     );
+
 });
 //----------color change---------
 app.post("/api/color/:color", express.json(), (req, res) => {
