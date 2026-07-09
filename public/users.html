@@ -142,28 +142,32 @@ function setColor(color){
     currentColor.textContent=color;
 
 }
+    async function loadUsers(){
 
-async function loadUsers(){
-const token = localStorage.getItem("adminToken");
+    const token = localStorage.getItem("adminToken");
 
-if(!token){
-    location="/login.html";
-    return;
-}
+    if(!token){
+        location="/login.html";
+        return;
+    }
+
     try{
 
-        const r=await fetch("/api/users");
-        const d=await r.json();
+        const r = await fetch("/api/users",{
+            headers:{
+                Authorization:"Bearer "+token
+            }
+        });
+
+        const d = await r.json();
 
         users.innerHTML="";
 
-        const arr=d.users?d.users:Object.values(d);
+        const arr = d.users ? d.users : Object.values(d);
 
         if(arr.length===0){
-
             users.innerHTML="Нет пользователей";
             return;
-
         }
 
         arr.forEach(u=>{
@@ -175,8 +179,8 @@ if(!token){
             phoneDiv.className="userPhone";
 
             phoneDiv.innerHTML=
-            "📞 "+u.phone+
-            (u.name ? "<br><small>"+u.name+"</small>" : "");
+                "📞 "+u.phone+
+                (u.name ? "<br><small>"+u.name+"</small>" : "");
 
             phoneDiv.onclick=()=>{
 
@@ -193,16 +197,12 @@ if(!token){
             };
 
             const del=document.createElement("button");
-
             del.className="deleteBtn";
             del.innerHTML="🗑";
 
             del.onclick=(e)=>{
-
                 e.stopPropagation();
-
                 deleteUser(u.phone);
-
             };
 
             row.appendChild(phoneDiv);
@@ -215,12 +215,14 @@ if(!token){
     }catch(e){
 
         console.error(e);
-
         users.innerHTML="Ошибка загрузки";
 
     }
 
 }
+
+
+
 
 async function saveUser(){
 
@@ -237,7 +239,9 @@ async function saveUser(){
     };
 
     await fetch("/api/users",{
-
+headers:{
+    Authorization:"Bearer "+localStorage.getItem("adminToken")
+}
         method:"POST",
 
         headers:{
