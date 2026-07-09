@@ -207,7 +207,12 @@ users[phone] = {
 
 try {
     const detail = await getDetail(order.order_sn);
-        const info = detail.body.data.order_info;
+        const info = detail?.body?.data?.order_info;
+
+        if (!info) {
+          console.log("Order detail not ready:", order.order_sn);
+          continue;
+        }
 
         if (info.operation_remain_time !== 0 || info.idle_remain_time !== 0) {
           console.log("Order not finished:", order.order_sn);
