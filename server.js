@@ -463,8 +463,31 @@ app.get("/automation/status", (req, res) => {
   res.json(lastAutomationEvent || {});
 });
 
+const CURRENT_FILE = path.join(__dirname, "data", "currentProfile.json");
+
 app.get("/automation/command", (req, res) => {
-  res.json(automationCommand);
+
+    try {
+
+        const profile = JSON.parse(
+            fs.readFileSync(CURRENT_FILE, "utf8")
+        );
+
+        res.json(profile);
+
+    } catch {
+
+        res.json({
+            phone: "",
+            music: "",
+            color: "off",
+            relay1: false,
+            relay2: false,
+            vip: false
+        });
+
+    }
+
 });
 // ---------- USERS ----------
 
