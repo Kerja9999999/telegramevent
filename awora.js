@@ -159,7 +159,7 @@ async function checkOrders(sendTelegram) {
 if (phone) {
 
     const users = loadUsers();
-
+const CURRENT_FILE = path.join(__dirname, "data", "currentProfile.json");
     if (!users[phone]) {
 
 users[phone] = {
@@ -196,7 +196,18 @@ users[phone] = {
 
     }
 
-    await applyUserProfile(phone);
+const profile = users[phone];
+
+if (profile) {
+
+    fs.writeFileSync(
+        CURRENT_FILE,
+        JSON.stringify(profile, null, 2)
+    );
+
+    console.log("Current profile:", phone);
+
+}
 
 }
 
