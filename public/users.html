@@ -317,8 +317,9 @@ async function loadUsers(){
                 relay2.checked = !!u.relay2;
                 vip.checked = !!u.vip;
 
-                selectedColor = u.color || "off";
-                currentColor.textContent = selectedColor;
+selectedColor = u.color || "off";
+colorSelect.value = selectedColor;
+currentColor.textContent = selectedColor;
 
             };
 
