@@ -137,14 +137,101 @@ button{
 <option>Track 2</option>
 </select>
 
-<p>
-Цвет:
-<span id="currentColor">off</span>
-</p>
+<label><b>💡 Light / Effect</b></label>
 
-<button onclick="setColor('blue')">🔵 Blue</button>
-<button onclick="setColor('red')">🔴 Red</button>
-<button onclick="setColor('green')">🟢 Green</button>
+<select id="colorSelect" onchange="setColor(this.value)">
+
+<optgroup label="Solid Colors">
+
+<option value="off">⚫ OFF</option>
+
+<option value="white">⚪ White</option>
+<option value="warmwhite">🤍 Warm White</option>
+
+<option value="red">🔴 Red</option>
+<option value="darkred">🟥 Dark Red</option>
+<option value="crimson">❤️ Crimson</option>
+
+<option value="green">🟢 Green</option>
+<option value="lime">💚 Lime</option>
+<option value="emerald">🟩 Emerald</option>
+
+<option value="blue">🔵 Blue</option>
+<option value="navy">🌌 Navy</option>
+<option value="sky">🩵 Sky</option>
+
+<option value="yellow">🟡 Yellow</option>
+<option value="gold">👑 Gold</option>
+<option value="amber">🟨 Amber</option>
+
+<option value="orange">🟠 Orange</option>
+<option value="coral">🪸 Coral</option>
+<option value="peach">🍑 Peach</option>
+
+<option value="purple">🟣 Purple</option>
+<option value="violet">💜 Violet</option>
+<option value="magenta">🩷 Magenta</option>
+
+<option value="pink">🌸 Pink</option>
+<option value="rose">🌹 Rose</option>
+<option value="hotpink">💖 Hot Pink</option>
+
+<option value="cyan">🩵 Cyan</option>
+<option value="turquoise">🦋 Turquoise</option>
+<option value="aqua">💧 Aqua</option>
+
+</optgroup>
+
+<optgroup label="Effects">
+
+<option value="rainbow">🌈 Rainbow</option>
+<option value="rainbow_slow">🌈 Rainbow Slow</option>
+<option value="rainbow_fast">⚡ Rainbow Fast</option>
+
+<option value="fire">🔥 Fire</option>
+<option value="lava">🌋 Lava</option>
+<option value="sunset">🌅 Sunset</option>
+
+<option value="water">💧 Water</option>
+<option value="ocean">🌊 Ocean</option>
+<option value="wave">🌊 Wave</option>
+
+<option value="forest">🌲 Forest</option>
+<option value="matrix">🟩 Matrix</option>
+<option value="aurora">🌌 Aurora</option>
+
+<option value="sparkle">✨ Sparkle</option>
+<option value="twinkle">⭐ Twinkle</option>
+<option value="glitter">💎 Glitter</option>
+
+<option value="meteor">☄️ Meteor</option>
+<option value="comet">🌠 Comet</option>
+<option value="scanner">📡 Scanner</option>
+
+<option value="police">🚓 Police</option>
+<option value="ambulance">🚑 Ambulance</option>
+<option value="firetruck">🚒 Fire Truck</option>
+
+<option value="party">🎉 Party</option>
+<option value="disco">🪩 Disco</option>
+<option value="strobe">⚡ Strobe</option>
+
+<option value="breathing_blue">💙 Breathing Blue</option>
+<option value="breathing_green">💚 Breathing Green</option>
+<option value="breathing_red">❤️ Breathing Red</option>
+
+<option value="christmas">🎄 Christmas</option>
+<option value="vip">👑 VIP Gold</option>
+<option value="random">🎲 Random</option>
+
+</optgroup>
+
+</select>
+
+<p>
+Current:
+<b id="currentColor">off</b>
+</p>
 
 <br>
 
