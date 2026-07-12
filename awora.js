@@ -127,57 +127,34 @@ async function checkOrders(sendTelegram) {
 
 
         const phone = order.user?.phone;
-
+let profile = null;
+const CURRENT_FILE = path.join(__dirname, "data", "currentProfile.json");
 if (phone) {
 
-    const users = loadUsers();
-const CURRENT_FILE = path.join(__dirname, "data", "currentProfile.json");
-    if (!users[phone]) {
+    profile = await getUser(phone);
 
-users[phone] = {
+if (!profile) {
 
-    phone,
+    profile = {
 
-    name: "",
+        phone,
+        name: "",
+        color: "off",
+        music: "",
+        relay1: false,
+        relay2: false,
+        vip: false,
+        enabled: true,
+        created: new Date().toISOString(),
+        lastWash: null,
+        washCount: 0,
+        totalSpent: 0
 
-    color: "off",
+    };
 
-    music: "",
+    await saveUser(profile);
 
-    relay1: false,
-
-    relay2: false,
-
-    vip: false,
-
-    enabled: true,
-
-    created: new Date().toISOString(),
-
-    lastWash: null,
-
-    washCount: 0,
-
-    totalSpent: 0
-
-};
-
-        saveUsers(users);
-
-        console.log("New user:", phone);
-
-    }
-
-const profile = users[phone];
-
-if (profile) {
-
-    fs.writeFileSync(
-        CURRENT_FILE,
-        JSON.stringify(profile, null, 2)
-    );
-
-    console.log("Current profile:", phone);
+    console.log("New user:", phone);
 
 }
 
@@ -242,7 +219,6 @@ try {
 let music = "OFF";
 let light = "OFF";
 
-const profile = loadUsers()[order.user?.phone];
 
 if (profile) {
 
