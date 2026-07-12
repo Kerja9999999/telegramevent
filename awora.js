@@ -2,42 +2,14 @@ const activeOrders = new Map();
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
-const USERS_FILE = path.join(__dirname, "data", "users.json");
 const API = "https://en.awoara.com.cn/mer/store/order/smart_order/lst";
 const FILE = "./lastOrder.json";
-
-function loadUsers() {
-
-    try {
-
-        return JSON.parse(
-            fs.readFileSync(USERS_FILE, "utf8")
-        );
-
-    } catch {
-
-        return {};
-
-    }
-
-}
-
-function saveUsers(users) {
-
-    fs.writeFileSync(
-        USERS_FILE,
-        JSON.stringify(users, null, 2)
-    );
-
-}
 
 async function applyUserProfile(phone) {
 
     if (!phone) return;
 
-    const users = loadUsers();
-
-    const profile = users[phone];
+    const profile = await getUser(phone);
 
     if (!profile) {
         console.log("Profile not found:", phone);
