@@ -4,7 +4,6 @@ const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 const checkOrders = require("./awora");
-const db = require("./db");
 const app = express();
 const USERS_FILE = path.join(__dirname, "data", "users.json");
 
