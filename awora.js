@@ -4,7 +4,10 @@ const fs = require("fs");
 const path = require("path");
 const API = "https://en.awoara.com.cn/mer/store/order/smart_order/lst";
 const FILE = "./lastOrder.json";
-
+const {
+    getSetting,
+    setSetting
+} = require("./database/settings");
 async function applyUserProfile(phone) {
 
     if (!phone) return;
@@ -60,16 +63,18 @@ async function getDetail(orderSn) {
 
 let lastOrder = "";
 
-if (fs.existsSync(FILE)) {
-  try {
-    lastOrder = JSON.parse(fs.readFileSync(FILE)).order || "";
-  } catch {
-    lastOrder = "";
-  }
+async function loadLastOrder() {
+
+    lastOrder = await getSetting("lastOrder");
+
+    if (!lastOrder)
+        lastOrder = "";
+
 }
 
 async function checkOrders(sendTelegram) {
   try {
+      await loadLastOrder();
     const res = await axios.get(API, {
       headers: {
         "X-Token": process.env.AWORA_TOKEN,
@@ -107,7 +112,7 @@ async function checkOrders(sendTelegram) {
 
     if (!lastOrder) {
       lastOrder = list[0].order_sn;
-      fs.writeFileSync(FILE, JSON.stringify({ order: lastOrder }));
+      await setSetting("lastOrder", lastOrder);
       console.log("Awora initialized:", lastOrder);
       return;
     }
@@ -294,7 +299,7 @@ setTimeout(() => {
 
 }, 30000);
       lastOrder = order.order_sn;
-      fs.writeFileSync(FILE, JSON.stringify({ order: lastOrder }));
+      await setSetting("lastOrder", lastOrder);
     }
 
   } catch (err) {
