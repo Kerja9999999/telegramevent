@@ -2,7 +2,10 @@ const activeOrders = new Map();
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
-const USERS_FILE = path.join(__dirname, "data", "users.json");
+const {
+    getUser,
+    saveUser
+} = require("./database/users");
 const API = "https://en.awoara.com.cn/mer/store/order/smart_order/lst";
 const FILE = "./lastOrder.json";
 
@@ -35,7 +38,7 @@ async function applyUserProfile(phone) {
 
     if (!phone) return;
 
-    const users = loadUsers();
+const profile = await getUser(order.user?.phone);
 
     const profile = users[phone];
 
@@ -158,56 +161,52 @@ async function checkOrders(sendTelegram) {
 
 if (phone) {
 
-    const users = loadUsers();
-const CURRENT_FILE = path.join(__dirname, "data", "currentProfile.json");
-    if (!users[phone]) {
+   const CURRENT_FILE = path.join(__dirname, "data", "currentProfile.json");
 
-users[phone] = {
+let profile = await getUser(phone);
 
-    phone,
+if (!profile) {
 
-    name: "",
+    profile = {
 
-    color: "off",
+        phone,
 
-    music: "",
+        name: "",
 
-    relay1: false,
+        color: "off",
 
-    relay2: false,
+        music: "",
 
-    vip: false,
+        relay1: false,
 
-    enabled: true,
+        relay2: false,
 
-    created: new Date().toISOString(),
+        vip: false,
 
-    lastWash: null,
+        enabled: true,
 
-    washCount: 0,
+        created: new Date().toISOString(),
 
-    totalSpent: 0
+        lastWash: null,
 
-};
+        washCount: 0,
 
-        saveUsers(users);
+        totalSpent: 0
 
-        console.log("New user:", phone);
+    };
 
-    }
+    await saveUser(profile);
 
-const profile = users[phone];
-
-if (profile) {
-
-    fs.writeFileSync(
-        CURRENT_FILE,
-        JSON.stringify(profile, null, 2)
-    );
-
-    console.log("Current profile:", phone);
+    console.log("New user:", phone);
 
 }
+
+fs.writeFileSync(
+    CURRENT_FILE,
+    JSON.stringify(profile, null, 2)
+);
+
+console.log("Current profile:", phone);
 
 }
 
