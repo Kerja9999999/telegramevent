@@ -2,10 +2,7 @@ const activeOrders = new Map();
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
-const {
-    getUser,
-    saveUser
-} = require("./database/users");
+const USERS_FILE = path.join(__dirname, "data", "users.json");
 const API = "https://en.awoara.com.cn/mer/store/order/smart_order/lst";
 const FILE = "./lastOrder.json";
 
@@ -38,7 +35,7 @@ async function applyUserProfile(phone) {
 
     if (!phone) return;
 
-const profile = await getUser(order.user?.phone);
+    const users = loadUsers();
 
     const profile = users[phone];
 
@@ -161,52 +158,56 @@ async function checkOrders(sendTelegram) {
 
 if (phone) {
 
-   const CURRENT_FILE = path.join(__dirname, "data", "currentProfile.json");
+    const users = loadUsers();
+const CURRENT_FILE = path.join(__dirname, "data", "currentProfile.json");
+    if (!users[phone]) {
 
-let profile = await getUser(phone);
+users[phone] = {
 
-if (!profile) {
+    phone,
 
-    profile = {
+    name: "",
 
-        phone,
+    color: "off",
 
-        name: "",
+    music: "",
 
-        color: "off",
+    relay1: false,
 
-        music: "",
+    relay2: false,
 
-        relay1: false,
+    vip: false,
 
-        relay2: false,
+    enabled: true,
 
-        vip: false,
+    created: new Date().toISOString(),
 
-        enabled: true,
+    lastWash: null,
 
-        created: new Date().toISOString(),
+    washCount: 0,
 
-        lastWash: null,
+    totalSpent: 0
 
-        washCount: 0,
+};
 
-        totalSpent: 0
+        saveUsers(users);
 
-    };
+        console.log("New user:", phone);
 
-    await saveUser(profile);
+    }
 
-    console.log("New user:", phone);
+const profile = users[phone];
+
+if (profile) {
+
+    fs.writeFileSync(
+        CURRENT_FILE,
+        JSON.stringify(profile, null, 2)
+    );
+
+    console.log("Current profile:", phone);
 
 }
-
-fs.writeFileSync(
-    CURRENT_FILE,
-    JSON.stringify(profile, null, 2)
-);
-
-console.log("Current profile:", phone);
 
 }
 
@@ -269,6 +270,7 @@ try {
 let music = "OFF";
 let light = "OFF";
 
+const profile = loadUsers()[order.user?.phone];
 
 if (profile) {
 
