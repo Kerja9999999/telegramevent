@@ -498,50 +498,72 @@ app.get("/automation/command", (req, res) => {
 });
 // ---------- USERS ----------
 
-// получить admin polzovatel
+app.get("/api/users", protect, async (req, res) => {
 
-app.get("/api/users", protect, (req, res) => {
+    try {
 
-    res.json(loadUsers());
+        const users = await getAllUsers();
 
-});
+        res.json(users);
 
+    } catch (e) {
 
-// сохранить пользователя
+        console.error(e);
 
-app.post("/api/users", protect, (req, res) => {
-
-    const users = loadUsers();
-
-    users[req.body.phone] = req.body;
-
-    saveUsers(users);
-
-    res.json({
-        ok: true
-    });
-
-});
-app.delete("/api/users/:phone", protect, (req, res) => {
-
-    const users = loadUsers();
-    const phone = decodeURIComponent(req.params.phone);
-
-    if (!users[phone]) {
-        return res.status(404).json({
+        res.status(500).json({
             ok: false,
-            message: "User not found"
+            error: e.message
         });
+
     }
 
-    delete users[phone];
+});
 
-    saveUsers(users);
+app.post("/api/users", protect, async (req, res) => {
 
-    res.json({
-        ok: true,
-        message: "User deleted"
-    });
+    try {
+
+        await saveUser(req.body);
+
+        res.json({
+            ok: true
+        });
+
+    } catch (e) {
+
+        console.error(e);
+
+        res.status(500).json({
+            ok: false,
+            error: e.message
+        });
+
+    }
+
+});
+
+app.delete("/api/users/:phone", protect, async (req, res) => {
+
+    try {
+
+        const phone = decodeURIComponent(req.params.phone);
+
+        await deleteUser(phone);
+
+        res.json({
+            ok: true
+        });
+
+    } catch (e) {
+
+        console.error(e);
+
+        res.status(500).json({
+            ok: false,
+            error: e.message
+        });
+
+    }
 
 });
 app.post("/api/control", protect, (req, res) => {
