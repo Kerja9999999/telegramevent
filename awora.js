@@ -2,17 +2,42 @@ const activeOrders = new Map();
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
+const USERS_FILE = path.join(__dirname, "data", "users.json");
 const API = "https://en.awoara.com.cn/mer/store/order/smart_order/lst";
 const FILE = "./lastOrder.json";
-const {
-    getSetting,
-    setSetting
-} = require("./database/settings");
+
+function loadUsers() {
+
+    try {
+
+        return JSON.parse(
+            fs.readFileSync(USERS_FILE, "utf8")
+        );
+
+    } catch {
+
+        return {};
+
+    }
+
+}
+
+function saveUsers(users) {
+
+    fs.writeFileSync(
+        USERS_FILE,
+        JSON.stringify(users, null, 2)
+    );
+
+}
+
 async function applyUserProfile(phone) {
 
     if (!phone) return;
 
-    const profile = await getUser(phone);
+    const users = loadUsers();
+
+    const profile = users[phone];
 
     if (!profile) {
         console.log("Profile not found:", phone);
@@ -63,18 +88,16 @@ async function getDetail(orderSn) {
 
 let lastOrder = "";
 
-async function loadLastOrder() {
-
-    lastOrder = await getSetting("lastOrder");
-
-    if (!lastOrder)
-        lastOrder = "";
-
+if (fs.existsSync(FILE)) {
+  try {
+    lastOrder = JSON.parse(fs.readFileSync(FILE)).order || "";
+  } catch {
+    lastOrder = "";
+  }
 }
 
 async function checkOrders(sendTelegram) {
   try {
-      await loadLastOrder();
     const res = await axios.get(API, {
       headers: {
         "X-Token": process.env.AWORA_TOKEN,
@@ -112,7 +135,7 @@ async function checkOrders(sendTelegram) {
 
     if (!lastOrder) {
       lastOrder = list[0].order_sn;
-      await setSetting("lastOrder", lastOrder);
+      fs.writeFileSync(FILE, JSON.stringify({ order: lastOrder }));
       console.log("Awora initialized:", lastOrder);
       return;
     }
@@ -132,46 +155,57 @@ async function checkOrders(sendTelegram) {
 
 
         const phone = order.user?.phone;
-let profile = null;
-const CURRENT_FILE = path.join(__dirname, "data", "currentProfile.json");
+
 if (phone) {
 
-    profile = await getUser(phone);
+    const users = loadUsers();
+const CURRENT_FILE = path.join(__dirname, "data", "currentProfile.json");
+    if (!users[phone]) {
 
-if (!profile) {
+users[phone] = {
 
-    profile = {
+    phone,
 
-        phone,
-        name: "",
-        color: "off",
-        music: "",
-        relay1: false,
-        relay2: false,
-        vip: false,
-        enabled: true,
-        created: new Date().toISOString(),
-        lastWash: null,
-        washCount: 0,
-        totalSpent: 0
+    name: "",
 
-    };
+    color: "off",
 
-try {
+    music: "",
 
-    await saveUser(profile);
+    relay1: false,
 
-    console.log("✅ User saved:", phone);
+    relay2: false,
 
-} catch (e) {
+    vip: false,
 
-    console.error("❌ Save user error:", e);
+    enabled: true,
 
-}
+    created: new Date().toISOString(),
 
-const check = await getUser(phone);
+    lastWash: null,
 
-console.log("USER FROM DB:", check);
+    washCount: 0,
+
+    totalSpent: 0
+
+};
+
+        saveUsers(users);
+
+        console.log("New user:", phone);
+
+    }
+
+const profile = users[phone];
+
+if (profile) {
+
+    fs.writeFileSync(
+        CURRENT_FILE,
+        JSON.stringify(profile, null, 2)
+    );
+
+    console.log("Current profile:", phone);
 
 }
 
@@ -236,6 +270,7 @@ try {
 let music = "OFF";
 let light = "OFF";
 
+const profile = loadUsers()[order.user?.phone];
 
 if (profile) {
 
@@ -311,7 +346,7 @@ setTimeout(() => {
 
 }, 30000);
       lastOrder = order.order_sn;
-      await setSetting("lastOrder", lastOrder);
+      fs.writeFileSync(FILE, JSON.stringify({ order: lastOrder }));
     }
 
   } catch (err) {
