@@ -127,7 +127,9 @@ async function checkOrders(sendTelegram) {
         is_api: 0,
       },
     });
-
+console.log("AWORA RESPONSE:");
+console.log(JSON.stringify(res.data, null, 2));
+console.log("----------------");
     const list = res.data?.data?.list || [];
     console.log('Orders received:', list.length);
     console.log('Last order:', lastOrder);
