@@ -25,17 +25,11 @@
   },
   "27063002": {
     "phone": "27063002",
-    "name": "",
-    "color": "off",
-    "music": "",
+    "music": "Track 2",
+    "color": "purple",
     "relay1": false,
     "relay2": false,
-    "vip": false,
-    "enabled": true,
-    "created": "2026-07-11T01:17:36.851Z",
-    "lastWash": null,
-    "washCount": 0,
-    "totalSpent": 0
+    "vip": false
   },
   "29623317": {
     "phone": "29623317",
