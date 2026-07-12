@@ -5,12 +5,6 @@ const fs = require("fs");
 const path = require("path");
 const checkOrders = require("./awora");
 const db = require("./db");
-const {
-    getAllUsers,
-    getUser,
-    saveUser,
-    deleteUser
-} = require("./database/users");
 const app = express();
 const USERS_FILE = path.join(__dirname, "data", "users.json");
 
@@ -498,72 +492,50 @@ app.get("/automation/command", (req, res) => {
 });
 // ---------- USERS ----------
 
-app.get("/api/users", protect, async (req, res) => {
+// получить admin polzovatel
 
-    try {
+app.get("/api/users", protect, (req, res) => {
 
-        const users = await getAllUsers();
-
-        res.json(users);
-
-    } catch (e) {
-
-        console.error(e);
-
-        res.status(500).json({
-            ok: false,
-            error: e.message
-        });
-
-    }
+    res.json(loadUsers());
 
 });
 
-app.post("/api/users", protect, async (req, res) => {
 
-    try {
+// сохранить пользователя
 
-        await saveUser(req.body);
+app.post("/api/users", protect, (req, res) => {
 
-        res.json({
-            ok: true
-        });
+    const users = loadUsers();
 
-    } catch (e) {
+    users[req.body.phone] = req.body;
 
-        console.error(e);
+    saveUsers(users);
 
-        res.status(500).json({
-            ok: false,
-            error: e.message
-        });
-
-    }
+    res.json({
+        ok: true
+    });
 
 });
+app.delete("/api/users/:phone", protect, (req, res) => {
 
-app.delete("/api/users/:phone", protect, async (req, res) => {
+    const users = loadUsers();
+    const phone = decodeURIComponent(req.params.phone);
 
-    try {
-
-        const phone = decodeURIComponent(req.params.phone);
-
-        await deleteUser(phone);
-
-        res.json({
-            ok: true
-        });
-
-    } catch (e) {
-
-        console.error(e);
-
-        res.status(500).json({
+    if (!users[phone]) {
+        return res.status(404).json({
             ok: false,
-            error: e.message
+            message: "User not found"
         });
-
     }
+
+    delete users[phone];
+
+    saveUsers(users);
+
+    res.json({
+        ok: true,
+        message: "User deleted"
+    });
 
 });
 app.post("/api/control", protect, (req, res) => {
