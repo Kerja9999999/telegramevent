@@ -157,9 +157,21 @@ if (!profile) {
 
     };
 
+try {
+
     await saveUser(profile);
 
-    console.log("New user:", phone);
+    console.log("✅ User saved:", phone);
+
+} catch (e) {
+
+    console.error("❌ Save user error:", e);
+
+}
+
+const check = await getUser(phone);
+
+console.log("USER FROM DB:", check);
 
 }
 
