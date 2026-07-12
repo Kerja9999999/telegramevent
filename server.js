@@ -8,7 +8,6 @@ const app = express();
 const USERS_FILE = path.join(__dirname, "data", "users.json");
 
 app.use(express.static(path.join(__dirname, "public")));
-app.use(express.json());
 
 // ---------- ADMIN LOGIN ----------
 
@@ -271,6 +270,7 @@ app.post(
       }
 
       res.json({ received: true });
+        app.use(express.json());
     } catch (e) {
       res.status(400).send(e.message);
     }
