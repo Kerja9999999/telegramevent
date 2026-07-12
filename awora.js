@@ -328,23 +328,7 @@ if (profile) {
       } catch (e) {
         console.log("Automation API error:", e.message);
       }
-setTimeout(() => {
 
-    fs.writeFileSync(
-        CURRENT_FILE,
-        JSON.stringify({
-            phone: "",
-            music: "",
-            color: "off",
-            relay1: false,
-            relay2: false,
-            vip: false
-        }, null, 2)
-    );
-
-    console.log("Profile cleared after 30 seconds");
-
-}, 30000);
       lastOrder = order.order_sn;
       fs.writeFileSync(FILE, JSON.stringify({ order: lastOrder }));
     }
