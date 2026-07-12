@@ -607,6 +607,20 @@ app.post("/login", (req, res) => {
     });
 
 });
+(async () => {
+    try {
+
+        await db.execute("SELECT 1");
+
+        console.log("✅ Turso connected");
+
+    } catch (e) {
+
+        console.error("❌ Turso connection failed");
+        console.error(e);
+
+    }
+})();
 app.listen(process.env.PORT || 3000, () => {
   console.log("Server started");
 });
