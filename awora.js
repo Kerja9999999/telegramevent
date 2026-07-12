@@ -269,7 +269,6 @@ try {
 let music = "OFF";
 let light = "OFF";
 
-const profile = loadUsers()[order.user?.phone];
 
 if (profile) {
 
