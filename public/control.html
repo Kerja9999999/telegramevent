@@ -249,9 +249,11 @@ function setColor(c){
     coinProfile.color = c;
 
     send({
-        light: true,
-        color: c
+        light:true,
+        color:c
     });
+
+    console.log(coinProfile);
 
 }
 
@@ -260,8 +262,10 @@ function musicOn(){
     coinProfile.music = "Track 1";
 
     send({
-        music: true
+        music:true
     });
+
+    console.log(coinProfile);
 
 }
 
@@ -270,8 +274,10 @@ function musicOff(){
     coinProfile.music = "";
 
     send({
-        music: false
+        music:false
     });
+
+    console.log(coinProfile);
 
 }
 async function loadStatus(){
@@ -321,6 +327,7 @@ async function loadStatus(){
     }
 
 }
+ loadCoinProfile();
 loadStatus();
 setInterval(loadStatus,2000);
  function logout(){
@@ -340,25 +347,35 @@ setInterval(loadStatus,2000);
 
 }
 async function saveCoin(){
+async function saveCoin(){
+
+    console.log("Saving:", coinProfile);
 
     const r = await fetch("/api/coin",{
+
         method:"POST",
+
         headers:{
             "Content-Type":"application/json"
         },
+
         body:JSON.stringify(coinProfile)
+
     });
 
-    const text = await r.text();
+    console.log(await r.text());
 
-    console.log("Status:", r.status);
-    console.log("Response:", text);
+}
+async function loadCoinProfile(){
 
-    if(r.ok){
-        alert("Coin profile saved");
-    }else{
-        alert("Save error: " + text);
-    }
+    const r = await fetch("/api/coin");
+
+    const p = await r.json();
+
+    coinProfile = p;
+
+    console.log("Coin profile loaded:", coinProfile);
+
 }
 </script>
 
