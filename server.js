@@ -444,7 +444,31 @@ app.get("/automation/command", (req, res) => {
   }
 });
 // ---------- USERS ----------
+app.get("/api/vision/plate/:plate", (req, res) => {
+    const plate = req.params.plate.replace(/[\s-]/g, "").toUpperCase();
 
+    const users = loadUsers();
+
+    for (const phone in users) {
+
+        const user = users[phone];
+
+        const plates = user.plates || [];
+
+        if (
+            plates.some(p => p.replace(/[\s-]/g, "").toUpperCase() === plate)
+        ) {
+            return res.json({
+                ok: true,
+                user
+            });
+        }
+    }
+
+    res.status(404).json({
+        ok: false
+    });
+});
 // получить admin polzovatel
 
 app.get("/api/users", protect, (req, res) => {
