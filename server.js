@@ -361,7 +361,18 @@ app.get("/test/wash", async (req, res) => {
   };
 
   await sendTelegram(
-    `🚿 НОВЫЙ ЗАКАЗ 💳 Тип: ${wash.payType} 📍 ${wash.location} 🔧 ${wash.device} 👤 ${wash.user} 📞 ${wash.phone} 💶 ${wash.amount} 💦 Water: ${wash.water} сек 🫧 Foam: ${wash.foam} сек ✨ Wax: ${wash.coat} сек 🆔 ${wash.order} 🕒 ${wash.time}`
+    `🚿 НОВЫЙ ЗАКАЗ
+    💳 Тип: ${wash.payType} 
+    📍 ${wash.location} 
+    🔧 ${wash.device}
+    👤 ${wash.user} 
+    📞 ${wash.phone}
+    💶 ${wash.amount} 
+    💦 Water: ${wash.water}
+    сек 🫧 Foam: ${wash.foam}
+    сек ✨ Wax: ${wash.coat} 
+    сек 🆔 ${wash.order}
+    🕒 ${wash.time}`
   );
 
   res.json({
