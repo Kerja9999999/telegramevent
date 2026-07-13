@@ -6,7 +6,6 @@ const path = require("path");
 const checkOrders = require("./awora");
 const app = express();
 const USERS_FILE = path.join(__dirname, "data", "users.json");
-const COIN_FILE = path.join(__dirname, "data", "coinProfile.json");
 
 app.use(express.static(path.join(__dirname, "public")));
 
