@@ -3,6 +3,7 @@ const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 const USERS_FILE = path.join(__dirname, "data", "users.json");
+const COIN_FILE = path.join(__dirname, "data", "coinProfile.json");
 const API = "https://en.awoara.com.cn/mer/store/order/smart_order/lst";
 const FILE = "./lastOrder.json";
 
@@ -20,6 +21,10 @@ function loadUsers() {
 
     }
 
+}
+
+function loadCoinProfile(){
+ try{return JSON.parse(fs.readFileSync(COIN_FILE,"utf8"));}catch{return {color:"off",music:"",relay1:false,relay2:false};}
 }
 
 function saveUsers(users) {
@@ -196,7 +201,11 @@ users[phone] = {
 
     }
 
-const profile = users[phone];
+let profile = users[phone];
+
+if(order.pay_type==="coin"){
+    profile = loadCoinProfile();
+}
 
 if (profile) {
 

@@ -386,9 +386,9 @@ app.get("/test/coin", async (req, res) => {
   };
 
   lastAutomationEvent = wash;
+const coin = loadCoinProfile();
 lastAutomationEvent.music = coin.music;
 lastAutomationEvent.light = coin.color;
-const coin = loadCoinProfile();
 
 automationCommand = {
     light: coin.color !== "off",
