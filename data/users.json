@@ -1,11 +1,14 @@
 {
-  "26245562": {
-    "phone": "26245562",
+  "29983554": {
+    "phone": "29983554",
     "music": "Track 1",
-    "color": "fire",
+    "color": "coral",
     "relay1": false,
-    "relay2": true,
-    "vip": true,
-    "vehicle_number": ""
+    "relay2": false,
+    "vip": false,
+    "plates": [
+      "LV2323",
+      "LV3333"
+    ]
   }
 }
