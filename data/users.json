@@ -16,13 +16,17 @@
     "vip": true,
     "vehicle_number": ""
   },
-  "29983554": {
-    "phone": "29983554",
-    "music": "Track 1",
-    "color": "navy",
-    "relay1": false,
-    "relay2": false,
-    "vip": false,
-    "vehicle_number": ""
-  }
+"29983554": {
+  "phone": "29983554",
+  "account": "testtest",
+  "password": "testtest",
+  "plates": [
+    "LV1000",
+    "LV3333"
+  ],
+  "music": "Track 1",
+  "color": "coral",
+  "relay1": false,
+  "relay2": false,
+  "vip": false
 }
