@@ -87,6 +87,35 @@ app.post("/api/color/:color", express.json(), (req, res) => {
     });
 
 });
+const COIN_FILE = path.join(__dirname, "data", "coinProfile.json");
+
+function loadCoinProfile() {
+
+    try {
+
+        return JSON.parse(fs.readFileSync(COIN_FILE, "utf8"));
+
+    } catch {
+
+        return {
+            color: "off",
+            music: "",
+            relay1: false,
+            relay2: false
+        };
+
+    }
+
+}
+
+function saveCoinProfile(profile) {
+
+    fs.writeFileSync(
+        COIN_FILE,
+        JSON.stringify(profile, null, 2)
+    );
+
+}
 //----------TEST mojka---------
 app.get("/test", async (req, res) => {
 
@@ -147,6 +176,32 @@ app.get("/test", async (req, res) => {
         });
 
     }
+
+});
+// ---------- COIN PROFILE ----------
+
+// получить настройки
+app.get("/api/coin", protect, (req, res) => {
+
+    res.json(loadCoinProfile());
+
+});
+
+// сохранить настройки
+app.post("/api/coin", protect, (req, res) => {
+
+    saveCoinProfile({
+
+        color: req.body.color || "off",
+        music: req.body.music || "",
+        relay1: !!req.body.relay1,
+        relay2: !!req.body.relay2
+
+    });
+
+    res.json({
+        ok: true
+    });
 
 });
 // ---------- Automation ----------
