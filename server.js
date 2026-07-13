@@ -3,16 +3,20 @@ const Stripe = require("stripe");
 const axios = require("axios");
 async function loginAwoara(account, password) {
 
-    const res = await axios.post(
-        "https://en.awoara.com.cn/api/auth/login",
-        {
-            account,
-            password,
+    const res = await axios({
+        method: "POST",
+        url: "https://en.awoara.com.cn/api/auth/login",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        data: {
+            account: account,
+            password: password,
             mer_id: 120
         }
-    );
+    });
 
-    console.log("========== LOGIN RESPONSE ==========");
     console.log(res.data);
 
     return res.data;
