@@ -508,11 +508,16 @@ app.post("/api/users", protect, (req, res) => {
 
 const user = {
   ...req.body,
-  vehicle_number: (req.body.vehicle_number || "")
-    .replace(/[\s-]/g, "")
-    .toUpperCase(),
+  plates: Array.isArray(req.body.plates)
+    ? req.body.plates.map(p =>
+        String(p)
+          .replace(/[\s-]/g, "")
+          .toUpperCase()
+      )
+    : [],
 };
 
+users[user.phone] = user;
 users[user.phone] = user;
 
   saveUsers(users);
