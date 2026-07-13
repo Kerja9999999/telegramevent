@@ -180,7 +180,23 @@ app.get("/test", async (req, res) => {
 
 });
 // ---------- COIN PROFILE ----------
+app.post("/api/coin", protect, (req, res) => {
 
+    console.log("SAVE COIN");
+    console.log(req.body);
+    console.log(COIN_FILE);
+
+    saveCoinProfile({
+        color: req.body.color || "off",
+        music: req.body.music || "",
+        relay1: !!req.body.relay1,
+        relay2: !!req.body.relay2
+    });
+
+    res.json({
+        ok: true
+    });
+});
 // получить настройки
 app.get("/api/coin", protect, (req, res) => {
 
