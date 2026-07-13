@@ -1,32 +1,11 @@
 {
-  "22406113": {
-    "phone": "22406113",
-    "music": "Track 2",
-    "color": "aqua",
-    "relay1": true,
-    "relay2": false,
-    "vip": false
-  },
   "26245562": {
     "phone": "26245562",
     "music": "Track 1",
-    "color": "water",
+    "color": "fire",
     "relay1": false,
     "relay2": true,
     "vip": true,
     "vehicle_number": ""
-  },
-"29983554": {
-  "phone": "29983554",
-  "account": "testtest",
-  "password": "testtest",
-  "plates": [
-    "LV1000",
-    "LV3333"
-  ],
-  "music": "Track 1",
-  "color": "coral",
-  "relay1": false,
-  "relay2": false,
-  "vip": false
+  }
 }
