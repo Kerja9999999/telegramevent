@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const checkOrders = require("./awora");
 const app = express();
+app.use(express.json());
 const USERS_FILE = path.join(__dirname, "data", "users.json");
 
 app.use(express.static(path.join(__dirname, "public")));
@@ -12,213 +13,162 @@ app.use(express.static(path.join(__dirname, "public")));
 // ---------- ADMIN LOGIN ----------
 
 function protect(req, res, next) {
+  const auth = req.headers.authorization;
 
-    const auth = req.headers.authorization;
-
-    if (!auth) {
-        res.setHeader("WWW-Authenticate", 'Basic realm="ALB Admin"');
-        return res.status(401).send("Authorization required");
-    }
-
-    const encoded = auth.split(" ")[1];
-    const decoded = Buffer.from(encoded, "base64").toString("utf8");
-
-    const [login, password] = decoded.split(":");
-
-    if (
-        login === process.env.ADMIN_LOGIN &&
-        password === process.env.ADMIN_PASSWORD
-    ) {
-        return next();
-    }
-
+  if (!auth) {
     res.setHeader("WWW-Authenticate", 'Basic realm="ALB Admin"');
-    return res.status(401).send("Wrong login or password");
-}
-function isAdmin(req){
+    return res.status(401).send("Authorization required");
+  }
 
-    const auth = req.headers.authorization || "";
+  const encoded = auth.split(" ")[1];
+  const decoded = Buffer.from(encoded, "base64").toString("utf8");
 
-    return auth === "Bearer " + process.env.ADMIN_TOKEN;
+  const [login, password] = decoded.split(":");
 
-}
+  if (
+    login === process.env.ADMIN_LOGIN &&
+    password === process.env.ADMIN_PASSWORD
+  ) {
+    return next();
+  }
 
-function requireAdmin(req,res,next){
-
-    if(!isAdmin(req)){
-
-        return res.status(401).json({
-            ok:false,
-            message:"Unauthorized"
-        });
-
-    }
-
-    next();
-
+  res.setHeader("WWW-Authenticate", 'Basic realm="ALB Admin"');
+  return res.status(401).send("Wrong login or password");
 }
 function isAdmin(req) {
-    return req.headers.authorization === "Bearer " + process.env.ADMIN_TOKEN;
+  const auth = req.headers.authorization || "";
+
+  return auth === "Bearer " + process.env.ADMIN_TOKEN;
+}
+
+function requireAdmin(req, res, next) {
+  if (!isAdmin(req)) {
+    return res.status(401).json({
+      ok: false,
+      message: "Unauthorized",
+    });
+  }
+
+  next();
+}
+function isAdmin(req) {
+  return req.headers.authorization === "Bearer " + process.env.ADMIN_TOKEN;
 }
 let lastTestTime = 0;
 let checkingOrders = false;
 
 app.get("/control", protect, (req, res) => {
-    res.sendFile(path.join(__dirname,"public","control.html"));
+  res.sendFile(path.join(__dirname, "public", "control.html"));
 });
 app.get("/users", protect, (req, res) => {
-
-    res.sendFile(
-        path.join(__dirname, "public", "users.html")
-    );
-
+  res.sendFile(path.join(__dirname, "public", "users.html"));
 });
 //----------color change---------
 app.post("/api/color/:color", express.json(), (req, res) => {
+  automationCommand.light = true;
+  automationCommand.color = req.params.color;
 
-    automationCommand.light = true;
-    automationCommand.color = req.params.color;
+  console.log("Color:", req.params.color);
 
-    console.log("Color:", req.params.color);
-
-    res.json({
-        ok: true,
-        command: automationCommand
-    });
-
+  res.json({
+    ok: true,
+    command: automationCommand,
+  });
 });
 const COIN_FILE = path.join(__dirname, "data", "coinProfile.json");
 
 function loadCoinProfile() {
-
-    try {
-
-        return JSON.parse(fs.readFileSync(COIN_FILE, "utf8"));
-
-    } catch {
-
-        return {
-            color: "off",
-            music: "",
-            relay1: false,
-            relay2: false
-        };
-
-    }
-
+  try {
+    return JSON.parse(fs.readFileSync(COIN_FILE, "utf8"));
+  } catch {
+    return {
+      color: "off",
+      music: "",
+      relay1: false,
+      relay2: false,
+    };
+  }
 }
 
 function saveCoinProfile(profile) {
-
-    fs.writeFileSync(
-        COIN_FILE,
-        JSON.stringify(profile, null, 2)
-    );
-
+  fs.writeFileSync(COIN_FILE, JSON.stringify(profile, null, 2));
 }
 //----------TEST mojka---------
 app.get("/test", async (req, res) => {
+  const phone = req.query.phone;
 
-    const phone = req.query.phone;
+  if (!phone) {
+    return res.status(400).json({
+      ok: false,
+      error: "phone required",
+    });
+  }
 
-    if (!phone) {
-        return res.status(400).json({
-            ok: false,
-            error: "phone required"
-        });
+  try {
+    const users = loadUsers();
+
+    const profile = users[phone];
+
+    if (!profile) {
+      return res.status(404).json({
+        ok: false,
+        error: "User not found",
+      });
     }
 
-    try {
+    automationCommand = {
+      light: profile.color !== "off",
+      color: profile.color,
+      music: !!profile.music,
+      song: profile.music || "",
+      relay1: !!profile.relay1,
+      relay2: !!profile.relay2,
+    };
 
-        const users = loadUsers();
+    lastAutomationEvent = {
+      user: profile.name || phone,
+      phone,
+      amount: "TEST",
+      water: 0,
+      foam: 0,
+      coat: 0,
+      music: profile.music || "-",
+      light: profile.color || "-",
+    };
 
-        const profile = users[phone];
-
-        if (!profile) {
-            return res.status(404).json({
-                ok: false,
-                error: "User not found"
-            });
-        }
-
-        automationCommand = {
-            light: profile.color !== "off",
-            color: profile.color,
-            music: !!profile.music,
-            song: profile.music || "",
-            relay1: !!profile.relay1,
-            relay2: !!profile.relay2
-        };
-
-        lastAutomationEvent = {
-            user: profile.name || phone,
-            phone,
-            amount: "TEST",
-            water: 0,
-            foam: 0,
-            coat: 0,
-            music: profile.music || "-",
-            light: profile.color || "-"
-        };
-
-        res.json({
-            ok: true,
-            phone,
-            profile,
-            automationCommand
-        });
-
-    } catch (e) {
-
-        res.status(500).json({
-            ok: false,
-            error: e.message
-        });
-
-    }
-
+    res.json({
+      ok: true,
+      phone,
+      profile,
+      automationCommand,
+    });
+  } catch (e) {
+    res.status(500).json({
+      ok: false,
+      error: e.message,
+    });
+  }
 });
 // ---------- COIN PROFILE ----------
 app.post("/api/coin", protect, (req, res) => {
+  console.log("SAVE COIN");
+  console.log(req.body);
+  console.log(COIN_FILE);
 
-    console.log("SAVE COIN");
-    console.log(req.body);
-    console.log(COIN_FILE);
+  saveCoinProfile({
+    color: req.body.color || "off",
+    music: req.body.music || "",
+    relay1: !!req.body.relay1,
+    relay2: !!req.body.relay2,
+  });
 
-    saveCoinProfile({
-        color: req.body.color || "off",
-        music: req.body.music || "",
-        relay1: !!req.body.relay1,
-        relay2: !!req.body.relay2
-    });
-
-    res.json({
-        ok: true
-    });
+  res.json({
+    ok: true,
+  });
 });
 // получить настройки
 app.get("/api/coin", protect, (req, res) => {
-
-    res.json(loadCoinProfile());
-
-});
-
-// сохранить настройки
-app.post("/api/coin", protect, (req, res) => {
-
-    saveCoinProfile({
-
-        color: req.body.color || "off",
-        music: req.body.music || "",
-        relay1: !!req.body.relay1,
-        relay2: !!req.body.relay2
-
-    });
-
-    res.json({
-        ok: true
-    });
-
+  res.json(loadCoinProfile());
 });
 // ---------- Automation ----------
 let lastAutomationEvent = null;
@@ -232,70 +182,56 @@ let automationCommand = {
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 function loadUsers() {
-
-    try {
-
-        return JSON.parse(
-            fs.readFileSync(USERS_FILE, "utf8")
-        );
-
-    } catch {
-
-        return {};
-
-    }
-
+  try {
+    return JSON.parse(fs.readFileSync(USERS_FILE, "utf8"));
+  } catch {
+    return {};
+  }
 }
 
 function saveUsers(users) {
+  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
 
-    fs.writeFileSync(
-        USERS_FILE,
-        JSON.stringify(users, null, 2)
-    );
-
-    uploadUsersToGitHub(users)
-        .catch(err => console.error("GitHub upload:", err.message));
-
+  uploadUsersToGitHub(users).catch((err) =>
+    console.error("GitHub upload:", err.message)
+  );
 }
 async function uploadUsersToGitHub(users) {
+  const owner = process.env.GITHUB_OWNER;
+  const repo = process.env.GITHUB_REPO;
+  const token = process.env.GITHUB_TOKEN;
 
-    const owner = process.env.GITHUB_OWNER;
-    const repo = process.env.GITHUB_REPO;
-    const token = process.env.GITHUB_TOKEN;
+  const path = "data/users.json";
 
-    const path = "data/users.json";
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    Accept: "application/vnd.github+json",
+  };
 
-    const headers = {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/vnd.github+json"
-    };
+  // Получаем SHA текущего файла
+  const current = await axios.get(
+    `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+    { headers }
+  );
 
-    // Получаем SHA текущего файла
-    const current = await axios.get(
-        `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
-        { headers }
-    );
+  const sha = current.data.sha;
 
-    const sha = current.data.sha;
+  const content = Buffer.from(JSON.stringify(users, null, 2)).toString(
+    "base64"
+  );
 
-    const content = Buffer
-        .from(JSON.stringify(users, null, 2))
-        .toString("base64");
+  // Обновляем файл
+  await axios.put(
+    `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+    {
+      message: "Update users.json",
+      content,
+      sha,
+    },
+    { headers }
+  );
 
-    // Обновляем файл
-    await axios.put(
-        `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
-        {
-            message: "Update users.json",
-            content,
-            sha
-        },
-        { headers }
-    );
-
-    console.log("users.json updated in GitHub");
-
+  console.log("users.json updated in GitHub");
 }
 // ---------- Telegram ----------
 async function sendTelegram(text) {
@@ -330,24 +266,15 @@ app.post(
         const s = event.data.object;
         const c = s.customer_details || {};
 
-        await sendTelegram(`💳 Stripe
-
-💶 ${((s.amount_total || 0) / 100).toFixed(2)} EUR
-👤 ${c.name || "-"}
-📧 ${c.email || "-"}
-📱 ${c.phone || "-"}
-
-🆔 ${s.id}`);
+        await sendTelegram(`💳 Stripe 💶 ${((s.amount_total || 0) / 100).toFixed(2)} EUR 👤 ${c.name || "-"} 📧 ${c.email || "-"} 📱 ${c.phone || "-"} 🆔 ${s.id}`);
       }
 
       res.json({ received: true });
-    
     } catch (e) {
       res.status(400).send(e.message);
     }
   }
 );
-app.use(express.json());
 // ---------- Awora ----------
 checkOrders(sendTelegram);
 
@@ -401,133 +328,82 @@ app.get("/test/boris", async (req, res) => {
     relay2: false,
     color: "blue",
   };
-const music = automationCommand.music ? "🟢 ON" : "🔴 OFF";
-const light = automationCommand.light
+  const music = automationCommand.music ? "🟢 ON" : "🔴 OFF";
+  const light = automationCommand.light
     ? automationCommand.color.toUpperCase()
     : "OFF";
-  await sendTelegram(`🧪 ТЕСТ
-
-👤 ${test.user}
-
-💶 ${test.amount}
-
-💦 Water: ${test.water} сек
-🫧 Foam: ${test.foam} сек
-✨ Wax: ${test.coat} сек
-
-🎵 Music: ${music}
-💡 Light: ${light}`);
+  await sendTelegram(`🧪 ТЕСТ 👤 ${test.user} 💶 ${test.amount} 💦 Water: ${test.water} сек 🫧 Foam: ${test.foam} сек ✨ Wax: ${test.coat} сек 🎵 Music: ${music} 💡 Light: ${light}`);
   res.json({ ok: true, test });
 });
 app.get("/test/wash", async (req, res) => {
+  const wash = {
+    user: "ВАСЯ",
+    phone: "+37122112211",
+    amount: "5.00 EUR",
+    water: 184,
+    foam: 72,
+    coat: 51,
+    payType: "card",
+    device: "BOX 2",
+    location: "ALB Wash",
+    order: "TEST-" + Date.now(),
+    time: new Date().toISOString(),
+  };
 
-    const wash = {
-        user: "ВАСЯ",
-        phone: "+37122112211",
-        amount: "5.00 EUR",
-        water: 184,
-        foam: 72,
-        coat: 51,
-        payType: "card",
-        device: "BOX 2",
-        location: "ALB Wash",
-        order: "TEST-" + Date.now(),
-        time: new Date().toISOString()
-    };
+  lastAutomationEvent = wash;
 
-    lastAutomationEvent = wash;
+  automationCommand = {
+    light: true,
+    music: true,
+    relay1: true,
+    relay2: false,
+    color: "blue",
+  };
 
-    automationCommand = {
-        light: true,
-        music: true,
-        relay1: true,
-        relay2: false,
-        color: "blue"
-    };
+  await sendTelegram(
+    `🚿 НОВЫЙ ЗАКАЗ 💳 Тип: ${wash.payType} 📍 ${wash.location} 🔧 ${wash.device} 👤 ${wash.user} 📞 ${wash.phone} 💶 ${wash.amount} 💦 Water: ${wash.water} сек 🫧 Foam: ${wash.foam} сек ✨ Wax: ${wash.coat} сек 🆔 ${wash.order} 🕒 ${wash.time}`
+  );
 
-    await sendTelegram(
-`🚿 НОВЫЙ ЗАКАЗ
-
-💳 Тип: ${wash.payType}
-
-📍 ${wash.location}
-🔧 ${wash.device}
-
-👤 ${wash.user}
-📞 ${wash.phone}
-
-💶 ${wash.amount}
-
-💦 Water: ${wash.water} сек
-🫧 Foam: ${wash.foam} сек
-✨ Wax: ${wash.coat} сек
-
-🆔 ${wash.order}
-
-🕒 ${wash.time}`
-    );
-
-    res.json({
-        ok: true,
-        wash,
-        automationCommand
-    });
-
+  res.json({
+    ok: true,
+    wash,
+    automationCommand,
+  });
 });
 app.get("/test/coin", async (req, res) => {
+  const wash = {
+    user: "ГОСТЬ",
+    phone: "-",
+    amount: "2.00 EUR",
+    water: 142,
+    foam: 63,
+    coat: 38,
+    payType: "coin",
+    device: "BOX 2",
+    location: "ALB Wash",
+    order: "COIN-" + Date.now(),
+    time: new Date().toISOString(),
+  };
 
-    const wash = {
-        user: "ГОСТЬ",
-        phone: "-",
-        amount: "2.00 EUR",
-        water: 142,
-        foam: 63,
-        coat: 38,
-        payType: "coin",
-        device: "BOX 2",
-        location: "ALB Wash",
-        order: "COIN-" + Date.now(),
-        time: new Date().toISOString()
-    };
+  lastAutomationEvent = wash;
 
-    lastAutomationEvent = wash;
+  automationCommand = {
+    light: true,
+    music: false,
+    relay1: true,
+    relay2: false,
+    color: "green",
+  };
 
-    automationCommand = {
-        light: true,
-        music: false,
-        relay1: true,
-        relay2: false,
-        color: "green"
-    };
+  await sendTelegram(
+    `🚿 НОВЫЙ ЗАКАЗ 💳 Тип: ${wash.payType} 📍 ${wash.location} 🔧 ${wash.device} 👤 ${wash.user} 📞 ${wash.phone} 💶 ${wash.amount} 💦 Water: ${wash.water} сек 🫧 Foam: ${wash.foam} сек ✨ Wax: ${wash.coat} сек 🆔 ${wash.order} 🕒 ${wash.time}`
+  );
 
-    await sendTelegram(
-`🚿 НОВЫЙ ЗАКАЗ
-
-💳 Тип: ${wash.payType}
-
-📍 ${wash.location}
-🔧 ${wash.device}
-
-👤 ${wash.user}
-📞 ${wash.phone}
-
-💶 ${wash.amount}
-
-💦 Water: ${wash.water} сек
-🫧 Foam: ${wash.foam} сек
-✨ Wax: ${wash.coat} сек
-
-🆔 ${wash.order}
-
-🕒 ${wash.time}`
-    );
-
-    res.json({
-        ok: true,
-        wash,
-        automationCommand
-    });
-
+  res.json({
+    ok: true,
+    wash,
+    automationCommand,
+  });
 });
 // ---------- Automation API ----------
 app.get("/automation/status", (req, res) => {
@@ -537,92 +413,75 @@ app.get("/automation/status", (req, res) => {
 const CURRENT_FILE = path.join(__dirname, "data", "currentProfile.json");
 
 app.get("/automation/command", (req, res) => {
+  try {
+    const profile = JSON.parse(fs.readFileSync(CURRENT_FILE, "utf8"));
 
-    try {
-
-        const profile = JSON.parse(
-            fs.readFileSync(CURRENT_FILE, "utf8")
-        );
-
-        res.json(profile);
-
-    } catch {
-
-        res.json({
-            phone: "",
-            music: "",
-            color: "off",
-            relay1: false,
-            relay2: false,
-            vip: false
-        });
-
-    }
-
+    res.json(profile);
+  } catch {
+    res.json({
+      phone: "",
+      music: "",
+      color: "off",
+      relay1: false,
+      relay2: false,
+      vip: false,
+    });
+  }
 });
 // ---------- USERS ----------
 
 // получить admin polzovatel
 
 app.get("/api/users", protect, (req, res) => {
-
-    res.json(loadUsers());
-
+  res.json(loadUsers());
 });
-
 
 // сохранить пользователя
 
 app.post("/api/users", protect, (req, res) => {
+  const users = loadUsers();
 
-    const users = loadUsers();
+  users[req.body.phone] = req.body;
 
-    users[req.body.phone] = req.body;
+  saveUsers(users);
 
-    saveUsers(users);
-
-    res.json({
-        ok: true
-    });
-
+  res.json({
+    ok: true,
+  });
 });
 app.delete("/api/users/:phone", protect, (req, res) => {
+  const users = loadUsers();
+  const phone = decodeURIComponent(req.params.phone);
 
-    const users = loadUsers();
-    const phone = decodeURIComponent(req.params.phone);
-
-    if (!users[phone]) {
-        return res.status(404).json({
-            ok: false,
-            message: "User not found"
-        });
-    }
-
-    delete users[phone];
-
-    saveUsers(users);
-
-    res.json({
-        ok: true,
-        message: "User deleted"
+  if (!users[phone]) {
+    return res.status(404).json({
+      ok: false,
+      message: "User not found",
     });
+  }
 
+  delete users[phone];
+
+  saveUsers(users);
+
+  res.json({
+    ok: true,
+    message: "User deleted",
+  });
 });
 app.post("/api/control", protect, (req, res) => {
+  automationCommand = {
+    ...automationCommand,
+    ...req.body,
+  };
 
-    automationCommand = {
-        ...automationCommand,
-        ...req.body
-    };
+  console.log("NEW COMMAND");
+  console.log(automationCommand);
 
-    console.log("NEW COMMAND");
-    console.log(automationCommand);
-
-    res.json({
-        ok: true,
-        command: automationCommand
-    });
-
+  res.json({
+    ok: true,
+    command: automationCommand,
+  });
 });
 
 app.post("/automation/event", express.json(), (req, res) => {
@@ -634,49 +493,22 @@ app.post("/automation/event", express.json(), (req, res) => {
   res.json({ ok: true });
 });
 app.post("/login", (req, res) => {
+  const { login, password } = req.body;
 
-    const { login, password } = req.body;
-
-    if (
-        login === process.env.ADMIN_LOGIN &&
-        password === process.env.ADMIN_PASSWORD
-    ) {
-
-        return res.json({
-            token: process.env.ADMIN_TOKEN
-        });
-
-    }
-
-    res.status(401).json({
-        error: "Invalid login"
+  if (
+    login === process.env.ADMIN_LOGIN &&
+    password === process.env.ADMIN_PASSWORD
+  ) {
+    return res.json({
+      token: process.env.ADMIN_TOKEN,
     });
+  }
 
+  res.status(401).json({
+    error: "Invalid login",
+  });
 });
 // ---------- LOGIN ----------
-
-app.post("/login", (req, res) => {
-
-    const { login, password } = req.body;
-
-    if (
-        login === process.env.ADMIN_LOGIN &&
-        password === process.env.ADMIN_PASSWORD
-    ) {
-
-        return res.json({
-            ok: true,
-            token: process.env.ADMIN_TOKEN
-        });
-
-    }
-
-    res.status(401).json({
-        ok: false,
-        message: "Wrong login or password"
-    });
-
-});
 
 app.listen(process.env.PORT || 3000, () => {
   console.log("Server started");
