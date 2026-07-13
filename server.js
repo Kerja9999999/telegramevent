@@ -386,14 +386,18 @@ app.get("/test/coin", async (req, res) => {
   };
 
   lastAutomationEvent = wash;
+lastAutomationEvent.music = coin.music;
+lastAutomationEvent.light = coin.color;
+const coin = loadCoinProfile();
 
-  automationCommand = {
-    light: true,
-    music: false,
-    relay1: true,
-    relay2: false,
-    color: "green",
-  };
+automationCommand = {
+    light: coin.color !== "off",
+    music: !!coin.music,
+    relay1: coin.relay1,
+    relay2: coin.relay2,
+    color: coin.color,
+    song: coin.music || ""
+};
 
   await sendTelegram(
     `🚿 НОВЫЙ ЗАКАЗ 💳 Тип: ${wash.payType} 📍 ${wash.location} 🔧 ${wash.device} 👤 ${wash.user} 📞 ${wash.phone} 💶 ${wash.amount} 💦 Water: ${wash.water} сек 🫧 Foam: ${wash.foam} сек ✨ Wax: ${wash.coat} сек 🆔 ${wash.order} 🕒 ${wash.time}`
