@@ -450,13 +450,46 @@ app.get("/automation/command", (req, res) => {
 app.get("/api/users", protect, (req, res) => {
   res.json(loadUsers());
 });
+app.get("/api/vision/user", (req, res) => {
+  const plate = (req.query.plate || "")
+    .replace(/[\s-]/g, "")
+    .toUpperCase();
 
+  const users = loadUsers();
+
+  for (const phone in users) {
+    const user = users[phone];
+
+    const vehicle = (user.vehicle_number || "")
+      .replace(/[\s-]/g, "")
+      .toUpperCase();
+
+    if (vehicle === plate) {
+      return res.json({
+        ok: true,
+        user,
+      });
+    }
+  }
+
+  return res.status(404).json({
+    ok: false,
+    message: "Vehicle not found",
+  });
+});
 // сохранить пользователя
 
 app.post("/api/users", protect, (req, res) => {
   const users = loadUsers();
 
-  users[req.body.phone] = req.body;
+const user = {
+  ...req.body,
+  vehicle_number: (req.body.vehicle_number || "")
+    .replace(/[\s-]/g, "")
+    .toUpperCase(),
+};
+
+users[user.phone] = user;
 
   saveUsers(users);
 
