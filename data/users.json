@@ -22,6 +22,7 @@
     "color": "violet",
     "relay1": false,
     "relay2": false,
-    "vip": false
+    "vip": false,
+    "vehicle_number": ""
   }
 }
