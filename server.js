@@ -12,7 +12,10 @@ async function loginAwoara(account, password) {
         }
     );
 
-    return res.data.data.token;
+    console.log("========== LOGIN RESPONSE ==========");
+    console.log(res.data);
+
+    return res.data;
 }
 const fs = require("fs");
 const path = require("path");
@@ -38,10 +41,10 @@ app.get("/api/test-login/:phone", protect, async (req, res) => {
 
     try{
 
-        const token = await loginAwoara(
-            user.account,
-            user.password
-        );
+const data = await loginAwoara(user.account, user.password);
+
+res.json(data);
+return;
 
         res.json({
             ok:true,
