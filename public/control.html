@@ -342,26 +342,24 @@ setInterval(loadStatus,2000);
 async function saveCoin(){
 
     const r = await fetch("/api/coin",{
-
         method:"POST",
-
         headers:{
-            "Content-Type":"application/json",
-            "Authorization":"Basic " + btoa(
-                prompt("Login") + ":" + prompt("Password")
-            )
+            "Content-Type":"application/json"
         },
-
         body:JSON.stringify(coinProfile)
-
     });
 
-    const j = await r.json();
+    const text = await r.text();
 
-    alert(j.message || (j.ok ? "Coin profile saved" : "Save error"));
+    console.log("Status:", r.status);
+    console.log("Response:", text);
+
+    if(r.ok){
+        alert("Coin profile saved");
+    }else{
+        alert("Save error: " + text);
+    }
 }
-
- }
 </script>
 
 </body>
