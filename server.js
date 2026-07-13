@@ -1,6 +1,19 @@
 const express = require("express");
 const Stripe = require("stripe");
 const axios = require("axios");
+async function loginAwoara(account, password) {
+
+    const res = await axios.post(
+        "https://en.awoara.com.cn/api/auth/login",
+        {
+            account,
+            password,
+            mer_id: 120
+        }
+    );
+
+    return res.data.data.token;
+}
 const fs = require("fs");
 const path = require("path");
 const checkOrders = require("./awora");
@@ -9,6 +22,43 @@ app.use(express.json());
 const USERS_FILE = path.join(__dirname, "data", "users.json");
 
 app.use(express.static(path.join(__dirname, "public")));
+
+
+app.get("/api/test-login/:phone", protect, async (req, res) => {
+
+    const users = loadUsers();
+
+    const user = users[req.params.phone];
+
+    if (!user) {
+        return res.status(404).json({
+            ok:false
+        });
+    }
+
+    try{
+
+        const token = await loginAwoara(
+            user.account,
+            user.password
+        );
+
+        res.json({
+            ok:true,
+            token
+        });
+
+    }catch(e){
+
+        res.json({
+            ok:false,
+            error:e.response?.data || e.message
+        });
+
+    }
+
+});
+
 
 // ---------- ADMIN LOGIN ----------
 
