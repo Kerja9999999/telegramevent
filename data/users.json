@@ -9,11 +9,11 @@
   },
   "26245562": {
     "phone": "26245562",
-    "music": "Track 2",
-    "color": "pink",
+    "music": "Track 1",
+    "color": "magenta",
     "relay1": false,
-    "relay2": false,
-    "vip": false
+    "relay2": true,
+    "vip": true
   },
   "29983554": {
     "phone": "29983554",
