@@ -13,7 +13,8 @@
     "color": "water",
     "relay1": false,
     "relay2": true,
-    "vip": true
+    "vip": true,
+    "vehicle_number": ""
   },
   "29983554": {
     "phone": "29983554",
