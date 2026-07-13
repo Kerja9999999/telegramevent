@@ -270,13 +270,13 @@ app.post(
       }
 
       res.json({ received: true });
-        app.use(express.json());
+    
     } catch (e) {
       res.status(400).send(e.message);
     }
   }
 );
-
+app.use(express.json());
 // ---------- Awora ----------
 checkOrders(sendTelegram);
 
