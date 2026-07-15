@@ -576,7 +576,6 @@ const user = {
 };
 
 users[user.phone] = user;
-users[user.phone] = user;
 
   saveUsers(users);
 
