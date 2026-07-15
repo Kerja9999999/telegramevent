@@ -121,4 +121,88 @@ ${s.firstOrder}
 ${s.lastOrder}`);
 
 });
+bot.onText(/\/nedelya/, async (msg) => {
+
+    const end = new Date();
+    end.setHours(23,59,59,999);
+
+    const start = new Date();
+    start.setDate(start.getDate() - 6);
+    start.setHours(0,0,0,0);
+
+    const s = await getStatistics(start, end);
+
+    bot.sendMessage(msg.chat.id,
+
+`📊 ALB CARWASH
+
+📅 Последние 7 дней
+
+💶 Общая выручка:
+${s.total.toFixed(2)} €
+
+👤 Кредиты:
+${s.card.toFixed(2)} €
+
+🪙 Монеты:
+${s.coin.toFixed(2)} €
+
+🧾 Чеков:
+${s.count}
+
+💳 Средний чек:
+${s.average.toFixed(2)} €
+
+👑 VIP:
+${s.vip}
+
+🆔 Первый Order:
+${s.firstOrder}
+
+🆔 Последний Order:
+${s.lastOrder}`);
+
+});
+bot.onText(/\/mesyac/, async (msg) => {
+
+    const start = new Date();
+    start.setDate(1);
+    start.setHours(0,0,0,0);
+
+    const end = new Date();
+    end.setHours(23,59,59,999);
+
+    const s = await getStatistics(start, end);
+
+    bot.sendMessage(msg.chat.id,
+
+`📊 ALB CARWASH
+
+🗓 Текущий месяц
+
+💶 Общая выручка:
+${s.total.toFixed(2)} €
+
+👤 Кредиты:
+${s.card.toFixed(2)} €
+
+🪙 Монеты:
+${s.coin.toFixed(2)} €
+
+🧾 Чеков:
+${s.count}
+
+💳 Средний чек:
+${s.average.toFixed(2)} €
+
+👑 VIP:
+${s.vip}
+
+🆔 Первый Order:
+${s.firstOrder}
+
+🆔 Последний Order:
+${s.lastOrder}`);
+
+});
 module.exports=bot;
