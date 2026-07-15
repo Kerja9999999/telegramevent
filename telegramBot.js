@@ -414,8 +414,6 @@ ${s.lastOrder}
 ${new Date().toLocaleString("lv-LV")}`);
 
 });
-
-module.exports=bot;
 bot.on("message", (msg) => {
 
     if (!msg.text) return;
@@ -449,3 +447,5 @@ bot.on("message", (msg) => {
     }
 
 });
+
+module.exports=bot;
