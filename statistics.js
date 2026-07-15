@@ -58,7 +58,7 @@ function sameDay(date){
 
 }
 
-async function todayStatistics(){
+async function getStatistics(startDate, endDate) {
 
     const orders = await getOrders();
 
@@ -86,8 +86,8 @@ console.log(
 
         d.setHours(d.getHours()-5);
 
-        if(!sameDay(d))
-            continue;
+if (d < startDate || d > endDate)
+    continue;
 
         today.push(order);
 
@@ -143,6 +143,7 @@ const amount = parseFloat(order.amount_received || "0");
 
 }
 
-module.exports={
-    todayStatistics
+module.exports = {
+    getStatistics
+};
 };
