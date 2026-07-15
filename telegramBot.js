@@ -15,6 +15,40 @@ process.env.TELEGRAM_BOT_TOKEN,
 }
 
 );
+bot.setMyCommands([
+  {
+    command: "vyruchka",
+    description: "💶 Сегодня"
+  },
+  {
+    command: "vchera",
+    description: "📆 Вчера"
+  },
+  {
+    command: "nedelya",
+    description: "📈 Последние 7 дней"
+  },
+  {
+    command: "mesyac",
+    description: "🗓 Текущий месяц"
+  },
+  {
+    command: "god",
+    description: "📊 Текущий год"
+  },
+  {
+    command: "status",
+    description: "🟢 Статус"
+  },
+  {
+    command: "help",
+    description: "❓ Помощь"
+  },
+  {
+    command: "gv",
+    description: "📋 Все команды"
+  }
+]);
 function todayRange() {
 
     const start = new Date();
