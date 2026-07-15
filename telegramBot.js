@@ -7,7 +7,6 @@ const {
 
 const bot =
 new TelegramBot(
-
 process.env.TELEGRAM_BOT_TOKEN,
 
 {
@@ -15,12 +14,20 @@ process.env.TELEGRAM_BOT_TOKEN,
 }
 
 );
+let ignoreNext = false;
 bot.on("message", (msg) => {
- if (!msg.text || msg.text.startsWith("/")) return;
+
+    if (!msg.text) return;
+
+    if (ignoreNext) {
+        ignoreNext = false;
+        return;
+    }
 
     switch (msg.text) {
 
         case "💶 Сегодня":
+            ignoreNext = true;
             msg.text = "/vyruchka";
             return bot.processUpdate({
                 update_id: Date.now(),
@@ -28,6 +35,7 @@ bot.on("message", (msg) => {
             });
 
         case "📆 Вчера":
+            ignoreNext = true;
             msg.text = "/vchera";
             return bot.processUpdate({
                 update_id: Date.now() + 1,
@@ -35,6 +43,7 @@ bot.on("message", (msg) => {
             });
 
         case "📈 Неделя":
+            ignoreNext = true;
             msg.text = "/nedelya";
             return bot.processUpdate({
                 update_id: Date.now() + 2,
@@ -42,6 +51,7 @@ bot.on("message", (msg) => {
             });
 
         case "🗓 Месяц":
+            ignoreNext = true;
             msg.text = "/mesyac";
             return bot.processUpdate({
                 update_id: Date.now() + 3,
@@ -49,6 +59,7 @@ bot.on("message", (msg) => {
             });
 
         case "📊 Год":
+            ignoreNext = true;
             msg.text = "/god";
             return bot.processUpdate({
                 update_id: Date.now() + 4,
@@ -56,6 +67,7 @@ bot.on("message", (msg) => {
             });
 
         case "🟢 Статус":
+            ignoreNext = true;
             msg.text = "/status";
             return bot.processUpdate({
                 update_id: Date.now() + 5,
@@ -63,6 +75,7 @@ bot.on("message", (msg) => {
             });
 
         case "❓ Помощь":
+            ignoreNext = true;
             msg.text = "/help";
             return bot.processUpdate({
                 update_id: Date.now() + 6,
@@ -70,6 +83,7 @@ bot.on("message", (msg) => {
             });
 
         case "📋 Команды":
+            ignoreNext = true;
             msg.text = "/gv";
             return bot.processUpdate({
                 update_id: Date.now() + 7,
