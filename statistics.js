@@ -146,4 +146,3 @@ const amount = parseFloat(order.amount_received || "0");
 module.exports = {
     getStatistics
 };
-};
