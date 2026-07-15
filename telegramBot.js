@@ -312,6 +312,79 @@ ${s.firstOrder}
 
 🆔 Последний Order:
 ${s.lastOrder}`);
+const fs = require("fs");
+const path = require("path");
 
+const USERS_FILE = path.join(__dirname, "data", "users.json");
+
+function getUsersCount() {
+    try {
+        const users = JSON.parse(fs.readFileSync(USERS_FILE, "utf8"));
+        return Object.keys(users).length;
+    } catch {
+        return 0;
+    }
+}
+
+bot.onText(/\/status/, async (msg) => {
+
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+
+    const end = new Date();
+    end.setHours(23, 59, 59, 999);
+
+    const s = await getStatistics(start, end);
+
+    const users = getUsersCount();
+
+    bot.sendMessage(msg.chat.id,
+
+`🚿 ALB CARWASH
+
+🟢 Система / Sistēma
+
+🖥 Сервер:
+✅ Online
+
+🤖 Telegram:
+✅ Online
+
+📡 AWOARA API:
+✅ Online
+
+📅 Сегодня / Šodien
+
+💶 Общая выручка:
+${s.total.toFixed(2)} €
+
+👤 Кредиты:
+${s.card.toFixed(2)} €
+
+🪙 Монеты:
+${s.coin.toFixed(2)} €
+
+🧾 Чеков:
+${s.count}
+
+💳 Средний чек:
+${s.average.toFixed(2)} €
+
+👑 VIP:
+${s.vip}
+
+👥 Пользователей:
+${users}
+
+🆔 Первый Order:
+${s.firstOrder}
+
+🆔 Последний Order:
+${s.lastOrder}
+
+🕒 Последнее обновление:
+${new Date().toLocaleString("lv-LV")}`);
+
+});
 });
 module.exports=bot;
