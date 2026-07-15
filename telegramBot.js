@@ -452,56 +452,56 @@ bot.on("callback_query", async (query) => {
         case "today":
             bot.emit("text", {
                 ...query.message,
-                text: "/vyruchka"
+                text: "/vyruchka@albcarwashbot"
             });
             break;
 
         case "yesterday":
             bot.emit("text", {
                 ...query.message,
-                text: "/vchera"
+                text: "/vchera@albcarwashbot"
             });
             break;
 
         case "week":
             bot.emit("text", {
                 ...query.message,
-                text: "/nedelya"
+                text: "/nedelya@albcarwashbot"
             });
             break;
 
         case "month":
             bot.emit("text", {
                 ...query.message,
-                text: "/mesyac"
+                text: "/mesyac@albcarwashbot"
             });
             break;
 
         case "year":
             bot.emit("text", {
                 ...query.message,
-                text: "/god"
+                text: "/god@albcarwashbot"
             });
             break;
 
         case "status":
             bot.emit("text", {
                 ...query.message,
-                text: "/status"
+                text: "/status@albcarwashbot"
             });
             break;
 
         case "help":
             bot.emit("text", {
                 ...query.message,
-                text: "/help"
+                text: "/help@albcarwashbot"
             });
             break;
 
         case "commands":
             bot.emit("text", {
                 ...query.message,
-                text: "/gv"
+                text: "/gv@albcarwashbot"
             });
             break;
 
