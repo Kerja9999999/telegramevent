@@ -105,7 +105,7 @@ const amount = parseFloat(order.amount_received || "0");
         if(order.pay_type==="coin")
             coin+=amount;
 
-        if(order.pay_type==="card")
+        if(order.pay_type==="credit")
             card+=amount;
 
         if(amount===0)
