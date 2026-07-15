@@ -26,18 +26,84 @@ function todayRange() {
     return { start, end };
 
 }
-bot.onText(/\/start/,msg=>{
+bot.onText(/\/start/, (msg) => {
 
 bot.sendMessage(msg.chat.id,
 
 `🚿 ALB CARWASH
 
-Доступные команды
+Добро пожаловать!
+Laipni lūdzam!
 
-/vyruchka`);
+📋 Доступные команды / Pieejamās komandas
+
+💶 /vyruchka — Сегодня / Šodien
+📆 /vchera — Вчера / Vakar
+📈 /nedelya — Последние 7 дней / Pēdējās 7 dienas
+🗓 /mesyac — Текущий месяц / Šis mēnesis
+📊 /god — Текущий год / Šis gads
+📍 /status — Состояние мойки / Mazgātavas statuss
+📋 /help — Помощь / Palīdzība
+📋 /gv — Все команды / Visas komandas`
+
+);
 
 });
+bot.onText(/\/help/, (msg) => {
 
+bot.sendMessage(msg.chat.id,
+
+`📋 ALB CARWASH
+
+💶 /vyruchka
+Сегодня / Šodien
+
+📆 /vchera
+Вчера / Vakar
+
+📈 /nedelya
+Последние 7 дней / Pēdējās 7 dienas
+
+🗓 /mesyac
+Текущий месяц / Šis mēnesis
+
+📊 /god
+Текущий год / Šis gads
+
+📍 /status
+Состояние автомойки / Mazgātavas statuss
+
+📋 /gv
+Все команды / Visas komandas`
+
+);
+
+});
+bot.onText(/\/gv/, (msg) => {
+
+bot.sendMessage(msg.chat.id,
+
+`🚿 ALB CARWASH
+
+📋 Все команды / Visas komandas
+
+💶 /vyruchka — Сегодня / Šodien
+
+📆 /vchera — Вчера / Vakar
+
+📈 /nedelya — Последние 7 дней / Pēdējās 7 dienas
+
+🗓 /mesyac — Текущий месяц / Šis mēnesis
+
+📊 /god — Текущий год / Šis gads
+
+📍 /status — Состояние мойки / Mazgātavas statuss
+
+📋 /help — Помощь / Palīdzība`
+
+);
+
+});
 bot.onText(/\/vyruchka/,async msg=>{
 
 const { start, end } = todayRange();
