@@ -25,6 +25,31 @@ const fs = require("fs");
 const path = require("path");
 const checkOrders = require("./awora");
 const app = express();
+// ---------- Stripe ----------
+app.post(
+  "/stripe-webhook",
+  express.raw({ type: "application/json" }),
+  async (req, res) => {
+    try {
+      const event = stripe.webhooks.constructEvent(
+        req.body,
+        req.headers["stripe-signature"],
+        process.env.STRIPE_WEBHOOK_SECRET
+      );
+
+      if (event.type === "checkout.session.completed") {
+        const s = event.data.object;
+        const c = s.customer_details || {};
+
+        await sendTelegram(`💳 Stripe 💶 ${((s.amount_total || 0) / 100).toFixed(2)} EUR 👤 ${c.name || "-"} 📧 ${c.email || "-"} 📱 ${c.phone || "-"} 🆔 ${s.id}`);
+      }
+
+      res.json({ received: true });
+    } catch (e) {
+      res.status(400).send(e.message);
+    }
+  }
+);
 app.use(express.json());
 const USERS_FILE = path.join(__dirname, "data", "users.json");
 
@@ -307,31 +332,7 @@ async function sendTelegram(text) {
   }
 }
 
-// ---------- Stripe ----------
-app.post(
-  "/stripe-webhook",
-  express.raw({ type: "application/json" }),
-  async (req, res) => {
-    try {
-      const event = stripe.webhooks.constructEvent(
-        req.body,
-        req.headers["stripe-signature"],
-        process.env.STRIPE_WEBHOOK_SECRET
-      );
 
-      if (event.type === "checkout.session.completed") {
-        const s = event.data.object;
-        const c = s.customer_details || {};
-
-        await sendTelegram(`💳 Stripe 💶 ${((s.amount_total || 0) / 100).toFixed(2)} EUR 👤 ${c.name || "-"} 📧 ${c.email || "-"} 📱 ${c.phone || "-"} 🆔 ${s.id}`);
-      }
-
-      res.json({ received: true });
-    } catch (e) {
-      res.status(400).send(e.message);
-    }
-  }
-);
 // ---------- Awora ----------
 checkOrders(sendTelegram);
 
