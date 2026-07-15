@@ -15,70 +15,7 @@ process.env.TELEGRAM_BOT_TOKEN,
 }
 
 );
-bot.on("message", (msg) => {
- if (!msg.text || msg.text.startsWith("/")) return;
 
-    switch (msg.text) {
-
-        case "💶 Сегодня":
-            msg.text = "/vyruchka";
-            return bot.processUpdate({
-                update_id: Date.now(),
-                message: msg
-            });
-
-        case "📆 Вчера":
-            msg.text = "/vchera";
-            return bot.processUpdate({
-                update_id: Date.now() + 1,
-                message: msg
-            });
-
-        case "📈 Неделя":
-            msg.text = "/nedelya";
-            return bot.processUpdate({
-                update_id: Date.now() + 2,
-                message: msg
-            });
-
-        case "🗓 Месяц":
-            msg.text = "/mesyac";
-            return bot.processUpdate({
-                update_id: Date.now() + 3,
-                message: msg
-            });
-
-        case "📊 Год":
-            msg.text = "/god";
-            return bot.processUpdate({
-                update_id: Date.now() + 4,
-                message: msg
-            });
-
-        case "🟢 Статус":
-            msg.text = "/status";
-            return bot.processUpdate({
-                update_id: Date.now() + 5,
-                message: msg
-            });
-
-        case "❓ Помощь":
-            msg.text = "/help";
-            return bot.processUpdate({
-                update_id: Date.now() + 6,
-                message: msg
-            });
-
-        case "📋 Команды":
-            msg.text = "/gv";
-            return bot.processUpdate({
-                update_id: Date.now() + 7,
-                message: msg
-            });
-
-    }
-
-});
 function todayRange() {
 
     const start = new Date();
