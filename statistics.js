@@ -75,7 +75,11 @@ async function todayStatistics(){
     const today=[];
 
     for(const order of orders){
-
+console.log(
+    order.order_sn,
+    order.amount_received,
+    typeof order.amount_received
+);
         let d = new Date(
             order.create_time.replace(" ","T")
         );
