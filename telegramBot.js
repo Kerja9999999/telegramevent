@@ -15,70 +15,30 @@ process.env.TELEGRAM_BOT_TOKEN,
 }
 
 );
-bot.on("message", (msg) => {
- if (!msg.text || msg.text.startsWith("/")) return;
-
-    switch (msg.text) {
-
-        case "💶 Сегодня":
-            msg.text = "/vyruchka";
-            return bot.processUpdate({
-                update_id: Date.now(),
-                message: msg
-            });
-
-        case "📆 Вчера":
-            msg.text = "/vchera";
-            return bot.processUpdate({
-                update_id: Date.now() + 1,
-                message: msg
-            });
-
-        case "📈 Неделя":
-            msg.text = "/nedelya";
-            return bot.processUpdate({
-                update_id: Date.now() + 2,
-                message: msg
-            });
-
-        case "🗓 Месяц":
-            msg.text = "/mesyac";
-            return bot.processUpdate({
-                update_id: Date.now() + 3,
-                message: msg
-            });
-
-        case "📊 Год":
-            msg.text = "/god";
-            return bot.processUpdate({
-                update_id: Date.now() + 4,
-                message: msg
-            });
-
-        case "🟢 Статус":
-            msg.text = "/status";
-            return bot.processUpdate({
-                update_id: Date.now() + 5,
-                message: msg
-            });
-
-        case "❓ Помощь":
-            msg.text = "/help";
-            return bot.processUpdate({
-                update_id: Date.now() + 6,
-                message: msg
-            });
-
-        case "📋 Команды":
-            msg.text = "/gv";
-            return bot.processUpdate({
-                update_id: Date.now() + 7,
-                message: msg
-            });
-
-    }
-
-});
+const keyboard = {
+  reply_markup: {
+    resize_keyboard: true,
+    one_time_keyboard: false,
+    keyboard: [
+      [
+        { text: "💶 Сегодня" },
+        { text: "📆 Вчера" }
+      ],
+      [
+        { text: "📈 Неделя" },
+        { text: "🗓 Месяц" }
+      ],
+      [
+        { text: "📊 Год" },
+        { text: "🟢 Статус" }
+      ],
+      [
+        { text: "❓ Помощь" },
+        { text: "📋 Команды" }
+      ]
+    ]
+  }
+};
 function todayRange() {
 
     const start = new Date();
@@ -454,4 +414,38 @@ ${s.lastOrder}
 ${new Date().toLocaleString("lv-LV")}`);
 
 });
+
 module.exports=bot;
+bot.on("message", (msg) => {
+
+    if (!msg.text) return;
+
+    switch (msg.text) {
+
+        case "💶 Сегодня":
+            return bot.emit("text", { ...msg, text: "/vyruchka" });
+
+        case "📆 Вчера":
+            return bot.emit("text", { ...msg, text: "/vchera" });
+
+        case "📈 Неделя":
+            return bot.emit("text", { ...msg, text: "/nedelya" });
+
+        case "🗓 Месяц":
+            return bot.emit("text", { ...msg, text: "/mesyac" });
+
+        case "📊 Год":
+            return bot.emit("text", { ...msg, text: "/god" });
+
+        case "🟢 Статус":
+            return bot.emit("text", { ...msg, text: "/status" });
+
+        case "❓ Помощь":
+            return bot.emit("text", { ...msg, text: "/help" });
+
+        case "📋 Команды":
+            return bot.emit("text", { ...msg, text: "/gv" });
+
+    }
+
+});
