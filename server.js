@@ -38,6 +38,17 @@ app.post(
       );
 
       if (event.type === "checkout.session.completed") {
+          else {
+
+    await sendTelegram(
+`ℹ️ Stripe Event
+
+${event.type}
+
+🕒 ${new Date().toLocaleString("lv-LV")}`
+    );
+
+}
         const s = event.data.object;
         const c = s.customer_details || {};
 
@@ -45,9 +56,25 @@ app.post(
       }
 
       res.json({ received: true });
-    } catch (e) {
-      res.status(400).send(e.message);
-    }
+    catch (e) {
+
+  console.error("❌ Stripe Webhook Error:", e);
+
+  try {
+
+    await sendTelegram(
+`🚨 STRIPE WEBHOOK ERROR
+
+❌ ${e.message}
+
+🕒 ${new Date().toLocaleString("lv-LV")}`
+    );
+
+  } catch {}
+
+  res.status(400).send(e.message);
+
+}
   }
 );
 app.use(express.json());
@@ -646,6 +673,25 @@ app.post("/login", (req, res) => {
 
 app.listen(process.env.PORT || 3000, () => {
   console.log("Server started");
+});
+app.use(async (err, req, res, next) => {
+
+    console.error(err);
+
+    try {
+
+        await sendTelegram(
+`🚨 SERVER ERROR
+
+${req.method} ${req.originalUrl}
+
+${err.message}`
+        );
+
+    } catch {}
+
+    res.status(500).send("Internal Server Error");
+
 });
 require("./telegramBot");
 require("./scheduler");
