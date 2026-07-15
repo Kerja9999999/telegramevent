@@ -414,5 +414,4 @@ ${s.lastOrder}
 ${new Date().toLocaleString("lv-LV")}`);
 
 });
-});
 module.exports=bot;
