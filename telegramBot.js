@@ -52,7 +52,7 @@ function todayRange() {
 }
 bot.onText(/\/start/, (msg) => {
 
-bot.sendMessage(msg.chat.id,
+bot.sendMessage(msg.chat.id, keyboard
 
 `🚿 ALB CARWASH
 
