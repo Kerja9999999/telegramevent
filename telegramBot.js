@@ -436,63 +436,44 @@ bot.on("callback_query", async (query) => {
     switch (query.data) {
 
         case "today":
-            bot.emit("text", {
-                ...query.message,
-                text: "/vyruchka@albcarwashbot"
-            });
+            await sendToday(chatId);
             break;
 
         case "yesterday":
-            bot.emit("text", {
-                ...query.message,
-                text: "/vchera@albcarwashbot"
-            });
+            await sendYesterday(chatId);
             break;
 
         case "week":
-            bot.emit("text", {
-                ...query.message,
-                text: "/nedelya@albcarwashbot"
-            });
+            await sendWeek(chatId);
             break;
 
         case "month":
-            bot.emit("text", {
-                ...query.message,
-                text: "/mesyac@albcarwashbot"
-            });
+            await sendMonth(chatId);
             break;
 
         case "year":
-            bot.emit("text", {
-                ...query.message,
-                text: "/god@albcarwashbot"
-            });
+            await sendYear(chatId);
             break;
 
         case "status":
-            bot.emit("text", {
-                ...query.message,
-                text: "/status@albcarwashbot"
-            });
+            await sendStatus(chatId);
             break;
 
         case "help":
             bot.emit("text", {
                 ...query.message,
-                text: "/help@albcarwashbot"
+                text: "/help"
             });
             break;
 
         case "commands":
             bot.emit("text", {
                 ...query.message,
-                text: "/gv@albcarwashbot"
+                text: "/gv"
             });
             break;
-
     }
 
-    bot.answerCallbackQuery(query.id);
+    await bot.answerCallbackQuery(query.id);
 
 });
