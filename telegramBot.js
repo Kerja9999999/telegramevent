@@ -416,3 +416,36 @@ ${new Date().toLocaleString("lv-LV")}`);
 });
 
 module.exports=bot;
+bot.on("message", (msg) => {
+
+    if (!msg.text) return;
+
+    switch (msg.text) {
+
+        case "💶 Сегодня":
+            return bot.emit("text", { ...msg, text: "/vyruchka" });
+
+        case "📆 Вчера":
+            return bot.emit("text", { ...msg, text: "/vchera" });
+
+        case "📈 Неделя":
+            return bot.emit("text", { ...msg, text: "/nedelya" });
+
+        case "🗓 Месяц":
+            return bot.emit("text", { ...msg, text: "/mesyac" });
+
+        case "📊 Год":
+            return bot.emit("text", { ...msg, text: "/god" });
+
+        case "🟢 Статус":
+            return bot.emit("text", { ...msg, text: "/status" });
+
+        case "❓ Помощь":
+            return bot.emit("text", { ...msg, text: "/help" });
+
+        case "📋 Команды":
+            return bot.emit("text", { ...msg, text: "/gv" });
+
+    }
+
+});
