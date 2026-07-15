@@ -271,4 +271,47 @@ ${s.firstOrder}
 ${s.lastOrder}`);
 
 });
+bot.onText(/\/god/, async (msg) => {
+
+    const start = new Date();
+    start.setMonth(0);
+    start.setDate(1);
+    start.setHours(0,0,0,0);
+
+    const end = new Date();
+    end.setHours(23,59,59,999);
+
+    const s = await getStatistics(start, end);
+
+    bot.sendMessage(msg.chat.id,
+
+`📊 ALB CARWASH
+
+📅 Текущий год
+
+💶 Общая выручка:
+${s.total.toFixed(2)} €
+
+👤 Кредиты:
+${s.card.toFixed(2)} €
+
+🪙 Монеты:
+${s.coin.toFixed(2)} €
+
+🧾 Чеков:
+${s.count}
+
+💳 Средний чек:
+${s.average.toFixed(2)} €
+
+👑 VIP:
+${s.vip}
+
+🆔 Первый Order:
+${s.firstOrder}
+
+🆔 Последний Order:
+${s.lastOrder}`);
+
+});
 module.exports=bot;
