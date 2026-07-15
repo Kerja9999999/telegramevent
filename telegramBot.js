@@ -84,19 +84,8 @@ bot.onText(/\/start/, (msg) => {
 
 `🚿 ALB CARWASH
 
-Добро пожаловать!
-Laipni lūdzam!
-
-📋 Доступные команды / Pieejamās komandas
-
-💶 /vyruchka — Сегодня / Šodien
-📆 /vchera — Вчера / Vakar
-📈 /nedelya — Последние 7 дней / Pēdējās 7 dienas
-🗓 /mesyac — Текущий месяц / Šis mēnesis
-📊 /god — Текущий год / Šis gads
-📍 /status — Состояние мойки / Mazgātavas statuss
-📋 /help — Помощь / Palīdzība
-📋 /gv — Все команды / Visas komandas`,
+Добро пожаловать дядя Боря!
+Что хотите узнать?
 
         keyboard
 
