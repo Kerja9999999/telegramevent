@@ -16,28 +16,55 @@ process.env.TELEGRAM_BOT_TOKEN,
 
 );
 const keyboard = {
-  reply_markup: {
-    resize_keyboard: true,
-    one_time_keyboard: false,
-    keyboard: [
-      [
-        { text: "💶 Сегодня" },
-        { text: "📆 Вчера" }
-      ],
-      [
-        { text: "📈 Неделя" },
-        { text: "🗓 Месяц" }
-      ],
-      [
-        { text: "📊 Год" },
-        { text: "🟢 Статус" }
-      ],
-      [
-        { text: "❓ Помощь" },
-        { text: "📋 Команды" }
-      ]
-    ]
-  }
+    reply_markup: {
+        inline_keyboard: [
+
+            [
+                {
+                    text: "💶 Сегодня",
+                    callback_data: "today"
+                },
+                {
+                    text: "📆 Вчера",
+                    callback_data: "yesterday"
+                }
+            ],
+
+            [
+                {
+                    text: "📈 Неделя",
+                    callback_data: "week"
+                },
+                {
+                    text: "🗓 Месяц",
+                    callback_data: "month"
+                }
+            ],
+
+            [
+                {
+                    text: "📊 Год",
+                    callback_data: "year"
+                },
+                {
+                    text: "🟢 Статус",
+                    callback_data: "status"
+                }
+            ],
+
+            [
+                {
+                    text: "❓ Помощь",
+                    callback_data: "help"
+                },
+                {
+                    text: "📋 Команды",
+                    callback_data: "commands"
+                }
+            ]
+
+        ]
+    }
 };
 function todayRange() {
 
@@ -416,36 +443,70 @@ ${new Date().toLocaleString("lv-LV")}`);
 });
 
 module.exports=bot;
-bot.on("message", (msg) => {
+bot.on("callback_query", async (query) => {
 
-    if (!msg.text) return;
+    const chatId = query.message.chat.id;
 
-    switch (msg.text) {
+    switch (query.data) {
 
-        case "💶 Сегодня":
-            return bot.emit("text", { ...msg, text: "/vyruchka" });
+        case "today":
+            bot.emit("text", {
+                ...query.message,
+                text: "/vyruchka"
+            });
+            break;
 
-        case "📆 Вчера":
-            return bot.emit("text", { ...msg, text: "/vchera" });
+        case "yesterday":
+            bot.emit("text", {
+                ...query.message,
+                text: "/vchera"
+            });
+            break;
 
-        case "📈 Неделя":
-            return bot.emit("text", { ...msg, text: "/nedelya" });
+        case "week":
+            bot.emit("text", {
+                ...query.message,
+                text: "/nedelya"
+            });
+            break;
 
-        case "🗓 Месяц":
-            return bot.emit("text", { ...msg, text: "/mesyac" });
+        case "month":
+            bot.emit("text", {
+                ...query.message,
+                text: "/mesyac"
+            });
+            break;
 
-        case "📊 Год":
-            return bot.emit("text", { ...msg, text: "/god" });
+        case "year":
+            bot.emit("text", {
+                ...query.message,
+                text: "/god"
+            });
+            break;
 
-        case "🟢 Статус":
-            return bot.emit("text", { ...msg, text: "/status" });
+        case "status":
+            bot.emit("text", {
+                ...query.message,
+                text: "/status"
+            });
+            break;
 
-        case "❓ Помощь":
-            return bot.emit("text", { ...msg, text: "/help" });
+        case "help":
+            bot.emit("text", {
+                ...query.message,
+                text: "/help"
+            });
+            break;
 
-        case "📋 Команды":
-            return bot.emit("text", { ...msg, text: "/gv" });
+        case "commands":
+            bot.emit("text", {
+                ...query.message,
+                text: "/gv"
+            });
+            break;
 
     }
+
+    bot.answerCallbackQuery(query.id);
 
 });
