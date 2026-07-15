@@ -16,6 +16,7 @@ process.env.TELEGRAM_BOT_TOKEN,
 
 );
 bot.on("message", (msg) => {
+ if (!msg.text || msg.text.startsWith("/")) return;
 
     switch (msg.text) {
 
