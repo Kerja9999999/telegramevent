@@ -16,55 +16,28 @@ process.env.TELEGRAM_BOT_TOKEN,
 
 );
 const keyboard = {
-    reply_markup: {
-        inline_keyboard: [
-
-            [
-                {
-                    text: "💶 Сегодня",
-                    callback_data: "today"
-                },
-                {
-                    text: "📆 Вчера",
-                    callback_data: "yesterday"
-                }
-            ],
-
-            [
-                {
-                    text: "📈 Неделя",
-                    callback_data: "week"
-                },
-                {
-                    text: "🗓 Месяц",
-                    callback_data: "month"
-                }
-            ],
-
-            [
-                {
-                    text: "📊 Год",
-                    callback_data: "year"
-                },
-                {
-                    text: "🟢 Статус",
-                    callback_data: "status"
-                }
-            ],
-
-            [
-                {
-                    text: "❓ Помощь",
-                    callback_data: "help"
-                },
-                {
-                    text: "📋 Команды",
-                    callback_data: "commands"
-                }
-            ]
-
-        ]
-    }
+  reply_markup: {
+    resize_keyboard: true,
+    one_time_keyboard: false,
+    keyboard: [
+      [
+        { text: "💶 Сегодня" },
+        { text: "📆 Вчера" }
+      ],
+      [
+        { text: "📈 Неделя" },
+        { text: "🗓 Месяц" }
+      ],
+      [
+        { text: "📊 Год" },
+        { text: "🟢 Статус" }
+      ],
+      [
+        { text: "❓ Помощь" },
+        { text: "📋 Команды" }
+      ]
+    ]
+  }
 };
 function todayRange() {
 
@@ -81,11 +54,25 @@ bot.onText(/\/start/, (msg) => {
 
     bot.sendMessage(
         msg.chat.id,
+
 `🚿 ALB CARWASH
 
-Добро пожаловать дядя Боря!
-Что хотите узнать?`,
+Добро пожаловать!
+Laipni lūdzam!
+
+📋 Доступные команды / Pieejamās komandas
+
+💶 /vyruchka — Сегодня / Šodien
+📆 /vchera — Вчера / Vakar
+📈 /nedelya — Последние 7 дней / Pēdējās 7 dienas
+🗓 /mesyac — Текущий месяц / Šis mēnesis
+📊 /god — Текущий год / Šis gads
+📍 /status — Состояние мойки / Mazgātavas statuss
+📋 /help — Помощь / Palīdzība
+📋 /gv — Все команды / Visas komandas`,
+
         keyboard
+
     );
 
 });
@@ -427,53 +414,5 @@ ${s.lastOrder}
 ${new Date().toLocaleString("lv-LV")}`);
 
 });
-
-module.exports=bot;
-bot.on("callback_query", async (query) => {
-
-    const chatId = query.message.chat.id;
-
-    switch (query.data) {
-
-        case "today":
-            await sendToday(chatId);
-            break;
-
-        case "yesterday":
-            await sendYesterday(chatId);
-            break;
-
-        case "week":
-            await sendWeek(chatId);
-            break;
-
-        case "month":
-            await sendMonth(chatId);
-            break;
-
-        case "year":
-            await sendYear(chatId);
-            break;
-
-        case "status":
-            await sendStatus(chatId);
-            break;
-
-        case "help":
-            bot.emit("text", {
-                ...query.message,
-                text: "/help"
-            });
-            break;
-
-        case "commands":
-            bot.emit("text", {
-                ...query.message,
-                text: "/gv"
-            });
-            break;
-    }
-
-    await bot.answerCallbackQuery(query.id);
-
 });
+module.exports=bot;
