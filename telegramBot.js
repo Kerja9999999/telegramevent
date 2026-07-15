@@ -21,20 +21,20 @@ const keyboard = {
     one_time_keyboard: false,
     keyboard: [
       [
-        { text: "/vyruchka" },
-        { text: "/vchera" }
+        { text: "/vyruchka@albcarwashbot" },
+        { text: "/vchera@albcarwashbot" }
       ],
       [
-        { text: "/nedelya" },
-        { text: "/mesyac" }
+        { text: "/nedelya@albcarwashbot" },
+        { text: "/mesyac@albcarwashbot" }
       ],
       [
-        { text: "/god" },
-        { text: "/status" }
+        { text: "/god@albcarwashbot" },
+        { text: "/status@albcarwashbot" }
       ],
       [
-        { text: "/help" },
-        { text: "/gv" }
+        { text: "/help@albcarwashbot" },
+        { text: "/gv@albcarwashbot" }
       ]
     ]
   }
