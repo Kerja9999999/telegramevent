@@ -81,14 +81,11 @@ bot.onText(/\/start/, (msg) => {
 
     bot.sendMessage(
         msg.chat.id,
-
 `🚿 ALB CARWASH
 
 Добро пожаловать дядя Боря!
-Что хотите узнать?
-
+Что хотите узнать?`,
         keyboard
-
     );
 
 });
