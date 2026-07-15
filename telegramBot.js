@@ -362,7 +362,7 @@ async function getSystemStatus() {
     let awoara = "❌ Offline";
     let stripeStatus = "❌ Offline";
 
-    // AWOARA
+    // Проверка AWOARA
     try {
 
         const start = Date.now();
@@ -384,16 +384,24 @@ async function getSystemStatus() {
 
         awoara = `✅ Online (${Date.now() - start} ms)`;
 
-    } catch {}
+    } catch (e) {
 
-    // Stripe
+        console.log("AWOARA ERROR:", e.message);
+
+    }
+
+    // Проверка Stripe
     try {
 
         await stripe.balance.retrieve();
 
         stripeStatus = "✅ Online";
 
-    } catch {}
+    } catch (e) {
+
+        console.log("STRIPE ERROR:", e.message);
+
+    }
 
     return {
         awoara,
