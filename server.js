@@ -30,7 +30,9 @@ app.post(
   "/stripe-webhook",
   express.raw({ type: "application/json" }),
   async (req, res) => {
+
     try {
+
       const event = stripe.webhooks.constructEvent(
         req.body,
         req.headers["stripe-signature"],
@@ -38,43 +40,58 @@ app.post(
       );
 
       if (event.type === "checkout.session.completed") {
-          else {
 
-    await sendTelegram(
+        const s = event.data.object;
+        const c = s.customer_details || {};
+
+        await sendTelegram(
+`💳 Stripe
+
+💶 ${((s.amount_total || 0) / 100).toFixed(2)} EUR
+
+👤 ${c.name || "-"}
+
+📧 ${c.email || "-"}
+
+📱 ${c.phone || "-"}
+
+🆔 ${s.id}`
+        );
+
+      } else {
+
+        await sendTelegram(
 `ℹ️ Stripe Event
 
 ${event.type}
 
 🕒 ${new Date().toLocaleString("lv-LV")}`
-    );
+        );
 
-}
-        const s = event.data.object;
-        const c = s.customer_details || {};
-
-        await sendTelegram(`💳 Stripe 💶 ${((s.amount_total || 0) / 100).toFixed(2)} EUR 👤 ${c.name || "-"} 📧 ${c.email || "-"} 📱 ${c.phone || "-"} 🆔 ${s.id}`);
       }
 
       res.json({ received: true });
-    catch (e) {
 
-  console.error("❌ Stripe Webhook Error:", e);
+    } catch (e) {
 
-  try {
+      console.error("❌ Stripe Webhook Error:", e);
 
-    await sendTelegram(
+      try {
+
+        await sendTelegram(
 `🚨 STRIPE WEBHOOK ERROR
 
 ❌ ${e.message}
 
 🕒 ${new Date().toLocaleString("lv-LV")}`
-    );
+        );
 
-  } catch {}
+      } catch {}
 
-  res.status(400).send(e.message);
+      res.status(400).send(e.message);
 
-}
+    }
+
   }
 );
 app.use(express.json());
