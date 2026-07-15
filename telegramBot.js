@@ -21,24 +21,55 @@ const keyboard = {
     one_time_keyboard: false,
     keyboard: [
       [
-        { text: "/vyruchka@albcarwashbot" },
-        { text: "/vchera@albcarwashbot" }
+        { text: "💶 Сегодня" },
+        { text: "📆 Вчера" }
       ],
       [
-        { text: "/nedelya@albcarwashbot" },
-        { text: "/mesyac@albcarwashbot" }
+        { text: "📈 Неделя" },
+        { text: "🗓 Месяц" }
       ],
       [
-        { text: "/god@albcarwashbot" },
-        { text: "/status@albcarwashbot" }
+        { text: "📊 Год" },
+        { text: "🟢 Статус" }
       ],
       [
-        { text: "/help@albcarwashbot" },
-        { text: "/gv@albcarwashbot" }
+        { text: "❓ Помощь" },
+        { text: "📋 Команды" }
       ]
     ]
   }
 };
+bot.on("message", (msg) => {
+
+    switch (msg.text) {
+
+        case "💶 Сегодня":
+            return bot.emit("text", { ...msg, text: "/vyruchka" });
+
+        case "📆 Вчера":
+            return bot.emit("text", { ...msg, text: "/vchera" });
+
+        case "📈 Неделя":
+            return bot.emit("text", { ...msg, text: "/nedelya" });
+
+        case "🗓 Месяц":
+            return bot.emit("text", { ...msg, text: "/mesyac" });
+
+        case "📊 Год":
+            return bot.emit("text", { ...msg, text: "/god" });
+
+        case "🟢 Статус":
+            return bot.emit("text", { ...msg, text: "/status" });
+
+        case "❓ Помощь":
+            return bot.emit("text", { ...msg, text: "/help" });
+
+        case "📋 Команды":
+            return bot.emit("text", { ...msg, text: "/gv" });
+
+    }
+
+});
 function todayRange() {
 
     const start = new Date();
