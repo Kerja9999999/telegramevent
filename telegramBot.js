@@ -7,6 +7,7 @@ const {
 
 const bot =
 new TelegramBot(
+
 process.env.TELEGRAM_BOT_TOKEN,
 
 {
@@ -14,20 +15,12 @@ process.env.TELEGRAM_BOT_TOKEN,
 }
 
 );
-let ignoreNext = false;
 bot.on("message", (msg) => {
-
-    if (!msg.text) return;
-
-    if (ignoreNext) {
-        ignoreNext = false;
-        return;
-    }
+ if (!msg.text || msg.text.startsWith("/")) return;
 
     switch (msg.text) {
 
         case "💶 Сегодня":
-            ignoreNext = true;
             msg.text = "/vyruchka";
             return bot.processUpdate({
                 update_id: Date.now(),
@@ -35,7 +28,6 @@ bot.on("message", (msg) => {
             });
 
         case "📆 Вчера":
-            ignoreNext = true;
             msg.text = "/vchera";
             return bot.processUpdate({
                 update_id: Date.now() + 1,
@@ -43,7 +35,6 @@ bot.on("message", (msg) => {
             });
 
         case "📈 Неделя":
-            ignoreNext = true;
             msg.text = "/nedelya";
             return bot.processUpdate({
                 update_id: Date.now() + 2,
@@ -51,7 +42,6 @@ bot.on("message", (msg) => {
             });
 
         case "🗓 Месяц":
-            ignoreNext = true;
             msg.text = "/mesyac";
             return bot.processUpdate({
                 update_id: Date.now() + 3,
@@ -59,7 +49,6 @@ bot.on("message", (msg) => {
             });
 
         case "📊 Год":
-            ignoreNext = true;
             msg.text = "/god";
             return bot.processUpdate({
                 update_id: Date.now() + 4,
@@ -67,7 +56,6 @@ bot.on("message", (msg) => {
             });
 
         case "🟢 Статус":
-            ignoreNext = true;
             msg.text = "/status";
             return bot.processUpdate({
                 update_id: Date.now() + 5,
@@ -75,7 +63,6 @@ bot.on("message", (msg) => {
             });
 
         case "❓ Помощь":
-            ignoreNext = true;
             msg.text = "/help";
             return bot.processUpdate({
                 update_id: Date.now() + 6,
@@ -83,7 +70,6 @@ bot.on("message", (msg) => {
             });
 
         case "📋 Команды":
-            ignoreNext = true;
             msg.text = "/gv";
             return bot.processUpdate({
                 update_id: Date.now() + 7,
@@ -94,41 +80,7 @@ bot.on("message", (msg) => {
 
 });
 function todayRange() {
-async function sendToday(chatId) {
 
-    const { start, end } = todayRange();
-
-    const s = await getStatistics(start, end);
-
-    return bot.sendMessage(chatId,
-
-`📊 ALB CARWASH
-
-💶 Общая выручка:
-${s.total.toFixed(2)} €
-
-👤 Кредиты:
-${s.card.toFixed(2)} €
-
-🪙 Монеты:
-${s.coin.toFixed(2)} €
-
-🧾 Чеков:
-${s.count}
-
-💳 Средний чек:
-${s.average.toFixed(2)} €
-
-👑 VIP:
-${s.vip}
-
-🆔 Первый Order:
-${s.firstOrder}
-
-🆔 Последний Order:
-${s.lastOrder}`);
-
-}
     const start = new Date();
     start.setHours(0,0,0,0);
 
@@ -219,9 +171,44 @@ bot.sendMessage(msg.chat.id,
 );
 
 });
-bot.onText(/\/vyruchka/, async (msg) => {
+bot.onText(/\/vyruchka/,async msg=>{
 
-    return sendToday(msg.chat.id);
+const { start, end } = todayRange();
+
+const s = await getStatistics(start, end);
+
+bot.sendMessage(
+
+msg.chat.id,
+
+`📊 ALB CARWASH
+
+💶 Общая выручка:
+${s.total.toFixed(2)} €
+
+👤 Кредиты:
+${s.card.toFixed(2)} €
+
+🪙 Монеты:
+${s.coin.toFixed(2)} €
+
+🧾 Чеков:
+${s.count}
+
+💳 Средний чек:
+${s.average.toFixed(2)} €
+
+👑 VIP:
+${s.vip}
+
+🆔 Первый Order:
+${s.firstOrder}
+
+🆔 Последний Order:
+${s.lastOrder}`
+
+
+);
 
 });
 bot.onText(/\/vchera/, async (msg) => {
@@ -465,12 +452,6 @@ ${s.lastOrder}
 
 🕒 Последнее обновление:
 ${new Date().toLocaleString("lv-LV")}`);
-
-});
-bot.on("message", async (msg) => {
-
-    if (msg.text === "💶 Сегодня")
-        return sendToday(msg.chat.id);
 
 });
 module.exports=bot;
