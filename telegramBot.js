@@ -52,7 +52,7 @@ function todayRange() {
 }
 bot.onText(/\/start/, (msg) => {
 
-bot.sendMessage(msg.chat.id, keyboard
+bot.sendMessage(msg.chat.id,
 
 `🚿 ALB CARWASH
 
@@ -69,7 +69,7 @@ Laipni lūdzam!
 📍 /status — Состояние мойки / Mazgātavas statuss
 📋 /help — Помощь / Palīdzība
 📋 /gv — Все команды / Visas komandas`
-
+keyboard
 );
 
 });
@@ -336,6 +336,7 @@ ${s.firstOrder}
 
 🆔 Последний Order:
 ${s.lastOrder}`);
+    });
 const fs = require("fs");
 const path = require("path");
 
