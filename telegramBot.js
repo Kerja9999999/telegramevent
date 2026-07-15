@@ -21,20 +21,20 @@ const keyboard = {
     one_time_keyboard: false,
     keyboard: [
       [
-        { text: "💶 Сегодня" },
-        { text: "📆 Вчера" }
+        { text: "/vyruchka" },
+        { text: "/vchera" }
       ],
       [
-        { text: "📈 Неделя" },
-        { text: "🗓 Месяц" }
+        { text: "/nedelya" },
+        { text: "/mesyac" }
       ],
       [
-        { text: "📊 Год" },
-        { text: "🟢 Статус" }
+        { text: "/god" },
+        { text: "/status" }
       ],
       [
-        { text: "❓ Помощь" },
-        { text: "📋 Команды" }
+        { text: "/help" },
+        { text: "/gv" }
       ]
     ]
   }
@@ -412,39 +412,6 @@ ${s.lastOrder}
 
 🕒 Последнее обновление:
 ${new Date().toLocaleString("lv-LV")}`);
-
-});
-bot.on("message", (msg) => {
-
-    if (!msg.text) return;
-
-    switch (msg.text) {
-
-        case "💶 Сегодня":
-            return bot.emit("text", { ...msg, text: "/vyruchka" });
-
-        case "📆 Вчера":
-            return bot.emit("text", { ...msg, text: "/vchera" });
-
-        case "📈 Неделя":
-            return bot.emit("text", { ...msg, text: "/nedelya" });
-
-        case "🗓 Месяц":
-            return bot.emit("text", { ...msg, text: "/mesyac" });
-
-        case "📊 Год":
-            return bot.emit("text", { ...msg, text: "/god" });
-
-        case "🟢 Статус":
-            return bot.emit("text", { ...msg, text: "/status" });
-
-        case "❓ Помощь":
-            return bot.emit("text", { ...msg, text: "/help" });
-
-        case "📋 Команды":
-            return bot.emit("text", { ...msg, text: "/gv" });
-
-    }
 
 });
 
