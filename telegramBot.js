@@ -15,57 +15,65 @@ process.env.TELEGRAM_BOT_TOKEN,
 }
 
 );
-const keyboard = {
-  reply_markup: {
-    resize_keyboard: true,
-    one_time_keyboard: false,
-    keyboard: [
-      [
-        { text: "💶 Сегодня" },
-        { text: "📆 Вчера" }
-      ],
-      [
-        { text: "📈 Неделя" },
-        { text: "🗓 Месяц" }
-      ],
-      [
-        { text: "📊 Год" },
-        { text: "🟢 Статус" }
-      ],
-      [
-        { text: "❓ Помощь" },
-        { text: "📋 Команды" }
-      ]
-    ]
-  }
-};
 bot.on("message", (msg) => {
 
     switch (msg.text) {
 
         case "💶 Сегодня":
-            return bot.emit("text", { ...msg, text: "/vyruchka" });
+            msg.text = "/vyruchka";
+            return bot.processUpdate({
+                update_id: Date.now(),
+                message: msg
+            });
 
         case "📆 Вчера":
-            return bot.emit("text", { ...msg, text: "/vchera" });
+            msg.text = "/vchera";
+            return bot.processUpdate({
+                update_id: Date.now() + 1,
+                message: msg
+            });
 
         case "📈 Неделя":
-            return bot.emit("text", { ...msg, text: "/nedelya" });
+            msg.text = "/nedelya";
+            return bot.processUpdate({
+                update_id: Date.now() + 2,
+                message: msg
+            });
 
         case "🗓 Месяц":
-            return bot.emit("text", { ...msg, text: "/mesyac" });
+            msg.text = "/mesyac";
+            return bot.processUpdate({
+                update_id: Date.now() + 3,
+                message: msg
+            });
 
         case "📊 Год":
-            return bot.emit("text", { ...msg, text: "/god" });
+            msg.text = "/god";
+            return bot.processUpdate({
+                update_id: Date.now() + 4,
+                message: msg
+            });
 
         case "🟢 Статус":
-            return bot.emit("text", { ...msg, text: "/status" });
+            msg.text = "/status";
+            return bot.processUpdate({
+                update_id: Date.now() + 5,
+                message: msg
+            });
 
         case "❓ Помощь":
-            return bot.emit("text", { ...msg, text: "/help" });
+            msg.text = "/help";
+            return bot.processUpdate({
+                update_id: Date.now() + 6,
+                message: msg
+            });
 
         case "📋 Команды":
-            return bot.emit("text", { ...msg, text: "/gv" });
+            msg.text = "/gv";
+            return bot.processUpdate({
+                update_id: Date.now() + 7,
+                message: msg
+            });
 
     }
 
