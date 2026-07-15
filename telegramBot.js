@@ -21,20 +21,20 @@ const keyboard = {
     one_time_keyboard: false,
     keyboard: [
       [
-        { text: "💶 Сегодня" },
-        { text: "📆 Вчера" }
+        { text: "/vyruchka" },
+        { text: "/vchera" }
       ],
       [
-        { text: "📈 Неделя" },
-        { text: "🗓 Месяц" }
+        { text: "/nedelya" },
+        { text: "/mesyac" }
       ],
       [
-        { text: "📊 Год" },
-        { text: "🟢 Статус" }
+        { text: "/god" },
+        { text: "/status" }
       ],
       [
-        { text: "❓ Помощь" },
-        { text: "📋 Команды" }
+        { text: "/help" },
+        { text: "/gv" }
       ]
     ]
   }
