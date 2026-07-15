@@ -96,9 +96,7 @@ console.log(
     today.reverse();
 
     for(const order of today){
-
-        const amount =
-            Number(order.amount_received || 0)/100;
+const amount = parseFloat(order.amount_received || "0");
 
         total+=amount;
 
