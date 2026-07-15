@@ -2,7 +2,7 @@
   "26245562": {
     "phone": "26245562",
     "music": "Track 1",
-    "color": "red",
+    "color": "christmas",
     "relay1": false,
     "relay2": true,
     "vip": true,
@@ -16,5 +16,19 @@
     "relay2": false,
     "vip": false,
     "plates": []
+  },
+  "+37127762444": {
+    "phone": "+37127762444",
+    "name": "",
+    "color": "off",
+    "music": "",
+    "relay1": false,
+    "relay2": false,
+    "vip": false,
+    "enabled": true,
+    "created": "2026-07-14T09:28:24.976Z",
+    "lastWash": null,
+    "washCount": 0,
+    "totalSpent": 0
   }
 }
