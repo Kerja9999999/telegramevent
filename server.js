@@ -1,6 +1,17 @@
 const express = require("express");
 const Stripe = require("stripe");
 const axios = require("axios");
+const fs = require("fs");
+const path = require("path");
+const NIGHT_FILE = path.join(__dirname, "data", "nightQueue.json");
+
+if (!fs.existsSync(path.join(__dirname, "data"))) {
+    fs.mkdirSync(path.join(__dirname, "data"));
+}
+
+if (!fs.existsSync(NIGHT_FILE)) {
+    fs.writeFileSync(NIGHT_FILE, "[]");
+}
 async function loginAwoara(account, password) {
 
     const res = await axios({
