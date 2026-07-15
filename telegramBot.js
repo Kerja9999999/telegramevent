@@ -1,3 +1,7 @@
+const axios = require("axios");
+const Stripe = require("stripe");
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const TelegramBot =
 require("node-telegram-bot-api");
 
@@ -353,7 +357,50 @@ function getUsersCount() {
         return 0;
     }
 }
+async function getSystemStatus() {
 
+    let awoara = "❌ Offline";
+    let stripeStatus = "❌ Offline";
+
+    // AWOARA
+    try {
+
+        const start = Date.now();
+
+        await axios.get(
+            "https://en.awoara.com.cn/mer/store/order/smart_order/lst",
+            {
+                headers: {
+                    "X-Token": process.env.AWORA_TOKEN
+                },
+                params: {
+                    page: 1,
+                    limit: 1,
+                    type: 1
+                },
+                timeout: 5000
+            }
+        );
+
+        awoara = `✅ Online (${Date.now() - start} ms)`;
+
+    } catch {}
+
+    // Stripe
+    try {
+
+        await stripe.balance.retrieve();
+
+        stripeStatus = "✅ Online";
+
+    } catch {}
+
+    return {
+        awoara,
+        stripeStatus
+    };
+
+}
 bot.onText(/\/status/, async (msg) => {
 
     const start = new Date();
@@ -365,7 +412,7 @@ bot.onText(/\/status/, async (msg) => {
     const s = await getStatistics(start, end);
 
     const users = getUsersCount();
-
+    const system = await getSystemStatus();
     bot.sendMessage(msg.chat.id,
 
 `🚿 ALB CARWASH
@@ -379,7 +426,9 @@ bot.onText(/\/status/, async (msg) => {
 ✅ Online
 
 📡 AWOARA API:
-✅ Online
+${system.awoara}
+💳 Stripe:
+${system.stripeStatus}
 
 📅 Сегодня / Šodien
 
