@@ -39,26 +39,30 @@ msg.chat.id,
 
 `📊 ALB CARWASH
 
-💶 ${s.total.toFixed(2)} €
+💶 Общая выручка:
+${s.total.toFixed(2)} €
 
-🧾 ${s.count}
-
-💳 ${s.average.toFixed(2)} €
-
-💳 Карта
+👤 Кредиты:
 ${s.card.toFixed(2)} €
 
-🪙 Монеты
+🪙 Монеты:
 ${s.coin.toFixed(2)} €
 
-👑 VIP
+🧾 Чеков:
+${s.count}
+
+💳 Средний чек:
+${s.average.toFixed(2)} €
+
+👑 VIP:
 ${s.vip}
 
-🆔 Первый
+🆔 Первый Order:
 ${s.firstOrder}
 
-🆔 Последний
+🆔 Последний Order:
 ${s.lastOrder}`
+
 
 );
 
