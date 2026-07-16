@@ -157,7 +157,9 @@ async function checkOrders(sendTelegram) {
     newOrders.reverse();
 
     for (const order of newOrders) {
-
+if (!activeOrders.has(order.order_sn)) {
+    activeOrders.set(order.order_sn, order);
+}
 
         const phone = order.user?.phone;
 
