@@ -370,7 +370,11 @@ async function uploadUsersToGitHub(users) {
   console.log("users.json updated in GitHub");
 }
 
-const hour = new Date().getHours();
+
+
+// ---------- Telegram ----------
+async function sendTelegram(text) {
+    const hour = new Date().getHours();
 
 if (hour >= 23 || hour < 8) {
 
@@ -389,8 +393,6 @@ if (hour >= 23 || hour < 8) {
 
     return;
 }
-// ---------- Telegram ----------
-async function sendTelegram(text) {
   console.log("SEND TELEGRAM");
   try {
     await axios.post(
