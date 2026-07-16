@@ -423,19 +423,48 @@ setInterval(async () => {
 
     if (queue.length === 0) return;
 
-    let text = "🌙 Ночной отчет (23:00–08:00)\n\n";
+    let report =
+`🌙 НОЧНОЙ ОТЧЕТ
+🕚 23:00 → 08:00
+
+📊 Всего событий: ${queue.length}
+
+────────────────────`;
 
     queue.forEach((item, index) => {
-        text += `${index + 1}. ${item}\n\n`;
+
+        report += `
+
+${index + 1}️⃣
+${item}
+────────────────────`;
+
     });
 
-    text += `📊 Всего событий: ${queue.length}`;
+    report += `
 
-    await sendTelegram(text);
+✅ Конец отчета
+🕗 ${now.toLocaleString("lv-LV")}`;
 
-    fs.writeFileSync(NIGHT_FILE, "[]");
+    try {
 
-    console.log("✅ Ночной отчет отправлен");
+        await axios.post(
+            `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
+            {
+                chat_id: process.env.TELEGRAM_CHAT_ID,
+                text: report
+            }
+        );
+
+        fs.writeFileSync(NIGHT_FILE, "[]");
+
+        console.log("🌙 Ночной отчет отправлен");
+
+    } catch (e) {
+
+        console.log("Ошибка отправки ночного отчета:", e.message);
+
+    }
 
 }, 60000);
 
