@@ -407,7 +407,37 @@ if (hour >= 23 || hour < 8) {
     console.error("Telegram ERROR:", err.response?.data || err.message);
   }
 }
+setInterval(async () => {
 
+    const now = new Date();
+
+    if (now.getHours() !== 8 || now.getMinutes() !== 0) return;
+
+    let queue = [];
+
+    try {
+        queue = JSON.parse(fs.readFileSync(NIGHT_FILE, "utf8"));
+    } catch {
+        return;
+    }
+
+    if (queue.length === 0) return;
+
+    let text = "🌙 Ночной отчет (23:00–08:00)\n\n";
+
+    queue.forEach((item, index) => {
+        text += `${index + 1}. ${item}\n\n`;
+    });
+
+    text += `📊 Всего событий: ${queue.length}`;
+
+    await sendTelegram(text);
+
+    fs.writeFileSync(NIGHT_FILE, "[]");
+
+    console.log("✅ Ночной отчет отправлен");
+
+}, 60000);
 
 // ---------- Awora ----------
 checkOrders(sendTelegram);
