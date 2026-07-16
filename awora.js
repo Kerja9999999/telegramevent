@@ -340,7 +340,13 @@ if (profile) {
 
     await new Promise(r => setTimeout(r, 30000));
 
-              await axios.post(
+const auth = Buffer
+    .from(
+        process.env.ADMIN_LOGIN + ":" + process.env.ADMIN_PASSWORD
+    )
+    .toString("base64");
+
+await axios.post(
     "https://telegramevent.onrender.com/api/control",
     {
         light: false,
@@ -352,7 +358,7 @@ if (profile) {
     },
     {
         headers: {
-            Authorization: "Bearer " + process.env.ADMIN_TOKEN
+            Authorization: "Basic " + auth
         }
     }
 );
