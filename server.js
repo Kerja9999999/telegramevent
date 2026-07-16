@@ -411,7 +411,26 @@ setInterval(async () => {
 
     const now = new Date();
 
-    if (now.getHours() !== 8 || now.getMinutes() !== 0) return;
+const REPORT_FILE = path.join(__dirname, "data", "nightReport.json");
+
+let lastReport = "";
+
+try {
+    lastReport = JSON.parse(fs.readFileSync(REPORT_FILE, "utf8")).date;
+} catch {}
+
+const today = now.toISOString().slice(0, 10);
+
+if (now.getHours() === 8 && lastReport !== today) {
+
+    // отправка отчета
+
+    fs.writeFileSync(
+        REPORT_FILE,
+        JSON.stringify({ date: today }, null, 2)
+    );
+
+}
 
     let queue = [];
 
