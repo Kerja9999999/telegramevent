@@ -32,8 +32,7 @@ async function loginAwoara(account, password) {
 
     return res.data;
 }
-const fs = require("fs");
-const path = require("path");
+
 const checkOrders = require("./awora");
 const app = express();
 // ---------- Stripe ----------
