@@ -407,45 +407,58 @@ if (hour >= 23 || hour < 8) {
     console.error("Telegram ERROR:", err.response?.data || err.message);
   }
 }
+const REPORT_FILE = path.join(__dirname, "data", "nightReport.json");
+
+if (!fs.existsSync(REPORT_FILE)) {
+    fs.writeFileSync(REPORT_FILE, JSON.stringify({ date: "" }));
+}
+
 setInterval(async () => {
 
     const now = new Date();
 
-const REPORT_FILE = path.join(__dirname, "data", "nightReport.json");
+    // Отправляем только в 08:00
+    if (now.getHours() !== 8) return;
 
-let lastReport = "";
+    const today = now.toISOString().slice(0, 10);
 
-try {
-    lastReport = JSON.parse(fs.readFileSync(REPORT_FILE, "utf8")).date;
-} catch {}
+    let lastReport = "";
 
-const today = now.toISOString().slice(0, 10);
+    try {
+        lastReport = JSON.parse(
+            fs.readFileSync(REPORT_FILE, "utf8")
+        ).date;
+    } catch {}
 
-if (now.getHours() === 8 && lastReport !== today) {
-
-    // отправка отчета
-
-    fs.writeFileSync(
-        REPORT_FILE,
-        JSON.stringify({ date: today }, null, 2)
-    );
-
-}
+    // Уже отправляли сегодня
+    if (lastReport === today) return;
 
     let queue = [];
 
     try {
-        queue = JSON.parse(fs.readFileSync(NIGHT_FILE, "utf8"));
+        queue = JSON.parse(
+            fs.readFileSync(NIGHT_FILE, "utf8")
+        );
     } catch {
         return;
     }
 
-    if (queue.length === 0) return;
+    // Ночью ничего не произошло
+    if (queue.length === 0) {
+
+        fs.writeFileSync(
+            REPORT_FILE,
+            JSON.stringify({ date: today }, null, 2)
+        );
+
+        return;
+    }
 
     let report =
-`🌙 НОЧНОЙ ОТЧЕТ
-🕚 23:00 → 08:00
+`🌙 ALB CARWASH
+НОЧНОЙ ОТЧЕТ
 
+🕚 23:00 → 08:00
 📊 Всего событий: ${queue.length}
 
 ────────────────────`;
@@ -455,7 +468,9 @@ if (now.getHours() === 8 && lastReport !== today) {
         report += `
 
 ${index + 1}️⃣
+
 ${item}
+
 ────────────────────`;
 
     });
@@ -475,17 +490,24 @@ ${item}
             }
         );
 
+        // Очищаем очередь
         fs.writeFileSync(NIGHT_FILE, "[]");
+
+        // Запоминаем дату отправки
+        fs.writeFileSync(
+            REPORT_FILE,
+            JSON.stringify({ date: today }, null, 2)
+        );
 
         console.log("🌙 Ночной отчет отправлен");
 
     } catch (e) {
 
-        console.log("Ошибка отправки ночного отчета:", e.message);
+        console.log("Ошибка отправки:", e.message);
 
     }
 
-}, 60000);
+}, 30000);
 
 // ---------- Awora ----------
 checkOrders(sendTelegram);
