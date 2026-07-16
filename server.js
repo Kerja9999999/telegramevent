@@ -662,20 +662,7 @@ app.get("/automation/status", (req, res) => {
 const CURRENT_FILE = path.join(__dirname, "data", "currentProfile.json");
 
 app.get("/automation/command", (req, res) => {
-  try {
-    const profile = JSON.parse(fs.readFileSync(CURRENT_FILE, "utf8"));
-
-    res.json(profile);
-  } catch {
-    res.json({
-      phone: "",
-      music: "",
-      color: "off",
-      relay1: false,
-      relay2: false,
-      vip: false,
-    });
-  }
+  res.json(automationCommand);
 });
 // ---------- USERS ----------
 app.get("/api/vision/plate/:plate", (req, res) => {
