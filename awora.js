@@ -383,7 +383,37 @@ console.log("Current profile cleared");
       lastOrder = order.order_sn;
       fs.writeFileSync(FILE, JSON.stringify({ order: lastOrder }));
     }
+// ---------- Проверяем незавершенные мойки ----------
+for (const [orderSn, order] of activeOrders) {
 
+    try {
+
+        const detail = await getDetail(orderSn);
+
+        const info = detail?.body?.data?.order_info;
+
+        if (!info) continue;
+
+        if (
+            info.operation_remain_time !== 0 ||
+            info.idle_remain_time !== 0
+        ) {
+            continue;
+        }
+
+        console.log("Order finished:", orderSn);
+
+        activeOrders.delete(orderSn);
+
+        // Здесь позже отправим Telegram
+
+    } catch (e) {
+
+        console.log("Active order error:", orderSn);
+
+    }
+
+}
   } catch (err) {
     console.error("Awora:", err.response?.data || err.message);
   }
