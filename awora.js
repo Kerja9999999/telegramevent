@@ -340,17 +340,22 @@ if (profile) {
 
     await new Promise(r => setTimeout(r, 30000));
 
-    await axios.post(
-        "https://telegramevent.onrender.com/api/control",
-        {
-            light: false,
-            music: false,
-            relay1: false,
-            relay2: false,
-            color: "off",
-            song: ""
+              await axios.post(
+    "https://telegramevent.onrender.com/api/control",
+    {
+        light: false,
+        music: false,
+        relay1: false,
+        relay2: false,
+        color: "off",
+        song: ""
+    },
+    {
+        headers: {
+            Authorization: "Bearer " + process.env.ADMIN_TOKEN
         }
-    );
+    }
+);
 
     console.log("Automation OFF");
 
