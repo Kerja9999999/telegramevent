@@ -232,15 +232,24 @@ try {
         const info = detail?.body?.data?.order_info;
 
         if (!info) {
-          console.log("Order detail not ready:", order.order_sn);
-          continue;
-        }
 
-        if (info.operation_remain_time !== 0 || info.idle_remain_time !== 0) {
-          console.log("Order not finished:", order.order_sn);
-          continue;
-        }
+    console.log("Order detail not ready:", order.order_sn);
 
+    activeOrders.set(order.order_sn, order);
+
+    continue;
+
+}
+
+if (info.operation_remain_time !== 0 || info.idle_remain_time !== 0) {
+
+    console.log("Order not finished:", order.order_sn);
+
+    activeOrders.set(order.order_sn, order);
+
+    continue;
+
+}
         const programs = info.detail || [];
 
         const getSeconds = (name) => {
