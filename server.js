@@ -418,7 +418,7 @@ setInterval(async () => {
     const now = new Date();
 
     // Отправляем только в 08:00
-    if (now.getHours() !== 8) return;
+    if (now.getHours() < 8) return;
 
     const today = now.toISOString().slice(0, 10);
 
