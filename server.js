@@ -370,6 +370,26 @@ async function uploadUsersToGitHub(users) {
 
   console.log("users.json updated in GitHub");
 }
+
+const hour = new Date().getHours();
+
+if (hour >= 23 || hour < 8) {
+
+    const queue = JSON.parse(
+        fs.readFileSync(NIGHT_FILE, "utf8")
+    );
+
+    queue.push(text);
+
+    fs.writeFileSync(
+        NIGHT_FILE,
+        JSON.stringify(queue, null, 2)
+    );
+
+    console.log("🌙 Сообщение сохранено в ночную очередь");
+
+    return;
+}
 // ---------- Telegram ----------
 async function sendTelegram(text) {
   console.log("SEND TELEGRAM");
