@@ -340,28 +340,23 @@ if (profile) {
 
     await new Promise(r => setTimeout(r, 30000));
 
-const auth = Buffer
-    .from(
-        process.env.ADMIN_LOGIN + ":" + process.env.ADMIN_PASSWORD
-    )
-    .toString("base64");
+const CURRENT_FILE = path.join(__dirname, "data", "currentProfile.json");
 
-await axios.post(
-    "https://telegramevent.onrender.com/api/control",
-    {
-        light: false,
-        music: false,
+fs.writeFileSync(
+    CURRENT_FILE,
+    JSON.stringify({
+        phone: "",
+        name: "",
+        color: "off",
+        music: "",
         relay1: false,
         relay2: false,
-        color: "off",
-        song: ""
-    },
-    {
-        headers: {
-            Authorization: "Basic " + auth
-        }
-    }
+        vip: false,
+        plates: []
+    }, null, 2)
 );
+
+console.log("Current profile cleared");
 
     console.log("Automation OFF");
 
