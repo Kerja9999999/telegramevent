@@ -31,6 +31,15 @@
     "washCount": 0,
     "totalSpent": 0
   },
+  "29623317": {
+    "phone": "29623317",
+    "music": "Track 1",
+    "color": "green",
+    "relay1": false,
+    "relay2": true,
+    "vip": true,
+    "plates": []
+  },
   "29983554": {
     "phone": "29983554",
     "music": "Track 2",
