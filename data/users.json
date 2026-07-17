@@ -28,17 +28,12 @@
   },
   "28870552": {
     "phone": "28870552",
-    "name": "",
+    "music": "Track 3",
     "color": "off",
-    "music": "",
     "relay1": false,
     "relay2": false,
     "vip": false,
-    "enabled": true,
-    "created": "2026-07-17T09:33:46.551Z",
-    "lastWash": null,
-    "washCount": 0,
-    "totalSpent": 0
+    "plates": []
   },
   "29623317": {
     "phone": "29623317",
