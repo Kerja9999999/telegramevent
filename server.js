@@ -961,5 +961,43 @@ ${err.message}`
     res.status(500).send("Internal Server Error");
 
 });
+
+
+app.get("/test/daily-report", async (req, res) => {
+
+    const end = new Date();
+    end.setHours(8, 0, 0, 0);
+
+    const start = new Date(end);
+    start.setDate(start.getDate() - 1);
+
+    const stat = await getStatistics(start, end);
+
+    const report =
+`🌅 ALB CARWASH
+
+📊 ТЕСТ ЕЖЕДНЕВНОГО ОТЧЁТА
+
+💶 Общая выручка: ${stat.total.toFixed(2)} EUR
+💳 Карты: ${stat.card.toFixed(2)} EUR
+🪙 Монеты: ${stat.coin.toFixed(2)} EUR
+
+🧾 Чеков: ${stat.count}
+💶 Средний чек: ${stat.average.toFixed(2)} EUR
+
+👑 VIP: ${stat.vip}
+
+🆔 Первый заказ:
+${stat.firstOrder || "-"}
+
+🆔 Последний заказ:
+${stat.lastOrder || "-"}`;
+
+    await sendTelegram(report);
+
+    res.send("Daily report sent.");
+});
+
+
 require("./telegramBot");
 require("./scheduler");
