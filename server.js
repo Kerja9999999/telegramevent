@@ -527,7 +527,6 @@ setInterval(async () => {
 }, 10000);
 
 // ---------- DAILY REPORT ----------
-const { getStatistics } = require("./statistics");
 
 const DAILY_REPORT_FILE = path.join(__dirname, "data", "dailyReport.json");
 
