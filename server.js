@@ -4,6 +4,7 @@ const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 const NIGHT_FILE = path.join(__dirname, "data", "nightQueue.json");
+const { getStatistics } = require("./statistics");
 
 if (!fs.existsSync(path.join(__dirname, "data"))) {
     fs.mkdirSync(path.join(__dirname, "data"));
@@ -524,6 +525,125 @@ setInterval(async () => {
     checkingOrders = false;
   }
 }, 10000);
+
+// ---------- DAILY REPORT ----------
+const { getStatistics } = require("./statistics");
+
+const DAILY_REPORT_FILE = path.join(__dirname, "data", "dailyReport.json");
+
+if (!fs.existsSync(DAILY_REPORT_FILE)) {
+    fs.writeFileSync(
+        DAILY_REPORT_FILE,
+        JSON.stringify({ date: "" }, null, 2)
+    );
+}
+
+setInterval(async () => {
+
+    const now = new Date();
+
+    if (now.getHours() !== 8 || now.getMinutes() !== 5)
+        return;
+
+    const today = now.toISOString().slice(0, 10);
+
+    let lastDate = "";
+
+    try {
+        lastDate = JSON.parse(
+            fs.readFileSync(DAILY_REPORT_FILE, "utf8")
+        ).date;
+    } catch {}
+
+    if (lastDate === today)
+        return;
+
+    const end = new Date();
+    end.setHours(8, 0, 0, 0);
+
+    const start = new Date(end);
+    start.setDate(start.getDate() - 1);
+
+    const stat = await getStatistics(start, end);
+
+    const hours = (end - start) / 3600000;
+
+    const incomePerHour =
+        stat.total / hours;
+
+    const carsPerHour =
+        stat.count / hours;
+
+    const report =
+
+`🌅 ALB CARWASH
+
+📊 ЕЖЕДНЕВНЫЙ ОТЧЁТ
+
+📅 ${today}
+
+────────────────────
+
+💶 Общая выручка:
+${stat.total.toFixed(2)} EUR
+
+💳 Карты:
+${stat.card.toFixed(2)} EUR
+
+🪙 Монеты:
+${stat.coin.toFixed(2)} EUR
+
+👑 VIP:
+${stat.vip}
+
+🧾 Всего чеков:
+${stat.count}
+
+💶 Средний чек:
+${stat.average.toFixed(2)} EUR
+
+📈 Выручка в час:
+${incomePerHour.toFixed(2)} EUR
+
+🚗 Машин в час:
+${carsPerHour.toFixed(2)}
+
+────────────────────
+
+🆔 Первый заказ
+
+${stat.firstOrder || "-"}
+
+🆔 Последний заказ
+
+${stat.lastOrder || "-"}
+
+────────────────────
+
+🕗 Период
+
+${start.toLocaleString("lv-LV")}
+
+↓
+
+${end.toLocaleString("lv-LV")}
+
+✅ Хорошего дня!`;
+
+    await sendTelegram(report);
+
+    fs.writeFileSync(
+        DAILY_REPORT_FILE,
+        JSON.stringify(
+            { date: today },
+            null,
+            2
+        )
+    );
+
+    console.log("✅ Daily report sent");
+
+}, 30000);
 
 // ---------- Basic ----------
 app.get("/", (_, res) => res.send("Bot is running"));
