@@ -1,4 +1,4 @@
-const express = require("express");
+byconst express = require("express");
 const Stripe = require("stripe");
 const axios = require("axios");
 const fs = require("fs");
@@ -539,12 +539,29 @@ if (!fs.existsSync(DAILY_REPORT_FILE)) {
 
 setInterval(async () => {
 
-    const now = new Date();
+const now = new Date();
 
-    if (now.getHours() !== 8 || now.getMinutes() !== 5)
-        return;
+const riga = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/Riga",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false
+}).formatToParts(now);
 
-    const today = now.toISOString().slice(0, 10);
+const get = (type) =>
+    riga.find(x => x.type === type).value;
+
+const hour = Number(get("hour"));
+const minute = Number(get("minute"));
+
+const today =
+    `${get("year")}-${get("month")}-${get("day")}`;
+
+if (hour !== 8 || minute !== 5)
+    return;
 
     let lastDate = "";
 
@@ -573,59 +590,26 @@ setInterval(async () => {
     const carsPerHour =
         stat.count / hours;
 
-    const report =
-
+const report =
 `🌅 ALB CARWASH
-
 📊 ЕЖЕДНЕВНЫЙ ОТЧЁТ
 
 📅 ${today}
 
-────────────────────
+💶 Общая выручка: ${stat.total.toFixed(2)} EUR
+💳 Карты: ${stat.card.toFixed(2)} EUR
+🪙 Монеты: ${stat.coin.toFixed(2)} EUR
+👑 VIP: ${stat.vip}
 
-💶 Общая выручка:
-${stat.total.toFixed(2)} EUR
+🧾 Чеков: ${stat.count}
+💶 Средний чек: ${stat.average.toFixed(2)} EUR
+📈 Выручка/час: ${incomePerHour.toFixed(2)} EUR
+🚗 Машин/час: ${carsPerHour.toFixed(2)}
 
-💳 Карты:
-${stat.card.toFixed(2)} EUR
+🆔 Первый: ${stat.firstOrder || "-"}
+🆔 Последний: ${stat.lastOrder || "-"}
 
-🪙 Монеты:
-${stat.coin.toFixed(2)} EUR
-
-👑 VIP:
-${stat.vip}
-
-🧾 Всего чеков:
-${stat.count}
-
-💶 Средний чек:
-${stat.average.toFixed(2)} EUR
-
-📈 Выручка в час:
-${incomePerHour.toFixed(2)} EUR
-
-🚗 Машин в час:
-${carsPerHour.toFixed(2)}
-
-────────────────────
-
-🆔 Первый заказ
-
-${stat.firstOrder || "-"}
-
-🆔 Последний заказ
-
-${stat.lastOrder || "-"}
-
-────────────────────
-
-🕗 Период
-
-${start.toLocaleString("lv-LV")}
-
-↓
-
-${end.toLocaleString("lv-LV")}
+🕗 ${start.toLocaleString("lv-LV")} → ${end.toLocaleString("lv-LV")}`;
 
 ✅ Хорошего дня!`;
 
