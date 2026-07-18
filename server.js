@@ -609,7 +609,7 @@ const report =
 🆔 Первый: ${stat.firstOrder || "-"}
 🆔 Последний: ${stat.lastOrder || "-"}
 
-🕗 ${start.toLocaleString("lv-LV")} → ${end.toLocaleString("lv-LV")}`;
+🕗 ${start.toLocaleString("lv-LV")} → ${end.toLocaleString("lv-LV")}`
 
 ✅ Хорошего дня!`;
 
