@@ -517,7 +517,7 @@ ${item}
 
     }
 
-}, 30000);
+}, 60000);
 
 // ---------- Awora ----------
 checkOrders(sendTelegram);
@@ -565,9 +565,9 @@ setInterval(async () => {
     const hour = Number(get("hour"));
     const minute = Number(get("minute"));
 
-    if (hour !== 8 || minute !== 5)
-        return;
-
+if (hour !== 8 || minute < 5 || minute > 9)
+    return;
+    
     const today =
         `${get("year")}-${get("month")}-${get("day")}`;
 
@@ -582,11 +582,26 @@ setInterval(async () => {
     if (lastDate === today)
         return;
 
-    const end = new Date();
-    end.setHours(8, 0, 0, 0);
+// Текущее время Риги
+const rigaNow = new Date(
+    new Date().toLocaleString("en-US", {
+        timeZone: "Europe/Riga"
+    })
+);
 
-    const start = new Date(end);
-    start.setDate(start.getDate() - 1);
+// Конец периода: сегодня 08:00 по Риге
+const end = new Date(rigaNow);
+end.setHours(8, 0, 0, 0);
+
+// Если сейчас ещё не наступило 08:00 по Риге,
+// то берём 08:00 предыдущего дня
+if (rigaNow < end) {
+    end.setDate(end.getDate() - 1);
+}
+
+// Начало периода: вчера 08:00 по Риге
+const start = new Date(end);
+start.setDate(start.getDate() - 1);
 
     const stat = await getStatistics(start, end);
 
