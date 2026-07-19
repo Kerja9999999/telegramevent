@@ -227,8 +227,15 @@ function loadCoinProfile() {
   }
 }
 
-function saveCoinProfile(profile) {
-  fs.writeFileSync(COIN_FILE, JSON.stringify(profile, null, 2));
+async function saveCoinProfile(profile) {
+
+    fs.writeFileSync(
+        COIN_FILE,
+        JSON.stringify(profile, null, 2)
+    );
+
+    await uploadCoinProfileToGitHub(profile);
+
 }
 //----------TEST mojka---------
 app.get("/test", async (req, res) => {
@@ -287,12 +294,12 @@ app.get("/test", async (req, res) => {
   }
 });
 // ---------- COIN PROFILE ----------
-app.post("/api/coin", protect, (req, res) => {
+app.post("/api/coin", protect, async (req, res) => {
   console.log("SAVE COIN");
   console.log(req.body);
   console.log(COIN_FILE);
 
-  saveCoinProfile({
+await saveCoinProfile({
     color: req.body.color || "off",
     music: req.body.music || "",
     relay1: !!req.body.relay1,
@@ -344,7 +351,43 @@ async function uploadUsersToGitHub(users) {
     Authorization: `Bearer ${token}`,
     Accept: "application/vnd.github+json",
   };
+async function uploadCoinProfileToGitHub(profile) {
 
+    const owner = process.env.GITHUB_OWNER;
+    const repo = process.env.GITHUB_REPO;
+    const token = process.env.GITHUB_TOKEN;
+
+    const githubPath = "data/coinProfile.json";
+
+    const headers = {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/vnd.github+json",
+    };
+
+    const current = await axios.get(
+        `https://api.github.com/repos/${owner}/${repo}/contents/${githubPath}`,
+        { headers }
+    );
+
+    const sha = current.data.sha;
+
+    const content = Buffer
+        .from(JSON.stringify(profile, null, 2))
+        .toString("base64");
+
+    await axios.put(
+        `https://api.github.com/repos/${owner}/${repo}/contents/${githubPath}`,
+        {
+            message: "Update coinProfile.json",
+            content,
+            sha
+        },
+        { headers }
+    );
+
+    console.log("coinProfile.json updated in GitHub");
+
+}
   // Получаем SHA текущего файла
   const current = await axios.get(
     `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
