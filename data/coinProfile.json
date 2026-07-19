@@ -1,1 +1,6 @@
-
+{
+  "color": "off",
+  "music": "Track 4",
+  "relay1": false,
+  "relay2": false
+}
