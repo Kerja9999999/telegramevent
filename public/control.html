@@ -382,13 +382,14 @@ async function saveCoin(){
 }
 
 async function loadCoinProfile(){
-document.getElementById("musicSelect").value =
-    coinProfile.music || "";
-    const r = await fetch("/api/coin");
 
+    const r = await fetch("/api/coin");
     const p = await r.json();
 
     coinProfile = p;
+
+    document.getElementById("musicSelect").value =
+        coinProfile.music || "";
 
     console.log("Coin profile loaded:", coinProfile);
 
