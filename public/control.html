@@ -186,9 +186,36 @@ border-radius:8px;
 </div>
 
 <div class="card">
+
 <h2>🎵 MUSIC</h2>
-<button class="green" onclick="musicOn()">▶ PLAY</button>
-<button class="red" onclick="musicOff()">⏹ STOP</button>
+
+<select id="musicSelect" onchange="selectMusic()">
+
+<option value="">⏹ OFF</option>
+
+<option value="Track 1">🎵 Track 1</option>
+<option value="Track 2">🎵 Track 2</option>
+<option value="Track 3">🎵 Track 3</option>
+<option value="Track 4">🎵 Track 4</option>
+<option value="Track 5">🎵 Track 5</option>
+<option value="Track 6">🎵 Track 6</option>
+<option value="Track 7">🎵 Track 7</option>
+<option value="Track 8">🎵 Track 8</option>
+<option value="Track 9">🎵 Track 9</option>
+<option value="Track 10">🎵 Track 10</option>
+<option value="Track 11">🎵 Track 11</option>
+<option value="Track 12">🎵 Track 12</option>
+<option value="Track 13">🎵 Track 13</option>
+<option value="Track 14">🎵 Track 14</option>
+<option value="Track 15">🎵 Track 15</option>
+<option value="Track 16">🎵 Track 16</option>
+<option value="Track 17">🎵 Track 17</option>
+<option value="Track 18">🎵 Track 18</option>
+<option value="Track 19">🎵 Track 19</option>
+<option value="Track 20">🎵 Track 20</option>
+
+</select>
+
 </div>
 <button onclick="saveCoin()">
 💾 SAVE COIN PROFILE
@@ -257,25 +284,21 @@ function setColor(c){
 
 }
 
-function musicOn(){
+function selectMusic(){
 
-    coinProfile.music = "Track 1";
+    const track = document.getElementById("musicSelect").value;
+
+    coinProfile.music = track;
 
     send({
-        music:true
-    });
 
-    console.log(coinProfile);
+        music: track !== "",
+
+        track
+
+    });
 
 }
-
-function musicOff(){
-
-    coinProfile.music = "";
-
-    send({
-        music:false
-    });
 
     console.log(coinProfile);
 
@@ -364,7 +387,8 @@ async function saveCoin(){
 }
 
 async function loadCoinProfile(){
-
+document.getElementById("musicSelect").value =
+    coinProfile.music || "";
     const r = await fetch("/api/coin");
 
     const p = await r.json();
