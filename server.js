@@ -375,7 +375,16 @@ async function uploadUsersToGitHub(users) {
 
 // ---------- Telegram ----------
 async function sendTelegram(text) {
-    const hour = new Date().getHours();
+
+    const parts = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Europe/Riga",
+        hour: "2-digit",
+        hour12: false
+    }).formatToParts(new Date());
+
+    const hour = Number(
+        parts.find(x => x.type === "hour").value
+    );
 
 if (hour >= 23 || hour < 8) {
 
@@ -574,11 +583,18 @@ if (hour !== 8 || minute !== 5)
     if (lastDate === today)
         return;
 
-    const end = new Date();
-    end.setHours(8, 0, 0, 0);
+const now = new Date();
 
-    const start = new Date(end);
-    start.setDate(start.getDate() - 1);
+const end = new Date(
+    now.toLocaleString("en-US", {
+        timeZone: "Europe/Riga"
+    })
+);
+
+end.setHours(8, 0, 0, 0);
+
+const start = new Date(end);
+start.setDate(start.getDate() - 1);
 
     const stat = await getStatistics(start, end);
 
@@ -949,11 +965,18 @@ ${err.message}`
 
 app.get("/test/daily-report", async (req, res) => {
 
-    const end = new Date();
-    end.setHours(8, 0, 0, 0);
+const now = new Date();
 
-    const start = new Date(end);
-    start.setDate(start.getDate() - 1);
+const end = new Date(
+    now.toLocaleString("en-US", {
+        timeZone: "Europe/Riga"
+    })
+);
+
+end.setHours(8, 0, 0, 0);
+
+const start = new Date(end);
+start.setDate(start.getDate() - 1);
 
     const stat = await getStatistics(start, end);
 
