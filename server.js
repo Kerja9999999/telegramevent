@@ -550,7 +550,7 @@ ${item}
     timeZone: "Europe/Riga",
     dateStyle: "short",
     timeStyle: "medium"
-}).format(now)}
+}).format(now)`};
 
     try {
 
