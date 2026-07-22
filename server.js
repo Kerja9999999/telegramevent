@@ -545,12 +545,16 @@ ${item}
 
     report += `
 
-✅ Конец отчета
-🕗 ${new Intl.DateTimeFormat("lv-LV", {
+const reportTime = new Intl.DateTimeFormat("lv-LV", {
     timeZone: "Europe/Riga",
     dateStyle: "short",
     timeStyle: "medium"
-}).format(now)`};
+}).format(now);
+
+report += `
+
+✅ Конец отчета
+🕗 ${reportTime}`;
 
     try {
 
