@@ -468,10 +468,27 @@ if (!fs.existsSync(REPORT_FILE)) {
 
 setInterval(async () => {
 
-    const now = new Date();
+const now = new Date();
 
-    // Отправляем только в 08:00
-    if (now.getHours() < 8) return;
+const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/Riga",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    hour12: false
+}).formatToParts(now);
+
+const hour = Number(parts.find(p => p.type === "hour").value);
+
+const year = parts.find(p => p.type === "year").value;
+const month = parts.find(p => p.type === "month").value;
+const day = parts.find(p => p.type === "day").value;
+
+const today = `${year}-${month}-${day}`;
+
+// Ждем 08:00 по Риге
+if (hour < 8) return;
 
     const today = now.toISOString().slice(0, 10);
 
@@ -531,7 +548,11 @@ ${item}
     report += `
 
 ✅ Конец отчета
-🕗 ${now.toLocaleString("lv-LV")}`;
+🕗 ${new Intl.DateTimeFormat("lv-LV", {
+    timeZone: "Europe/Riga",
+    dateStyle: "short",
+    timeStyle: "medium"
+}).format(now)}
 
     try {
 
