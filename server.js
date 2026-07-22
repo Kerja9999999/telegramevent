@@ -498,31 +498,31 @@ if (hour < 8) return;
         ).date;
     } catch {}
 
-    // Уже отправляли сегодня
-    if (lastReport === today) return;
+// Уже отправляли сегодня
+if (lastReport === today) return;
 
-    let queue = [];
+let queue = [];
 
-    try {
-        queue = JSON.parse(
-            fs.readFileSync(NIGHT_FILE, "utf8")
-        );
-    } catch {
-        return;
-    }
+try {
+    queue = JSON.parse(
+        fs.readFileSync(NIGHT_FILE, "utf8")
+    );
+} catch {
+    return;
+}
 
-    // Ночью ничего не произошло
-    if (queue.length === 0) {
+// Ночью ничего не произошло
+if (queue.length === 0) {
 
-        fs.writeFileSync(
-            REPORT_FILE,
-            JSON.stringify({ date: today }, null, 2)
-        );
+    fs.writeFileSync(
+        REPORT_FILE,
+        JSON.stringify({ date: today }, null, 2)
+    );
 
-        return;
-    }
+    return;
+}
 
-    let report =
+let report =
 `🌙 ALB CARWASH
 НОЧНОЙ ОТЧЕТ
 
@@ -531,9 +531,9 @@ if (hour < 8) return;
 
 ────────────────────`;
 
-    queue.forEach((item, index) => {
+queue.forEach((item, index) => {
 
-        report += `
+    report += `
 
 ${index + 1}️⃣
 
@@ -541,9 +541,7 @@ ${item}
 
 ────────────────────`;
 
-    });
-
-    report += `
+});
 
 const reportTime = new Intl.DateTimeFormat("lv-LV", {
     timeZone: "Europe/Riga",
@@ -556,32 +554,32 @@ report += `
 ✅ Конец отчета
 🕗 ${reportTime}`;
 
-    try {
+try {
 
-        await axios.post(
-            `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
-            {
-                chat_id: process.env.TELEGRAM_CHAT_ID,
-                text: report
-            }
-        );
+    await axios.post(
+        `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
+        {
+            chat_id: process.env.TELEGRAM_CHAT_ID,
+            text: report
+        }
+    );
 
-        // Очищаем очередь
-        fs.writeFileSync(NIGHT_FILE, "[]");
+    // Очищаем очередь
+    fs.writeFileSync(NIGHT_FILE, "[]");
 
-        // Запоминаем дату отправки
-        fs.writeFileSync(
-            REPORT_FILE,
-            JSON.stringify({ date: today }, null, 2)
-        );
+    // Запоминаем дату отправки
+    fs.writeFileSync(
+        REPORT_FILE,
+        JSON.stringify({ date: today }, null, 2)
+    );
 
-        console.log("🌙 Ночной отчет отправлен");
+    console.log("🌙 Ночной отчет отправлен");
 
-    } catch (e) {
+} catch (e) {
 
-        console.log("Ошибка отправки:", e.message);
+    console.log("Ошибка отправки:", e.message);
 
-    }
+}
 
 }, 60000);
 
