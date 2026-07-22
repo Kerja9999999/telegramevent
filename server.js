@@ -490,8 +490,6 @@ const today = `${year}-${month}-${day}`;
 // Ждем 08:00 по Риге
 if (hour < 8) return;
 
-    const today = now.toISOString().slice(0, 10);
-
     let lastReport = "";
 
     try {
