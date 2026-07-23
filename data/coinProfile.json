@@ -1,7 +1,7 @@
 {
-  "color": "green",
+  "color": "yellow",
   "music": "",
-  "relay1": true,
-  "relay2": true,
-  "vip": true
+  "relay1": false,
+  "relay2": false,
+  "vip": false
 }
