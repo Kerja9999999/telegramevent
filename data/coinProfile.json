@@ -1,6 +1,6 @@
 {
   "color": "green",
   "music": "",
-  "relay1": true,
-  "relay2": true
+  "relay1": false,
+  "relay2": false
 }
