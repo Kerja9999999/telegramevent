@@ -304,6 +304,7 @@ await saveCoinProfile({
     music: req.body.music || "",
     relay1: !!req.body.relay1,
     relay2: !!req.body.relay2,
+        vip: req.body.vip,
   });
 
   res.json({
