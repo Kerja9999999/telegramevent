@@ -198,7 +198,21 @@ border-radius:8px;
 <div class="card">
 
 <h2>🎵 MUSIC</h2>
+<div class="card">
 
+<h2>🔌 RELAYS</h2>
+
+<h3>Relay 1</h3>
+
+<button onclick="setRelay1(true)" class="green">ON</button>
+<button onclick="setRelay1(false)" class="red">OFF</button>
+
+<h3>Relay 2</h3>
+
+<button onclick="setRelay2(true)" class="green">ON</button>
+<button onclick="setRelay2(false)" class="red">OFF</button>
+
+</div>
 <select id="musicSelect" onchange="selectMusic()">
 
 <option value="">⏹ OFF</option>
@@ -432,7 +446,21 @@ async function loadCoinProfile(){
     console.log("Coin profile loaded:", coinProfile);
 
 }
+function setRelay1(state){
 
+    coinProfile.relay1 = state;
+
+    console.log(coinProfile);
+
+}
+
+function setRelay2(state){
+
+    coinProfile.relay2 = state;
+
+    console.log(coinProfile);
+
+}
 </script>
 
 </body>
