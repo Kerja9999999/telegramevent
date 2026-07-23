@@ -19,11 +19,11 @@
   },
   "27057037": {
     "phone": "27057037",
-    "music": "",
-    "color": "purple",
+    "music": "Track 1",
+    "color": "red",
     "relay1": false,
     "relay2": false,
-    "vip": false,
+    "vip": true,
     "plates": []
   },
   "28870552": {
