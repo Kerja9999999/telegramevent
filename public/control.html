@@ -449,7 +449,10 @@ async function loadCoinProfile(){
 
     document.getElementById("musicSelect").value =
         coinProfile.music || "";
-
+document.getElementById("vip").checked =
+    !!coinProfile.vip;
+ 
+ 
     console.log("Coin profile loaded:", coinProfile);
 
 }
