@@ -1,4 +1,13 @@
 {
+  "24200002": {
+    "phone": "24200002",
+    "music": "",
+    "color": "off",
+    "relay1": false,
+    "relay2": false,
+    "vip": false,
+    "plates": []
+  },
   "24504343": {
     "phone": "24504343",
     "name": "",
