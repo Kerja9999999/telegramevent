@@ -298,6 +298,16 @@ if (profile) {
     light = profile.color || "OFF";
 
 }
+        const userName =
+    order.pay_type === "credit"
+        ? "VIP card user"
+        : (order.user?.nickname || "coin user");
+
+const phone =
+    order.pay_type === "credit"
+        ? "-"
+        : (order.user?.phone || "-");
+        
       const msg = `🚿 НОВЫЙ ЗАКАЗ
 
 💳 Тип: ${order.pay_type}
@@ -305,8 +315,8 @@ if (profile) {
 📍 ${order.location?.location_name || "-"}
 🔧 ${order.device?.device_name || "-"}
 
-👤 ${order.user?.nickname || "-"}
-📞 ${order.user?.phone || "-"}
+👤 ${userName}
+📞 ${phone}
 
 💶 ${amount}
 
