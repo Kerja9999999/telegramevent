@@ -261,15 +261,12 @@ if (info.operation_remain_time !== 0 || info.idle_remain_time !== 0) {
         foam = getSeconds("foam");
         coat = getSeconds("coat");
 
-        if (
-          info.open_type === "card" &&
-          info.close_type === "card" &&
-          Number(info.amount_received) === 0
-        ) {
-          amount = "👑 VIP CARD";
-        } else {
-          amount = (Number(info.amount_received || 0) / 100).toFixed(2) + " EUR";
-        }
+const cents =
+    Number(info.card_type) === 2
+        ? Number(info.amount_receivable || 0)
+        : Number(info.amount_received || 0);
+
+amount = (cents / 100).toFixed(2) + " EUR";
 
       } catch (e) {
         amount = "0.00 EUR";
