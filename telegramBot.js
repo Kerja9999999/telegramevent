@@ -193,20 +193,28 @@ bot.onText(/\/vchera/, async (msg) => {
 📅 Вчера
 💶 Общая выручка:
 ${s.total.toFixed(2)} €
+
 👤 Кредиты:
 ${s.card.toFixed(2)} €
+
 🪙 Монеты:
 ${s.coin.toFixed(2)} €
+
 🧾 Чеков:
 ${s.count}
+
 💳 Средний чек:
 ${s.average.toFixed(2)} €
+
 📈 Выручка / час:
 ${s.revenuePerHour.toFixed(2)} €
+
 🚗 Машин / час:
 ${s.carsPerHour.toFixed(2)}
+
 👑 VIP:
 ${s.vip}
+
 🆔 Первый Order:
 ${s.firstOrder}
 🆔 Последний Order:
@@ -228,22 +236,31 @@ bot.onText(/\/nedelya/, async (msg) => {
 
 `📊 ALB CARWASH
 📅 Последние 7 дней
+
 💶 Общая выручка:
 ${s.total.toFixed(2)} €
+
 👤 Кредиты:
 ${s.card.toFixed(2)} €
+
 🪙 Монеты:
 ${s.coin.toFixed(2)} €
+
 🧾 Чеков:
 ${s.count}
+
 💳 Средний чек:
 ${s.average.toFixed(2)} €
+
 📈 Выручка / день:
 ${(s.total / 7).toFixed(2)} €
+
 🚗 Машин / день:
 ${(s.count / 7).toFixed(1)}
+
 👑 VIP:
 ${s.vip}
+
 🆔 Первый Order:
 ${s.firstOrder}
 🆔 Последний Order:
@@ -373,11 +390,16 @@ async function getSystemStatus() {
 
         awoara = `✅ Online (${Date.now() - start} ms)`;
 
-    } catch (e) {
+} catch (e) {
 
-        console.log("AWOARA ERROR:", e.message);
+    console.log("STRIPE ERROR:");
+    console.log("Message:", e.message);
+    console.log("Type:", e.type);
+    console.log("Code:", e.code);
+    console.log("Status:", e.statusCode);
+    console.log("Raw:", e.raw);
 
-    }
+}
 
     // Проверка Stripe
     try {
