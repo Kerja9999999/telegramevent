@@ -71,7 +71,9 @@ async function getStatistics(startDate, endDate) {
     let card = 0;
     let coin = 0;
     let vip = 0;
-
+let revenuePerHour = 0;
+let carsPerHour = 0;
+    
     const today=[];
 
     for(const order of orders){
@@ -113,33 +115,45 @@ const amount = parseFloat(order.amount_received || "0");
 
     }
 
-    if(today.length){
+if(today.length){
 
-        firstOrder=today[0].order_sn;
-        lastOrder=today[today.length-1].order_sn;
+    firstOrder=today[0].order_sn;
+    lastOrder=today[today.length-1].order_sn;
 
-    }
+}
 
-    return{
+const hours = Math.max(
+    1,
+    (endDate - startDate) / (1000 * 60 * 60)
+);
 
-        total,
+revenuePerHour = total / hours;
+carsPerHour = count / hours;
 
-        count,
+return{
 
-        average:
-            count ? total/count : 0,
+    total,
 
-        firstOrder,
+    count,
 
-        lastOrder,
+    average:
+        count ? total/count : 0,
 
-        card,
+    revenuePerHour,
 
-        coin,
+    carsPerHour,
 
-        vip
+    firstOrder,
 
-    };
+    lastOrder,
+
+    card,
+
+    coin,
+
+    vip
+
+};
 
 }
 
