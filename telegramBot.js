@@ -392,12 +392,7 @@ async function getSystemStatus() {
 
 } catch (e) {
 
-    console.log("STRIPE ERROR:");
-    console.log("Message:", e.message);
-    console.log("Type:", e.type);
-    console.log("Code:", e.code);
-    console.log("Status:", e.statusCode);
-    console.log("Raw:", e.raw);
+    console.log("STRIPE ERROR:", e.message);
 
 }
 
