@@ -684,7 +684,7 @@ start.setDate(start.getDate() - 1);
 🪙 Монеты: ${stat.coin.toFixed(2)} EUR
 👥 Пользователи: ${stat.usersTotal.toFixed(2)} EUR
 👑 VIP карты: ${stat.vipTotal.toFixed(2)} EUR
-
+👑 VIP: ${stat.vip}
 🧾 Чеков: ${stat.count}
 💶 Средний чек: ${stat.average.toFixed(2)} EUR
 
@@ -1054,6 +1054,7 @@ start.setDate(start.getDate() - 1);
 🪙 Монеты: ${stat.coin.toFixed(2)} EUR
 👥 Пользователи: ${stat.usersTotal.toFixed(2)} EUR
 👑 VIP карты: ${stat.vipTotal.toFixed(2)} EUR
+👑 VIP: ${stat.vip}
 💶 Средний чек: ${stat.average.toFixed(2)} EUR
 
 
