@@ -156,14 +156,17 @@ ${s.card.toFixed(2)} €
 🪙 Монеты:
 ${s.coin.toFixed(2)} €
 
+👥 Пользователи:
+${s.usersTotal.toFixed(2)} €
+
+👑 VIP карты:
+${s.vipTotal.toFixed(2)} €
+
 🧾 Чеков:
 ${s.count}
 
 💳 Средний чек:
 ${s.average.toFixed(2)} €
-
-👑 VIP:
-${s.vip}
 
 🆔 Первый Order:
 ${s.firstOrder}
@@ -200,6 +203,12 @@ ${s.card.toFixed(2)} €
 🪙 Монеты:
 ${s.coin.toFixed(2)} €
 
+👥 Пользователи:
+${s.usersTotal.toFixed(2)} €
+
+👑 VIP карты:
+${s.vipTotal.toFixed(2)} €
+
 🧾 Чеков:
 ${s.count}
 
@@ -211,9 +220,6 @@ ${s.revenuePerHour.toFixed(2)} €
 
 🚗 Машин / час:
 ${s.carsPerHour.toFixed(2)}
-
-👑 VIP:
-${s.vip}
 
 🆔 Первый Order:
 ${s.firstOrder}
@@ -246,6 +252,12 @@ ${s.card.toFixed(2)} €
 🪙 Монеты:
 ${s.coin.toFixed(2)} €
 
+👥 Пользователи:
+${s.usersTotal.toFixed(2)} €
+
+👑 VIP карты:
+${s.vipTotal.toFixed(2)} €
+
 🧾 Чеков:
 ${s.count}
 
@@ -257,9 +269,6 @@ ${(s.total / 7).toFixed(2)} €
 
 🚗 Машин / день:
 ${(s.count / 7).toFixed(1)}
-
-👑 VIP:
-${s.vip}
 
 🆔 Первый Order:
 ${s.firstOrder}
@@ -286,20 +295,29 @@ bot.onText(/\/mesyac/, async (msg) => {
 
 💶 Общая выручка:
 ${s.total.toFixed(2)} €
+
 👤 Кредиты:
 ${s.card.toFixed(2)} €
+
 🪙 Монеты:
 ${s.coin.toFixed(2)} €
+
+👥 Пользователи:
+${s.usersTotal.toFixed(2)} €
+
+👑 VIP карты:
+${s.vipTotal.toFixed(2)} €
+
 🧾 Чеков:
 ${s.count}
+
 💳 Средний чек:
 ${s.average.toFixed(2)} €
+
 📈 Выручка / день:
 ${(s.total / 7).toFixed(2)} €
 🚗 Машин / день:
 ${(s.count / 7).toFixed(1)}
-👑 VIP:
-${s.vip}
 
 🆔 Первый Order:
 ${s.firstOrder}
@@ -335,14 +353,17 @@ ${s.card.toFixed(2)} €
 🪙 Монеты:
 ${s.coin.toFixed(2)} €
 
+👥 Пользователи:
+${s.usersTotal.toFixed(2)} €
+
+👑 VIP карты:
+${s.vipTotal.toFixed(2)} €
+
 🧾 Чеков:
 ${s.count}
 
 💳 Средний чек:
 ${s.average.toFixed(2)} €
-
-👑 VIP:
-${s.vip}
 
 🆔 Первый Order:
 ${s.firstOrder}
@@ -455,14 +476,17 @@ ${s.card.toFixed(2)} €
 🪙 Монеты:
 ${s.coin.toFixed(2)} €
 
+👥 Пользователи:
+${s.usersTotal.toFixed(2)} €
+
+👑 VIP карты:
+${s.vipTotal.toFixed(2)} €
+
 🧾 Чеков:
 ${s.count}
 
 💳 Средний чек:
 ${s.average.toFixed(2)} €
-
-👑 VIP:
-${s.vip}
 
 👥 Пользователей:
 ${users}
