@@ -13,7 +13,6 @@ async function getOrders() {
         },
 
         params: {
-
             order_sn:"",
             order_type:-1,
             keywords:"",
@@ -35,12 +34,30 @@ async function getOrders() {
             machine_type:"",
             order_ch:"",
             is_api:0
-
         }
 
     });
 
     return res.data.data.list || [];
+
+}
+
+async function getDetail(orderSn) {
+
+    const res = await axios.get(
+        "https://en.awoara.com.cn/mer/store/order/smart_order/detail",
+        {
+            headers: {
+                "X-Token": process.env.AWORA_TOKEN,
+                Accept: "application/json"
+            },
+            params: {
+                id: orderSn
+            }
+        }
+    );
+
+    return res.data.data;
 
 }
 
@@ -71,25 +88,22 @@ async function getStatistics(startDate, endDate) {
     let card = 0;
     let coin = 0;
     let vip = 0;
-let revenuePerHour = 0;
-let carsPerHour = 0;
-    
+
+    let revenuePerHour = 0;
+    let carsPerHour = 0;
+
     const today=[];
 
     for(const order of orders){
-console.log(
-    order.order_sn,
-    order.amount_received,
-    typeof order.amount_received
-);
+
         let d = new Date(
             order.create_time.replace(" ","T")
         );
 
         d.setHours(d.getHours()-3);
 
-if (d < startDate || d > endDate)
-    continue;
+        if (d < startDate || d > endDate)
+            continue;
 
         today.push(order);
 
@@ -97,63 +111,102 @@ if (d < startDate || d > endDate)
 
     today.reverse();
 
-    for(const order of today){
-const amount = parseFloat(order.amount_received || "0");
+    for (const order of today) {
 
-        total+=amount;
+        let amount = 0;
+
+        try {
+
+            const detail = await getDetail(order.order_sn);
+
+            const info = detail?.body?.data?.order_info;
+
+            if (info) {
+
+                // VIP-карта
+                if (
+                    Number(info.card_type) === 2 &&
+                    Number(info.amount_receivable || 0) > 0
+                ) {
+
+                    amount =
+                        Number(info.amount_receivable) / 100;
+
+                } else {
+
+                    amount =
+                        Number(info.amount_received || 0) / 100;
+
+                }
+
+            } else {
+
+                amount =
+                    parseFloat(order.amount_received || 0);
+
+            }
+
+        } catch {
+
+            amount =
+                parseFloat(order.amount_received || 0);
+
+        }
+
+        total += amount;
 
         count++;
 
         if(order.pay_type==="coin")
-            coin+=amount;
+            coin += amount;
 
         if(order.pay_type==="credit")
-            card+=amount;
+            card += amount;
 
         if(amount===0)
             vip++;
 
     }
 
-if(today.length){
+    if(today.length){
 
-    firstOrder=today[0].order_sn;
-    lastOrder=today[today.length-1].order_sn;
+        firstOrder=today[0].order_sn;
+        lastOrder=today[today.length-1].order_sn;
 
-}
+    }
 
-const hours = Math.max(
-    1,
-    (endDate - startDate) / (1000 * 60 * 60)
-);
+    const hours = Math.max(
+        1,
+        (endDate - startDate) / (1000 * 60 * 60)
+    );
 
-revenuePerHour = total / hours;
-carsPerHour = count / hours;
+    revenuePerHour = total / hours;
+    carsPerHour = count / hours;
 
-return{
+    return{
 
-    total,
+        total,
 
-    count,
+        count,
 
-    average:
-        count ? total/count : 0,
+        average:
+            count ? total/count : 0,
 
-    revenuePerHour,
+        revenuePerHour,
 
-    carsPerHour,
+        carsPerHour,
 
-    firstOrder,
+        firstOrder,
 
-    lastOrder,
+        lastOrder,
 
-    card,
+        card,
 
-    coin,
+        coin,
 
-    vip
+        vip
 
-};
+    };
 
 }
 
