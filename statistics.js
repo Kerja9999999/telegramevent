@@ -87,7 +87,10 @@ async function getStatistics(startDate, endDate) {
 
     let card = 0;
     let coin = 0;
+
     let vip = 0;
+    let vipTotal = 0;
+    let usersTotal = 0;
 
     let revenuePerHour = 0;
     let carsPerHour = 0;
@@ -114,12 +117,13 @@ async function getStatistics(startDate, endDate) {
     for (const order of today) {
 
         let amount = 0;
+        let info = null;
 
         try {
 
             const detail = await getDetail(order.order_sn);
 
-            const info = detail?.body?.data?.order_info;
+            info = detail?.body?.data?.order_info;
 
             if (info) {
 
@@ -131,6 +135,9 @@ async function getStatistics(startDate, endDate) {
 
                     amount =
                         Number(info.amount_receivable) / 100;
+
+                    vip++;
+                    vipTotal += amount;
 
                 } else {
 
@@ -160,11 +167,10 @@ async function getStatistics(startDate, endDate) {
         if(order.pay_type==="coin")
             coin += amount;
 
-        if(order.pay_type==="credit")
+        if(order.pay_type==="credit"){
             card += amount;
-
-        if(amount===0)
-            vip++;
+            usersTotal += amount;
+        }
 
     }
 
@@ -204,7 +210,11 @@ async function getStatistics(startDate, endDate) {
 
         coin,
 
-        vip
+        vip,
+
+        vipTotal,
+
+        usersTotal
 
     };
 
