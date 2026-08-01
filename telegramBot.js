@@ -483,9 +483,6 @@ ${s.count}
 💳 Средний чек:
 ${s.average.toFixed(2)} €
 
-👑 VIP:
-${s.vip}
-
 👥 Пользователей:
 ${users}
 
