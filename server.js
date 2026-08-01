@@ -682,7 +682,8 @@ start.setDate(start.getDate() - 1);
 💶 Выручка: ${stat.total.toFixed(2)} EUR
 💳 Карты: ${stat.card.toFixed(2)} EUR
 🪙 Монеты: ${stat.coin.toFixed(2)} EUR
-👑 VIP: ${stat.vip}
+👥 Пользователи: ${stat.usersTotal.toFixed(2)} EUR
+👑 VIP карты: ${stat.vipTotal.toFixed(2)} EUR
 
 🧾 Чеков: ${stat.count}
 💶 Средний чек: ${stat.average.toFixed(2)} EUR
@@ -1048,13 +1049,14 @@ start.setDate(start.getDate() - 1);
 📊 ТЕСТ ЕЖЕДНЕВНОГО ОТЧЁТА
 
 💶 Общая выручка: ${stat.total.toFixed(2)} EUR
+💶 Выручка: ${stat.total.toFixed(2)} EUR
 💳 Карты: ${stat.card.toFixed(2)} EUR
 🪙 Монеты: ${stat.coin.toFixed(2)} EUR
-
-🧾 Чеков: ${stat.count}
+👥 Пользователи: ${stat.usersTotal.toFixed(2)} EUR
+👑 VIP карты: ${stat.vipTotal.toFixed(2)} EUR
 💶 Средний чек: ${stat.average.toFixed(2)} EUR
 
-👑 VIP: ${stat.vip}
+
 
 🆔 Первый заказ:
 ${stat.firstOrder || "-"}
