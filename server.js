@@ -1070,4 +1070,3 @@ ${stat.lastOrder || "-"}`;
 
 
 require("./telegramBot");
-require("./scheduler");
