@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const NIGHT_FILE = path.join(__dirname, "data", "nightQueue.json");
 const { getStatistics } = require("./statistics");
+require("./monitor");
 
 if (!fs.existsSync(path.join(__dirname, "data"))) {
     fs.mkdirSync(path.join(__dirname, "data"));
