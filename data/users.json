@@ -117,5 +117,14 @@
     "lastWash": null,
     "washCount": 0,
     "totalSpent": 0
+  },
+  "+37129742448": {
+    "phone": "+37129742448",
+    "music": "",
+    "color": "red",
+    "relay1": false,
+    "relay2": false,
+    "vip": false,
+    "plates": []
   }
 }
