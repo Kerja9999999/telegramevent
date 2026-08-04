@@ -1,6 +1,6 @@
 {
-  "color": "green",
-  "music": "",
+  "color": "off",
+  "music": "Track 1",
   "relay1": false,
   "relay2": false,
   "vip": false
