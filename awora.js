@@ -304,7 +304,7 @@ amount = (cents / 100).toFixed(2) + " EUR";
       }
 
 const date = new Date(order.create_time.replace(" ", "T"));
-date.setHours(date.getHours() + 5);
+date.setHours(date.getHours() + 1);
 
 const time = date.toLocaleString("lv-LV", {
     year: "numeric",
