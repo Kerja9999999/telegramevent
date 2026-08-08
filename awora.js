@@ -7,6 +7,36 @@ const COIN_FILE = path.join(__dirname, "data", "coinProfile.json");
 const API = "https://en.awoara.com.cn/mer/store/order/smart_order/lst";
 const FILE = "./lastOrder.json";
 
+const DEVICE_STATUS_FILE = path.join(
+    __dirname,
+    "data",
+    "deviceStatus.json"
+);
+
+if (!fs.existsSync(DEVICE_STATUS_FILE)) {
+    fs.writeFileSync(
+        DEVICE_STATUS_FILE,
+        JSON.stringify({}, null, 2)
+    );
+}
+
+function loadDeviceStatus() {
+    try {
+        return JSON.parse(
+            fs.readFileSync(DEVICE_STATUS_FILE, "utf8")
+        );
+    } catch {
+        return {};
+    }
+}
+
+function saveDeviceStatus(status) {
+    fs.writeFileSync(
+        DEVICE_STATUS_FILE,
+        JSON.stringify(status, null, 2)
+    );
+}
+
 function loadUsers() {
 
     try {
@@ -296,6 +326,19 @@ if (profile) {
     light = profile.color || "OFF";
 
 }
+// ---------- Сохраняем последнюю мойку бокса ----------
+
+const deviceName =
+    order.device?.device_name || "UNKNOWN";
+
+const deviceStatus = loadDeviceStatus();
+
+deviceStatus[deviceName] = {
+    lastWash: new Date().toISOString(),
+    alerted: false
+};
+
+saveDeviceStatus(deviceStatus);
         
       const msg = `🚿 НОВЫЙ ЗАКАЗ
 
@@ -417,5 +460,66 @@ for (const [orderSn, order] of activeOrders) {
     console.error("Awora:", err.response?.data || err.message);
   }
 }
+// ---------- ПРОВЕРКА ПРОСТОЯ БОКСОВ ----------
 
+setInterval(async () => {
+
+    const deviceStatus = loadDeviceStatus();
+    const now = Date.now();
+
+    for (const device of ["device-1", "device-2"]) {
+
+        const status = deviceStatus[device];
+
+        // Ещё ни одной мойки не было
+        if (!status || !status.lastWash)
+            continue;
+
+        const lastWash =
+            new Date(status.lastWash).getTime();
+
+        const hours =
+            (now - lastWash) / (1000 * 60 * 60);
+
+        // Более 24 часов без мойки
+        if (
+            hours >= 24 &&
+            !status.alerted
+        ) {
+
+            const totalMinutes =
+                Math.floor(hours * 60);
+
+            const h =
+                Math.floor(totalMinutes / 60);
+
+            const m =
+                totalMinutes % 60;
+
+            await sendTelegram(
+`⚠️ ALB CARWASH
+
+🔧 ${device}
+❌ Нет мойки более 24 часов
+
+⏱ Простой:
+${h} ч ${m} мин
+
+🕒 Последняя мойка:
+${new Date(lastWash).toLocaleString("lv-LV")}`
+            );
+
+            status.alerted = true;
+
+            saveDeviceStatus(deviceStatus);
+
+            console.log(
+                `⚠️ ${device}: больше 24 часов без мойки`
+            );
+        }
+    }
+
+}, 60 * 60 * 1000);
+
+module.exports = checkOrders;
 module.exports = checkOrders;
