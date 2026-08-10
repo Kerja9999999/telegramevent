@@ -6,6 +6,7 @@ const USERS_FILE = path.join(__dirname, "data", "users.json");
 const COIN_FILE = path.join(__dirname, "data", "coinProfile.json");
 const API = "https://en.awoara.com.cn/mer/store/order/smart_order/lst";
 const FILE = "./lastOrder.json";
+let telegramSender = null;
 
 const DEVICE_STATUS_FILE = path.join(
     __dirname,
@@ -132,6 +133,7 @@ if (fs.existsSync(FILE)) {
 }
 
 async function checkOrders(sendTelegram) {
+    telegramSender = sendTelegram;
   try {
     const res = await axios.get(API, {
       headers: {
@@ -496,7 +498,12 @@ setInterval(async () => {
             const m =
                 totalMinutes % 60;
 
-            await sendTelegram(
+if (!telegramSender) {
+    console.log("Telegram sender not ready");
+    continue;
+}
+
+await telegramSender(
 `⚠️ ALB CARWASH
 
 🔧 ${device}
@@ -521,5 +528,4 @@ ${new Date(lastWash).toLocaleString("lv-LV")}`
 
 }, 60 * 60 * 1000);
 
-module.exports = checkOrders;
 module.exports = checkOrders;
