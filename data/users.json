@@ -1,4 +1,18 @@
 {
+  "23275210": {
+    "phone": "23275210",
+    "name": "",
+    "color": "off",
+    "music": "",
+    "relay1": false,
+    "relay2": false,
+    "vip": false,
+    "enabled": true,
+    "created": "2026-08-10T15:25:57.436Z",
+    "lastWash": null,
+    "washCount": 0,
+    "totalSpent": 0
+  },
   "24200002": {
     "phone": "24200002",
     "music": "Track 10",
@@ -38,8 +52,8 @@
   },
   "26245562": {
     "phone": "26245562",
-    "music": "Track 1",
-    "color": "blue",
+    "music": "Track 7",
+    "color": "crimson",
     "relay1": false,
     "relay2": true,
     "vip": true,
