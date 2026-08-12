@@ -305,20 +305,7 @@ amount = (cents / 100).toFixed(2) + " EUR";
         console.error("Detail error:", e.response?.data || e.message);
       }
 
-const date = new Date(
-    order.create_time.replace(" ", "T")
-);
-
-date.setHours(date.getHours() + 3);
-
-const time = date.toLocaleString("lv-LV", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-});
+const time = order.create_time;
 
 let music = "OFF";
 let light = "OFF";
