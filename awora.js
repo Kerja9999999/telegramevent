@@ -304,7 +304,13 @@ amount = (cents / 100).toFixed(2) + " EUR";
         amount = "0.00 EUR";
         console.error("Detail error:", e.response?.data || e.message);
       }
-
+        
+console.log("========== TIME DEBUG ==========");
+console.log("AWORA create_time:", order.create_time);
+console.log("SERVER NOW:", new Date().toString());
+console.log("SERVER ISO:", new Date().toISOString());
+console.log("================================");
+        
 const time = order.create_time;
 
 let music = "OFF";
