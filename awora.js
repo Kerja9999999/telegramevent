@@ -305,10 +305,12 @@ amount = (cents / 100).toFixed(2) + " EUR";
         console.error("Detail error:", e.response?.data || e.message);
       }
 
-const date = new Date(order.create_time.replace(" ", "T"));
-date.setHours(date.getHours() - 2);
+const date = new Date(
+    order.create_time.replace(" ", "T") + "Z"
+);
 
 const time = date.toLocaleString("lv-LV", {
+    timeZone: "Europe/Riga",
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
