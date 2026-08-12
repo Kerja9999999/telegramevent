@@ -305,13 +305,20 @@ amount = (cents / 100).toFixed(2) + " EUR";
         console.error("Detail error:", e.response?.data || e.message);
       }
         
-console.log("========== TIME DEBUG ==========");
-console.log("AWORA create_time:", order.create_time);
-console.log("SERVER NOW:", new Date().toString());
-console.log("SERVER ISO:", new Date().toISOString());
-console.log("================================");
-        
-const time = order.create_time;
+const date = new Date(
+    order.create_time.replace(" ", "T")
+);
+
+date.setHours(date.getHours() + 6);
+
+const time = date.toLocaleString("lv-LV", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+});
 
 let music = "OFF";
 let light = "OFF";
