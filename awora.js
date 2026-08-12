@@ -306,11 +306,12 @@ amount = (cents / 100).toFixed(2) + " EUR";
       }
 
 const date = new Date(
-    order.create_time.replace(" ", "T") + "Z"
+    order.create_time.replace(" ", "T")
 );
 
+date.setHours(date.getHours() + 3);
+
 const time = date.toLocaleString("lv-LV", {
-    timeZone: "Europe/Riga",
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
