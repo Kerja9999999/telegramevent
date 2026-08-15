@@ -103,7 +103,7 @@ async function getStatistics(startDate, endDate) {
             order.create_time.replace(" ","T")
         );
 
-        d.setHours(d.getHours()-3);
+        d.setHours(d.getHours()+6);
 
         if (d < startDate || d > endDate)
             continue;
