@@ -298,7 +298,11 @@ const cents =
         ? Number(info.amount_receivable || 0)
         : Number(info.amount_received || 0);
 
-amount = (cents / 100).toFixed(2) + " EUR";
+if (order.pay_type === "coin") {
+    amount = (cents / 2).toFixed(2) + " EUR";
+} else {
+    amount = (cents / 100).toFixed(2) + " EUR";
+}
 
       } catch (e) {
         amount = "0.00 EUR";
