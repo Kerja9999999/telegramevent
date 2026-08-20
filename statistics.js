@@ -61,6 +61,21 @@ async function getDetail(orderSn) {
 
 }
 
+// ---------- РАСЧЁТ СУММЫ ----------
+// Монеты делим на 2
+// Остальное оставляем как было: /100
+
+function calculateAmount(value, payType) {
+
+    const amount = Number(value || 0);
+
+    if (payType === "coin") {
+        return amount / 2;
+    }
+
+    return amount / 100;
+}
+
 function sameDay(date){
 
     const now = new Date();
@@ -133,6 +148,7 @@ async function getStatistics(startDate, endDate) {
                     Number(info.amount_receivable || 0) > 0
                 ) {
 
+                    // VIP оставляем как было
                     amount =
                         Number(info.amount_receivable) / 100;
 
@@ -141,22 +157,31 @@ async function getStatistics(startDate, endDate) {
 
                 } else {
 
-                    amount =
-                        Number(info.amount_received || 0) / 100;
+                    // Монеты / карты
+                    amount = calculateAmount(
+                        info.amount_received,
+                        order.pay_type
+                    );
 
                 }
 
             } else {
 
-                amount =
-                    parseFloat(order.amount_received || 0);
+                // Если detail не пришёл
+                amount = calculateAmount(
+                    order.amount_received,
+                    order.pay_type
+                );
 
             }
 
         } catch {
 
-            amount =
-                parseFloat(order.amount_received || 0);
+            // Если произошла ошибка
+            amount = calculateAmount(
+                order.amount_received,
+                order.pay_type
+            );
 
         }
 
