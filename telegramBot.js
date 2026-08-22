@@ -19,6 +19,24 @@ process.env.TELEGRAM_BOT_TOKEN,
 }
 
 );
+
+bot.setMyCommands([
+    { command: "vyruchka", description: "💶 Сегодня / Šodien" },
+    { command: "vchera", description: "📆 Вчера / Vakar" },
+    { command: "nedelya", description: "📈 Последние 7 дней / Pēdējās 7 dienas" },
+    { command: "mesyac", description: "🗓 Текущий месяц / Šis mēnesis" },
+    { command: "god", description: "📊 Текущий год / Šis gads" },
+    { command: "status", description: "📍 Состояние мойки / Mazgātavas statuss" },
+    { command: "help", description: "📋 Помощь / Palīdzība" },
+    { command: "gv", description: "📋 Все команды / Visas komandas" }
+])
+.then(() => {
+    console.log("✅ Telegram Menu настроено");
+})
+.catch(err => {
+    console.log("❌ Ошибка Telegram Menu:", err.message);
+});
+
 const keyboard = {
   reply_markup: {
     resize_keyboard: true,
