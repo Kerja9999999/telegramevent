@@ -229,3 +229,4 @@ async function getStatistics(startDate, endDate) {
 module.exports = {
     getStatistics
 };
+
