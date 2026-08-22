@@ -160,14 +160,20 @@ async function getStatistics(startDate, endDate) {
 
         }
 
+        // 🪙 Монеты считаем по 50% от полученной суммы
+        if (order.pay_type === "coin") {
+            amount = amount / 2;
+            coin += amount;
+        }
+
+        // 💶 Общая выручка
         total += amount;
 
+        // 🧾 Количество чеков
         count++;
 
-        if(order.pay_type==="coin")
-            coin += amount;
-
-        if(order.pay_type==="credit"){
+        // 💳 Обычные кредитные/карточные платежи
+        if (order.pay_type === "credit") {
             card += amount;
             usersTotal += amount;
         }
