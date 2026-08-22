@@ -309,16 +309,15 @@ const date = new Date(
     order.create_time.replace(" ", "T")
 );
 
-date.setHours(date.getHours() + 6);
-
-const time = date.toLocaleString("lv-LV", {
+const time = new Intl.DateTimeFormat("lv-LV", {
+    timeZone: "Europe/Riga",
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
-});
+}).format(new Date());
 
 let music = "OFF";
 let light = "OFF";
