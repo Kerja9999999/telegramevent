@@ -298,7 +298,14 @@ const cents =
         ? Number(info.amount_receivable || 0)
         : Number(info.amount_received || 0);
 
-amount = (cents / 100 / 2).toFixed(2) + " EUR";
+let finalAmount = cents / 100;
+
+// 🪙 Только монеты делим на 2
+if (order.pay_type === "coin") {
+    finalAmount = finalAmount / 2;
+}
+
+amount = finalAmount.toFixed(2) + " EUR";
 
       } catch (e) {
         amount = "0.00 EUR";
