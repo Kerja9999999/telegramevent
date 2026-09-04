@@ -471,6 +471,16 @@ for (const [orderSn, order] of activeOrders) {
     console.error("Awora:", err.response?.data || err.message);
   }
 }
+
+// Реальное время Латвии
+function latviaTime(date) {
+    return new Date(date).toLocaleString("lv-LV", {
+        timeZone: "Europe/Riga",
+        hour12: false
+    });
+}
+
+
 // ---------- ПРОВЕРКА ПРОСТОЯ БОКСОВ ----------
 
 setInterval(async () => {
@@ -507,20 +517,12 @@ setInterval(async () => {
             const m =
                 totalMinutes % 60;
 
-if (!telegramSender) {
-    console.log("Telegram sender not ready");
-    continue;
-}
+            if (!telegramSender) {
+                console.log("Telegram sender not ready");
+                continue;
+            }
 
-// Реальное время Латвии
-const latviaTime = (date) => {
-    return new Date(date).toLocaleString("lv-LV", {
-        timeZone: "Europe/Riga",
-        hour12: false
-    });
-};
-
-await telegramSender(
+            await telegramSender(
 `⚠️ ALB CARWASH
 
 🔧 ${device}
@@ -531,15 +533,15 @@ ${h} ч ${m} мин
 
 🕒 Последняя мойка:
 ${latviaTime(lastWash)}`
-);
+            );
 
-status.alerted = true;
+            status.alerted = true;
 
-saveDeviceStatus(deviceStatus);
+            saveDeviceStatus(deviceStatus);
 
-console.log(
-    `⚠️ ${device}: больше 24 часов без мойки`
-);
+            console.log(
+                `⚠️ ${device}: больше 24 часов без мойки`
+            );
         }
     }
 
