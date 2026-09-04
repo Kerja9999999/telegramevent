@@ -4,6 +4,14 @@ const bot = require("./telegramBot");
 let offlineCount = 0;
 let awoaraOnline = true;
 
+// Реальное время Латвии
+function latviaTime() {
+    return new Date().toLocaleString("lv-LV", {
+        timeZone: "Europe/Riga",
+        hour12: false
+    });
+}
+
 async function checkAwoara() {
 
     try {
@@ -42,7 +50,7 @@ async function checkAwoara() {
 
 📡 Ping: ${ping} ms
 
-🕒 ${new Date().toLocaleString("lv-LV")}
+🕒 ${latviaTime()}
 
 Связь с автомойкой восстановлена.`
             );
@@ -72,7 +80,7 @@ async function checkAwoara() {
 
 ❌ AWOARA OFFLINE
 
-🕒 ${new Date().toLocaleString("lv-LV")}
+🕒 ${latviaTime()}
 
 Автомойка не отвечает более 2 минут.`
             );
@@ -83,8 +91,8 @@ async function checkAwoara() {
 
 }
 
-// первая проверка
+// Первая проверка
 checkAwoara();
 
-// далее каждую минуту
+// Далее каждую минуту
 setInterval(checkAwoara, 60000);
