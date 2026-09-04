@@ -512,6 +512,14 @@ if (!telegramSender) {
     continue;
 }
 
+// Реальное время Латвии
+const latviaTime = (date) => {
+    return new Date(date).toLocaleString("lv-LV", {
+        timeZone: "Europe/Riga",
+        hour12: false
+    });
+};
+
 await telegramSender(
 `⚠️ ALB CARWASH
 
@@ -522,16 +530,16 @@ await telegramSender(
 ${h} ч ${m} мин
 
 🕒 Последняя мойка:
-${new Date(lastWash).toLocaleString("lv-LV")}`
-            );
+${latviaTime(lastWash)}`
+);
 
-            status.alerted = true;
+status.alerted = true;
 
-            saveDeviceStatus(deviceStatus);
+saveDeviceStatus(deviceStatus);
 
-            console.log(
-                `⚠️ ${device}: больше 24 часов без мойки`
-            );
+console.log(
+    `⚠️ ${device}: больше 24 часов без мойки`
+);
         }
     }
 
