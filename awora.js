@@ -165,10 +165,65 @@ async function checkOrders(sendTelegram) {
       },
     });
 
-    const list = res.data?.data?.list || [];
-    console.log('Orders received:', list.length);
-    console.log('Last order:', lastOrder);
-    if (!list.length) return;
+console.log("========== AWOARA DEBUG ==========");
+console.log("AWORA HTTP STATUS:", res.status);
+console.log("AWORA RESPONSE CODE:", res.data?.code);
+console.log(
+    "AWORA RESPONSE MESSAGE:",
+    res.data?.message || res.data?.msg || ""
+);
+console.log(
+    "AWORA TOKEN PRESENT:",
+    process.env.AWORA_TOKEN ? "YES" : "NO"
+);
+console.log(
+    "AWORA DATA KEYS:",
+    res.data?.data && typeof res.data.data === "object"
+        ? Object.keys(res.data.data)
+        : "NO DATA OBJECT"
+);
+
+const list = res.data?.data?.list || [];
+
+console.log("Orders received:", list.length);
+console.log("Last order:", lastOrder);
+
+if (!list.length) {
+
+    console.log(
+        "AWORA returned EMPTY order list."
+    );
+
+    console.log(
+        "FULL AWOARA RESPONSE:"
+    );
+
+    console.log(
+        JSON.stringify(
+            res.data,
+            null,
+            2
+        )
+    );
+
+    console.log(
+        "========== END AWOARA DEBUG =========="
+    );
+
+    return;
+}
+
+console.log(
+    "First order:",
+    list[0]?.order_sn || "NO ORDER"
+);
+
+console.log(
+    "========== END AWOARA DEBUG =========="
+);
+
+
+      
 
     if (!lastOrder) {
       lastOrder = list[0].order_sn;
