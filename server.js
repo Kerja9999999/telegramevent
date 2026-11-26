@@ -107,6 +107,41 @@ ${event.type}
   }
 );
 app.use(express.json());
+
+app.use(express.json());
+
+// ---------- TEMPERATURE API (ESP32) ----------
+const temperature = require("./temperature");
+
+function requireTemperatureDevice(req, res, next) {
+  const expected = process.env.TEMP_API_TOKEN;
+  const received = (req.headers.authorization || "").replace(/^Bearer\s+/i, "");
+  if (!expected || received !== expected) {
+    return res.status(401).json({ ok: false, error: "Invalid device token" });
+  }
+  next();
+}
+
+app.post("/api/temperature/readings", requireTemperatureDevice, async (req, res) => {
+  try {
+    const result = await temperature.processReadings(req.body || {});
+    res.json(result);
+  } catch (e) {
+    console.error("Temperature API:", e.message);
+    res.status(400).json({ ok: false, error: e.message });
+  }
+});
+
+app.get("/api/temperature/config", requireTemperatureDevice, (req, res) => {
+  try {
+    const file = path.join(__dirname, "data", "temperature", "settings.json");
+    const cfg = JSON.parse(fs.readFileSync(file, "utf8"));
+    res.json({ ok: true, sensors: cfg.sensors || {} });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
 const USERS_FILE = path.join(__dirname, "data", "users.json");
 
 app.use(express.static(path.join(__dirname, "public")));

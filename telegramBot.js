@@ -8,6 +8,7 @@ require("node-telegram-bot-api");
 const {
     getStatistics
 }=require("./statistics");
+const temperature = require("./temperature");
 
 const bot =
 new TelegramBot(
@@ -27,6 +28,7 @@ bot.setMyCommands([
     { command: "mesyac", description: "🗓 Текущий месяц / Šis mēnesis" },
     { command: "god", description: "📊 Текущий год / Šis gads" },
     { command: "status", description: "📍 Состояние мойки / Mazgātavas statuss" },
+    { command: "temperatura", description: "🌡 Мониторинг температуры" },
     { command: "help", description: "📋 Помощь / Palīdzība" },
     { command: "gv", description: "📋 Все команды / Visas komandas" }
 ])
@@ -53,6 +55,9 @@ const keyboard = {
       [
         { text: "/god" },
         { text: "/status" }
+      ],
+      [
+        { text: "/temperatura" }
       ],
       [
         { text: "/help" },
@@ -91,6 +96,7 @@ Laipni lūdzam!
 📊 /god — Текущий год / Šis gads
 📍 /status — Состояние мойки / Mazgātavas statuss
 📋 /help — Помощь / Palīdzība
+🌡 /temperatura — Мониторинг температуры
 📋 /gv — Все команды / Visas komandas`,
 
         keyboard
@@ -122,6 +128,9 @@ bot.sendMessage(msg.chat.id,
 📍 /status
 Состояние автомойки / Mazgātavas statuss
 
+🌡 /temperatura
+Мониторинг температуры
+
 📋 /gv
 Все команды / Visas komandas`
 
@@ -147,6 +156,8 @@ bot.sendMessage(msg.chat.id,
 📊 /god — Текущий год / Šis gads
 
 📍 /status — Состояние мойки / Mazgātavas statuss
+
+🌡 /temperatura — Мониторинг температуры
 
 📋 /help — Помощь / Palīdzība`
 
@@ -518,6 +529,82 @@ ${s.lastOrder}
 🕒 Последнее обновление:
 ${new Date().toLocaleString("lv-LV")}`);
 
+});
+
+
+
+// ---------- TEMPERATURE MONITORING ----------
+temperature.start(bot);
+
+bot.onText(/^\/temperatura(?:@\w+)?$/, async (msg) => {
+  const opts = {
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: "🌡 Текущая температура", callback_data: "temp:status" }],
+        [{ text: "📊 Сегодня", callback_data: "temp:day" }, { text: "📈 7 дней", callback_data: "temp:week" }],
+        [{ text: "🗓 30 дней", callback_data: "temp:month" }, { text: "🏆 Рекорды", callback_data: "temp:records" }],
+        [{ text: "⚙️ Как настроить пределы", callback_data: "temp:help" }]
+      ]
+    }
+  };
+  await bot.sendMessage(msg.chat.id, temperature.getStatusText(), opts);
+});
+
+bot.onText(/^\/tempmin(?:@\w+)?\s+([A-Za-z0-9_-]+)\s+(-?\d+(?:[.,]\d+)?)$/i, async (msg, match) => {
+  try {
+    const sensor = match[1];
+    const value = Number(match[2].replace(",", "."));
+    const cfg = temperature.setLimit(sensor, "min", value);
+    await bot.sendMessage(msg.chat.id, `✅ Минимум для ${cfg.name}: ${cfg.min} °C\nМаксимум: ${cfg.max} °C`);
+  } catch (e) { await bot.sendMessage(msg.chat.id, `❌ ${e.message}`); }
+});
+
+bot.onText(/^\/tempmax(?:@\w+)?\s+([A-Za-z0-9_-]+)\s+(-?\d+(?:[.,]\d+)?)$/i, async (msg, match) => {
+  try {
+    const sensor = match[1];
+    const value = Number(match[2].replace(",", "."));
+    const cfg = temperature.setLimit(sensor, "max", value);
+    await bot.sendMessage(msg.chat.id, `✅ Максимум для ${cfg.name}: ${cfg.max} °C\nМинимум: ${cfg.min} °C`);
+  } catch (e) { await bot.sendMessage(msg.chat.id, `❌ ${e.message}`); }
+});
+
+bot.onText(/^\/tempname(?:@\w+)?\s+([A-Za-z0-9_-]+)\s+(.+)$/i, async (msg, match) => {
+  try {
+    const fs = require("fs");
+    const path = require("path");
+    const file = path.join(__dirname, "data", "temperature", "settings.json");
+    const data = JSON.parse(fs.readFileSync(file, "utf8"));
+    if (!data.sensors[match[1]]) throw new Error("Сначала дождитесь первого показания этого датчика.");
+    data.sensors[match[1]].name = match[2].trim().slice(0, 40);
+    fs.writeFileSync(file, JSON.stringify(data, null, 2));
+    await bot.sendMessage(msg.chat.id, `✅ Название датчика изменено: ${data.sensors[match[1]].name}`);
+  } catch (e) { await bot.sendMessage(msg.chat.id, `❌ ${e.message}`); }
+});
+
+bot.on("callback_query", async (query) => {
+  if (!query.data || !query.data.startsWith("temp:")) return;
+  const action = query.data.split(":")[1];
+  let text;
+  if (action === "status") text = temperature.getStatusText();
+  else if (action === "day" || action === "week" || action === "month")
+    text = temperature.getHistoryText(action);
+  else if (action === "records") text = temperature.getAllTimeRecordsText();
+  else text = `⚙️ НАСТРОЙКА ДАТЧИКОВ
+
+Установить нижний предел:
+/tempmin sensor1 5
+
+Установить верхний предел:
+/tempmax sensor1 35
+
+Для второго датчика используйте sensor2.
+
+Переименовать датчик:
+/tempname sensor1 Тёплый пол
+
+Пределы можно менять прямо из Telegram — ESP32 перепрошивать не нужно.`;
+  await bot.answerCallbackQuery(query.id);
+  await bot.sendMessage(query.message.chat.id, text);
 });
 
 module.exports=bot;
