@@ -136,7 +136,7 @@ async function processReadings(body) {
   writeJson(LATEST_FILE, last);
   writeJson(HISTORY_FILE, hist);
 
-  if (wasOffline) messages.unshift(`🟢 ESP32 снова на связи\n📡 ${device.name}\n🕒 ${localTime()}`);
+  if (wasOffline) messages.unshift(`🟢 Датчик температуры на связи🕒 ${localTime()}`);
   for (const message of messages) await notify(message);
   return { ok: true, received: Object.keys(incoming).length };
 }
@@ -151,7 +151,6 @@ function getStatusText() {
     lines.push(`${s.enabled ? "🟢" : "⚪"} ${s.name} (${id})`);
     lines.push(r ? `🌡 ${Number(r.value).toFixed(1)} °C — ${r.status === "normal" ? "норма" : r.status === "low" ? "ниже минимума" : "выше максимума"}` : "Нет данных");
     lines.push(`⚙️ Мин: ${s.min} °C | Макс: ${s.max} °C`);
-    if (r) lines.push(`🕒 ${localTime(new Date(r.at))}`);
     lines.push("");
   }
   for (const [id, d] of Object.entries(cfg.devices || {})) {
