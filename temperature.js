@@ -221,7 +221,7 @@ function start(bot) {
       if (Date.now() - new Date(device.lastSeen).getTime() > DEVICE_OFFLINE_MS) {
         device.online = false;
         writeJson(SETTINGS_FILE, cfg);
-        await notify(`🚨 ESP32 НЕ В СЕТИ\n📡 ${device.name} (${id})\n🕒 ${localTime()}\nНет данных более ${Math.round(DEVICE_OFFLINE_MS/60000)} мин.`);
+        await notify(`🚨 Датчик температуры не в сети \n🕒 ${localTime()}\nНет данных более ${Math.round(DEVICE_OFFLINE_MS/60000)} мин.`);
       }
     }
   }, 30000);
